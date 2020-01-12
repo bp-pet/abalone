@@ -29,7 +29,7 @@ public class Board {
      * Creates an empty board.
      */
     public Board() {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
     }
 
     // -- Queries ----------------------------------------------------
@@ -42,7 +42,7 @@ public class Board {
      * Creates a deep copy of this field.
      */
     public Board deepCopy() {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return null;
     }
 
@@ -57,7 +57,7 @@ public class Board {
      * @return the index belonging to the (row,col)-field
      */
     public int index(int row, int col) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return 0;
     }
 
@@ -71,7 +71,7 @@ public class Board {
      */
     /*@pure*/
     public boolean isField(int ix) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -85,7 +85,7 @@ public class Board {
      */
     /*@pure*/
     public boolean isField(int row, int col) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -103,7 +103,7 @@ public class Board {
      * @return the marble on the field
      */
     public Marble getField(int i) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return null;
     }
 
@@ -122,7 +122,7 @@ public class Board {
      * @return the marble on the field
      */
     public Marble getField(int row, int col) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return null;
     }
 
@@ -139,7 +139,7 @@ public class Board {
      * @return true if the field is empty
      */
     public boolean isEmptyField(int i) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -159,7 +159,7 @@ public class Board {
      */
     /*@pure*/
     public boolean isEmptyField(int row, int col) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -173,7 +173,7 @@ public class Board {
      */
     /*@pure*/
     public boolean isFull() {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -195,7 +195,7 @@ Game is over when:
      */
     /*@pure*/
     public boolean gameOver() {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -214,7 +214,7 @@ Game is over when:
      */
     /*@pure*/
     public boolean isWinner(Marble m) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -230,7 +230,7 @@ Game is over when:
      */
     /*@pure*/
     public boolean hasWinner() {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -241,7 +241,7 @@ Game is over when:
      * @return the game situation as String
      */
     public String toString() {
-    	// [BODY-NOG-TOE-TE-VOEGEN]
+    	// TODO: add implementation
         return null;
     }
 
@@ -255,7 +255,7 @@ Game is over when:
      * Marble.EMPTY).
      */
     public void reset() {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
     }
 
     /*@
@@ -271,7 +271,7 @@ Game is over when:
      *            the marble to be placed
      */
     public void setField(int i, Marble m) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
     }
 
     /*@
@@ -291,7 +291,7 @@ Game is over when:
      *            the marble to be placed
      */
     public void setField(int row, int col, Marble m) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
     }
     
 }
