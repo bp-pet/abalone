@@ -5,10 +5,12 @@ import abalone.exceptions.*;
 /**
  * Defines the methods that the Abalone Client should support.
  * 
+ * @version Other3V0.9
  * @author Daan Pluister
  */
 public interface ClientProtocol {
 
+	/** imports the ProtocolMessages as pm. */
 	ProtocolMessages pm = new ProtocolMessages();
 
 	/**
@@ -53,10 +55,10 @@ public interface ClientProtocol {
 	 * following message to the server:
 	 * <code>pm.JOIN + pm.DELIMITER + lobbyName + pm.DELIMITER + playerName + pm.DELIMITER + teamName</code>
 	 * 
-	 * if the join request is succesfull, it will confirm the join by sending
+	 * if the join request is succesful, it will confirm the join by sending
 	 * multiple lines for each player in the lobby (including yours) in the form
 	 * <code> pm.Join + pm.DELIMITER + playerName + pm.DELIMITER + teamName + pm.DELIMITER + String assingedColor</code>
-	 * and finally a <code>pm.EOT</code> message. if
+	 * and finally a <code>pm.EOT</code> message.
 	 * <code>received lobbyName != lobbyName</code> or the player list does not
 	 * contain <code>playerName</code> a <code>ProtocolException</code> is thrown
 	 * with appropriate message.
@@ -93,42 +95,69 @@ public interface ClientProtocol {
 	 * No game will be started and a NotEnoughPlayersException is thrown.
 	 * 
 	 * @throws ServerUnavailableException if IO errors occur.
-	 * @throws NotEnoughPlayersException if only 1 player is in the game.
+	 * @throws NotEnoughPlayersException  if only 1 player is in the game.
 	 */
 	public void doStart() throws ServerUnavailableException, NotEnoughPlayersException;
 
 	/**
-	 * get a turn request to the server.
-	 * 
-	 * TODO: write turns
+	 * Receives a <code>pm.START</code> from the server.
+	 */
+	public void getStart() throws ServerUnavailableException;
+
+	/**
+	 * Returns a string of the color as a response to a
+	 * <code>pm.TURN + pm.DELIMITER + String color</code> server message.
 	 * 
 	 * @throws ServerUnavailableException if IO errors occur.
 	 */
-	public void getTurn() throws ServerUnavailableException;
+	public String getTurn() throws ServerUnavailableException;
 
 	/**
-	 * send a move request to the server.
+	 * given the move parameters doMove() sends a move request to the server.
 	 * 
-	 * TODO: write move
+	 * This methods sends the following message to the server
+	 * <code>pm.Move + pm.DELIMITER + arg1 + pm.DELIMITER + arg2 + pm.DELIMITER + arg3</code>.
+	 * if move is valid the message is received back from the server.
 	 * 
+	 * if the move is invalid a single <code>pm.UNACCEPTED_MOVE</code> is received
+	 * from the server. This method will then throw a InvalidMoveException.
+	 * 
+	 * @param arg1 coordinates of Marble 1
+	 * @param arg2 coordinates of Marble 2
+	 * @param arg3 destination of Marble 1
 	 * @requires arg1 != null && arg2 != null && arg3 != null.
 	 * @throws ServerUnavailableException if IO errors occur.
-	 * @throws InvalidMoveException if move is invalid.
+	 * @throws InvalidMoveException       if move is invalid.
 	 */
 	public void doMove(String arg1, String arg2, String arg3) throws ServerUnavailableException, InvalidMoveException;
 
 	/**
-	 * get a move request to the server.
+	 * Returns a String with a move that is received from the server.
 	 * 
-	 * TODO: write getMove
+	 * the server sends a move in the form
+	 * <code>pm.Move + pm.DELIMITER + arg1 + pm.DELIMITER + arg2 + pm.DELIMITER + arg3</code>.
+	 * And will be forwarded to the view.
 	 * 
+	 * @return String
+	 *         <code>pm.Move + pm.DELIMITER + arg1 + pm.DELIMITER + arg2 + pm.DELIMITER + arg3</code>.
 	 * @throws ServerUnavailableException if IO errors occur.
 	 */
-	public void getMove() throws ServerUnavailableException;
+	public String getMove() throws ServerUnavailableException;
+
+	/**
+	 * Receives a <code>pm.GAME_END + pm.DELIMITER + result</code> if there is a
+	 * winner or alternatively if a player disconnects:
+	 * <code>pm.GAME_END + pm.DELIMITER + result + pm.DELIMITER + disconnectedColor</code>.
+	 * these messages will be returned.
+	 * 
+	 * @return
+	 * @throws ServerUnavailableException
+	 */
+	public String getGameEnd() throws ServerUnavailableException;
 
 	/**
 	 * Sends a message to the server indicating that this client will exit:
-	 * ProtocolMessages.EXIT;
+	 * <code>ProtocolMessages.EXIT</code>;
 	 * 
 	 * Both the server and the client then close the connection. The client does
 	 * this using the {@link #closeConnection()} method.
@@ -136,7 +165,7 @@ public interface ClientProtocol {
 	 * @throws ServerUnavailableException if IO errors occur.
 	 */
 	public void sendExit() throws ServerUnavailableException;
-	
-	//TODO: add extensions.
+
+	// TODO: add extensions.
 
 }

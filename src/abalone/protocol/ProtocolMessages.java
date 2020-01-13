@@ -3,6 +3,7 @@ package abalone.protocol;
 /**
  * Protocol for Networked Abalone other3.
  * 
+ * @version Other3V0.9
  * @author Daan Pluister
  */
 public class ProtocolMessages {
@@ -32,10 +33,15 @@ public class ProtocolMessages {
 	public static final char EXIT = 'x';
 	public static final char LOBBY = 'l';
 	public static final char JOIN = 'j';
-	public static final char ERROR = 'e';
 	public static final char START = 's';
 	public static final char MOVE = 'm';
 	public static final char TURN = 't';
+	public static final char ERROR = 'e';
+	public static final char ERROR1 = '1';
+	public static final char ERROR2 = '2';
+	public static final char ERROR3 = '3';
+	public static final char UNEXPECTED_MOVE = 'u';
+	public static final char GAME_END = 'g';
 	
 
 }
