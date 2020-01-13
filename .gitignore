@@ -1,4 +1,10 @@
 /bin/
+
+#eclipse
 .classpath
 .project
 .settings/
+
+#visual paradigm
+*.vpp.bak*
+*.vpp.lck
