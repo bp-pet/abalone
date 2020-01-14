@@ -62,10 +62,8 @@ class Board:
 
 	def toString(self):
 		full = ""
-		counter = 0
 		for y in range(self.DIM, -self.DIM - 1, -1):
-			line = " " * counter
-			counter += 1
+			line = " " * (-y + self.DIM)
 			for x in range(-self.DIM, self.DIM + 1):
 				line += self.fields[(x,y)].toString() + " ";
 			full += line + "\n"

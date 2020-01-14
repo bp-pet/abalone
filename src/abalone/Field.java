@@ -2,6 +2,12 @@ package abalone;
 
 public class Field {
 	private Marble marble;
+	private boolean valid;
+	
+	public Field(boolean valid) {
+		this.valid = valid;
+		marble = null;
+	}
 	
 	/**
 	 * getter for the marble on the field.
@@ -9,5 +15,13 @@ public class Field {
 	 */
 	public Marble getMarble() {
 		return marble;
+	}
+	
+	public void setMarble(Marble m) {
+		marble = m;
+	}
+	
+	public boolean isValid() {
+		return valid;
 	}
 }
