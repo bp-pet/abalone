@@ -213,7 +213,9 @@ When a game ends the server sends the server sends the result of the game to all
 | g    | GAME_OVER   | Indicate the current game is finished                  |
 
 ### Improper messages
-There are a number of improper messages a server can receive. We have divided them into 4 categories
+There are a number of improper messages a server can receive. They are split into 4 categories.
+
+
 | char        | message             | description                                                                                            |
 |-------------|---------------------|--------------------------------------------------------------------------------------------------------|
 | e;1         | Unexpected command  | The command letter is not expected in this context. A list of possible commands is sent by the server. |
