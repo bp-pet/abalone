@@ -31,6 +31,7 @@ public class Board {
      * Creates an empty board.
      */
     public Board() {
+<<<<<<< HEAD
     	boolean valid;
         fields = new Field[WIDTH][WIDTH];
         for (int i = 0; i < 2 * DIM - 1; i++) {
@@ -43,6 +44,9 @@ public class Board {
         		fields[i][j] = new Field(valid);
         	}
         }
+=======
+        // TODO: add implementation
+>>>>>>> c1088f0135df0559098f818ceaf524b3a9754ba7
     }
 
     // -- Queries ----------------------------------------------------
@@ -55,10 +59,42 @@ public class Board {
      * Creates a deep copy of this field.
      */
     public Board deepCopy() {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return null;
     }
 
+<<<<<<< HEAD
+=======
+
+    /*@
+       requires 0 <= row & row < DIM;
+       requires 0 <= col & col < DIM;
+     */
+    /**
+     * Calculates the index in the linear array of fields from a (row, col)
+     * pair.
+     * @return the index belonging to the (row,col)-field
+     */
+    public int index(int row, int col) {
+        // TODO: add implementation
+        return 0;
+    }
+
+
+    /*@
+       ensures \result == (0 <= ix && ix < DIM * DIM);
+     */
+    /**
+     * Returns true if <code>ix</code> is a valid index of a field on tbe board.
+     * @return <code>true</code> if <code>0 <= ix < DIM*DIM</code>
+     */
+    /*@pure*/
+    public boolean isField(int ix) {
+        // TODO: add implementation
+        return false;
+    }
+
+>>>>>>> c1088f0135df0559098f818ceaf524b3a9754ba7
     /*@
        ensures \result == (0 <= row && row < DIM && 0 <= col && col < DIM);
      */
@@ -69,11 +105,34 @@ public class Board {
      */
     /*@pure*/
     public boolean isField(int row, int col) {
+<<<<<<< HEAD
         return row < WIDTH && col < WIDTH && getField(row, col).isValid();
     }
 
     public Field getField(int row, int col) {
         return fields[row][col];
+=======
+        // TODO: add implementation
+        return false;
+    }
+
+
+    /*@
+       requires this.isField(i);
+       ensures \result == Marble.EMPTY || \result == Marble.XX || \result == Marble.OO;
+       pure
+     */
+    /**
+     * Returns the content of the field <code>i</code>.
+     * 
+     * @param i
+     *            the number of the field (see NUMBERING)
+     * @return the marble on the field
+     */
+    public Marble getField(int i) {
+        // TODO: add implementation
+        return null;
+>>>>>>> c1088f0135df0559098f818ceaf524b3a9754ba7
     }
 
     /*@
@@ -90,8 +149,31 @@ public class Board {
      *            the column of the field
      * @return the marble on the field
      */
+<<<<<<< HEAD
     public Marble getFieldContent(int row, int col) {
         return fields[row][col].getMarble();
+=======
+    public Marble getField(int row, int col) {
+        // TODO: add implementation
+        return null;
+    }
+
+    /*@
+       requires this.isField(i);
+       ensures \result == (this.getField(i) == Marble.EMPTY);
+       pure
+     */
+    /**
+     * Returns true if the field <code>i</code> is empty.
+     * 
+     * @param i
+     *            the index of the field (see NUMBERING)
+     * @return true if the field is empty
+     */
+    public boolean isEmptyField(int i) {
+        // TODO: add implementation
+        return false;
+>>>>>>> c1088f0135df0559098f818ceaf524b3a9754ba7
     }
 
     /*@
@@ -110,7 +192,26 @@ public class Board {
      */
     /*@pure*/
     public boolean isEmptyField(int row, int col) {
+<<<<<<< HEAD
         return getFieldContent(row, col) == null;
+=======
+        // TODO: add implementation
+        return false;
+    }
+
+    /*@
+       ensures \result == (\forall int i; i <= 0 & i < DIM * DIM; this.getField(i) != Marble.EMPTY);
+     */
+    /**
+     * Tests if the whole board is full.
+     * 
+     * @return true if all fields are occupied
+     */
+    /*@pure*/
+    public boolean isFull() {
+        // TODO: add implementation
+        return false;
+>>>>>>> c1088f0135df0559098f818ceaf524b3a9754ba7
     }
 
     /*@
@@ -131,7 +232,7 @@ Game is over when:
      */
     /*@pure*/
     public boolean gameOver() {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -150,7 +251,7 @@ Game is over when:
      */
     /*@pure*/
     public boolean isWinner(Marble m) {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -166,7 +267,7 @@ Game is over when:
      */
     /*@pure*/
     public boolean hasWinner() {
-        // [BODY-NOG-TOE-TE-VOEGEN]
+        // TODO: add implementation
         return false;
     }
 
@@ -177,7 +278,7 @@ Game is over when:
      * @return the game situation as String
      */
     public String toString() {
-    	// [BODY-NOG-TOE-TE-VOEGEN]
+    	// TODO: add implementation
         return null;
     }
 
@@ -191,7 +292,27 @@ Game is over when:
      * Marble.EMPTY).
      */
     public void reset() {
+<<<<<<< HEAD
     	//TO DO
+=======
+        // TODO: add implementation
+    }
+
+    /*@
+       requires this.isField(i);
+       ensures this.getField(i) == m;
+     */
+    /**
+     * Sets the content of field <code>i</code> to the marble <code>m</code>.
+     * 
+     * @param i
+     *            the field number (see NUMBERING)
+     * @param m
+     *            the marble to be placed
+     */
+    public void setField(int i, Marble m) {
+        // TODO: add implementation
+>>>>>>> c1088f0135df0559098f818ceaf524b3a9754ba7
     }
 
     /*@
