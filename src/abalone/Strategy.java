@@ -13,5 +13,5 @@ public interface Strategy {
 	 * @param mark given mark
 	 * @return
 	 */
-	public int determineMove(Board board, Marble mark);
+	public int determineMove(Board board, Color mark);
 }

@@ -72,8 +72,24 @@ public class Board {
         return row < WIDTH && col < WIDTH && getField(row, col).isValid();
     }
 
+    /**
+     * get Field with given row and col
+     * @param row
+     * @param col
+     * @return
+     */
     public Field getField(int row, int col) {
         return fields[row][col];
+    }
+    
+    /**
+     * get row with given letter
+     * @requires letter must match pattern [A-Ia-i]
+     * @param letter
+     * @return
+     */
+    public int getRow(char letter) {
+    	return 
     }
 
     /*@

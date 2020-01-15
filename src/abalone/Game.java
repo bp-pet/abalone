@@ -16,7 +16,7 @@ public class Game {
     /**
      * Index of the current player.
      */
-    private Marble current;
+    private Color current;
     
     /**
      * Array of players.
@@ -48,7 +48,7 @@ public class Game {
     /**
      * Returns the mark of the player whose turn it is.
      */
-    public /*@ pure */ Marble getCurrent() {
+    public /*@ pure */ Color getCurrent() {
         return current;
     }
 
@@ -62,7 +62,7 @@ public class Game {
      */
     public void reset() {
     	Random r = new Random();
-    	current = players[r.nextInt(players.length)].getMarble();
+    	current = players[r.nextInt(players.length)].getColor();
         board.reset();
     }
 
