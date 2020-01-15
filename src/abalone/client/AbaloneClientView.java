@@ -10,7 +10,7 @@ import abalone.exceptions.*;
  * @author Daan Pluister
  */
 public interface AbaloneClientView {
-
+	
 	/**
 	 * Asks for user input continuously and handles communication accordingly using
 	 * the {@link #handleUserInput(String input)} method.

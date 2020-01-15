@@ -32,26 +32,6 @@ public class HumanPlayer extends Player {
 	}
 
 	// -- Commands ---------------------------------------------------
-
-	/**
-	 * Converts the following.
-	 * - [A-I] to [0-8]
-	 * - [a-i] to [0-8]
-	 * - [1-9] to [0-8]
-	 * @requires letter.matches([A-Ia-i1-9])
-	 * @ensures return value matches [0-8]
-	 * @param letter
-	 * @return corresponding integer
-	 */
-	public int toInt(char letter) {
-		if (Character.isDigit(letter)) {
-			return Character.getNumericValue(letter) - 1;
-		}
-		if (letter >= 'a' && letter <= 'z') {
-			return letter - 97;
-		}
-		return letter - 65;
-	}
 	
 	public Selection determineMove(Board board) {
 		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice? ";
@@ -60,14 +40,14 @@ public class HumanPlayer extends Player {
 		
 		choice = view.getString(prompt);
 		if (choice.matches(PATTERN)) {
-			selection = new Selection(board, toInt(choice.charAt(0)), toInt(choice.charAt(1)), toInt(choice.charAt(3)), toInt(choice.charAt(4)), toInt(choice.charAt(6)), toInt(choice.charAt(7)));
+			selection = new Selection(board, board.getCol(choice.charAt(0)), board.getCol(choice.charAt(1)), board.getCol(choice.charAt(3)), board.getCol(choice.charAt(4)), board.getCol(choice.charAt(6)), board.getCol(choice.charAt(7)));
 		}
 
 		while (! (choice.matches(PATTERN) && selection.isValidSelection())) {
 			view.showMessage("ERROR: field " + choice + " is no valid choice (must match pattern " + PATTERN + ").");
 			choice = view.getString(prompt);
 			if (choice.matches(PATTERN)) {
-				selection = new Selection(board, toInt(choice.charAt(0)), toInt(choice.charAt(1)), toInt(choice.charAt(3)), toInt(choice.charAt(4)), toInt(choice.charAt(6)), toInt(choice.charAt(7)));
+				selection = new Selection(board, board.getCol(choice.charAt(0)), board.getCol(choice.charAt(1)), board.getCol(choice.charAt(3)), board.getCol(choice.charAt(4)), board.getCol(choice.charAt(6)), board.getCol(choice.charAt(7)));
 			}
 		}
 		

@@ -47,10 +47,6 @@ public class Board {
 
     // -- Queries ----------------------------------------------------
 
-    /*@
-       ensures \result != this;
-       ensures (\forall int i; 0 <= i & i < DIM * DIM; \result.getField(i) == this.getField(i));
-     */
     /**
      * Creates a deep copy of this field.
      */
@@ -83,17 +79,32 @@ public class Board {
     }
     
     /**
-     * get row with given letter
+     * get row with given letter; translates [A-I] to [0-8] or [a-i] to [0-8]
      * @requires letter must match pattern [A-Ia-i]
+     * @ensures 0 <= return value <= 8
      * @param letter
      * @return
      */
     public int getRow(char letter) {
-    	return 
+    	if (letter >= 'a' && letter <= 'z') {
+			return letter - 97;
+		}
+		return letter - 65;
+    }
+    
+    /**
+     * get row with given letter; translates [1-9] to [0-8]
+     * @param letter
+     * @requires letter must match pattern [1-9]
+     * @ensures 0 <= return value <= 8
+     * @return letter - 1
+     */
+    public int getCol(char letter) {
+    	return letter - 48 - 1;
     }
 
     /*@
-       requires this.isField(row,col);
+       requires this.isField(row, col);
        ensures \result == Marble.EMPTY || \result == Marble.XX || \result == Marble.OO;
        pure
      */
@@ -135,7 +146,7 @@ public class Board {
 Game is over when:
 - Push off 6 marbles of an opponent
  - 2 players: no complications
- - 3 players: don�t distinguish colours
+ - 3 players: don't distinguish colours
  - 4 players: 6 marbles of the opposing team
    - No, pushing off your teammate does not count
    

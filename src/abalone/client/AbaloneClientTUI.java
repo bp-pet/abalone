@@ -1,12 +1,21 @@
 package abalone.client;
 
 import java.net.InetAddress;
+import java.util.Scanner;
 
 import abalone.exceptions.ExitProgram;
 import abalone.exceptions.ServerUnavailableException;
 
 public class AbaloneClientTUI implements AbaloneClientView {
 
+	AbaloneClient c;
+	
+	Scanner input = new Scanner(System.in);
+	
+	public AbaloneClientTUI(AbaloneClient c) {
+		this.c = c;
+	}
+	
 	@Override
 	public void start() throws ServerUnavailableException {
 		// TODO Auto-generated method stub
