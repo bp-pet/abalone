@@ -242,7 +242,7 @@ Game is over when:
     }
     
     /**
-     * First checks if selection is valid, then if destinations is valid.
+     * First checks if move is valid, then if destinations is valid.
      * @param rowTail
      * @param colTail
      * @param rowHead
@@ -252,12 +252,13 @@ Game is over when:
      */
     public void move(int rowTail, int colTail, int rowHead, int colHead,
     		int rowDest, int colDest) {
-    	Selection selection = new Selection(this, rowTail, colTail, rowHead,
+    	Move move = new Move(this, rowTail, colTail, rowHead,
     			colHead, rowDest, colDest);
-    	if (selection.isValidSelection()) {
-    		if (selection.areAdjacent()) {
-    			Field[] selectedFields = selection.getFields();
+    	if (move.isValidmove()) {
+    		if (move.areAdjacent()) {
+    			Field[] selectedFields = move.getFields();
     		}
     	}
     }
+
 }

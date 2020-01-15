@@ -8,7 +8,7 @@ public class ComputerPlayer extends Player {
 	}
 
 	@Override
-	public Selection determineMove(Board board) {
+	public Move determineMove(Board board) {
 		// TODO Auto-generated method stub
 		return null;
 	}

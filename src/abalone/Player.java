@@ -41,9 +41,9 @@ public abstract class Player {
     /**
      * Determines the field for the next move.
      * @requires board is not null and not full
-     * @ensures returned value satisfies Selection.isValidSelection();
+     * @ensures returned value satisfies Move.isValidMove();
      * @param board the current game board
-     * @return the player's chosen selection
+     * @return the player's chosen Move
      */
-    public abstract Selection determineMove(Board board);
+    public abstract Move determineMove(Board board);
 }

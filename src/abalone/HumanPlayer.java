@@ -28,30 +28,30 @@ public class HumanPlayer extends Player {
 	 */
 	public HumanPlayer(String name, Color color) {
 		super(name, color);
-		view = new AbaloneClientTUI();
+		view = new AbaloneClientTUI(null);
 	}
 
 	// -- Commands ---------------------------------------------------
 	
-	public Selection determineMove(Board board) {
+	public Move determineMove(Board board) {
 		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice? ";
 		String choice;
-		Selection selection = null;
+		Move move = null;
 		
 		choice = view.getString(prompt);
 		if (choice.matches(PATTERN)) {
-			selection = new Selection(board, board.getCol(choice.charAt(0)), board.getCol(choice.charAt(1)), board.getCol(choice.charAt(3)), board.getCol(choice.charAt(4)), board.getCol(choice.charAt(6)), board.getCol(choice.charAt(7)));
+			move = new Move(board, board.getCol(choice.charAt(0)), board.getCol(choice.charAt(1)), board.getCol(choice.charAt(3)), board.getCol(choice.charAt(4)), board.getCol(choice.charAt(6)), board.getCol(choice.charAt(7)));
 		}
 
-		while (! (choice.matches(PATTERN) && selection.isValidSelection())) {
+		while (! (choice.matches(PATTERN) && move.isValidMove())) {
 			view.showMessage("ERROR: field " + choice + " is no valid choice (must match pattern " + PATTERN + ").");
 			choice = view.getString(prompt);
 			if (choice.matches(PATTERN)) {
-				selection = new Selection(board, board.getCol(choice.charAt(0)), board.getCol(choice.charAt(1)), board.getCol(choice.charAt(3)), board.getCol(choice.charAt(4)), board.getCol(choice.charAt(6)), board.getCol(choice.charAt(7)));
+				move = new Move(board, board.getCol(choice.charAt(0)), board.getCol(choice.charAt(1)), board.getCol(choice.charAt(3)), board.getCol(choice.charAt(4)), board.getCol(choice.charAt(6)), board.getCol(choice.charAt(7)));
 			}
 		}
 		
-		return selection;
+		return move;
 	}
 
 }

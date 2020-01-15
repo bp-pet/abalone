@@ -19,15 +19,15 @@ public class BoardTest {
 	Board board;
 	
     /**
-     * 
+     * create a test board with 2 player setup
 	 */
     @BeforeEach
     public void setUp() {
     	board = new Board();
     }
-
+    
     /**
-	 * Tests if the initial condition complies to the specification.
+	 * Tests if the input 1 to 9 gets translated to 0 to 8.
 	 */
     @Test
     public void testGetCol() {
@@ -35,6 +35,9 @@ public class BoardTest {
         assertEquals(8, board.getCol('9'));
     }
     
+    /**
+	 * Tests if the input A to I gets translated to 0 to 8.
+	 */
     @Test
     public void testGetRow() {
         assertEquals(0, board.getRow('A'));

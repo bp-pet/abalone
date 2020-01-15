@@ -1,6 +1,6 @@
 package abalone;
 
-public class Selection {
+public class Move {
 	
 	private Board board;
 	private int rowTail;
@@ -21,7 +21,7 @@ public class Selection {
 	 * @param rowDest
 	 * @param colDest
 	 */
-	public Selection(Board board, int rowTail, int colTail, int rowHead,
+	public Move(Board board, int rowTail, int colTail, int rowHead,
     		int colHead, int rowDest, int colDest) {
 		this.board = board;
 		this.rowTail = rowTail;
@@ -61,7 +61,7 @@ public class Selection {
      * @param colHead
      * @return
      */
-    public boolean isValidSelection() {
+    public boolean isValidMove() {
     	if (!board.isField(rowTail, colTail) || !board.isField(rowHead, colHead)) {
     		return false;
     	}
