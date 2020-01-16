@@ -80,7 +80,7 @@ public class Game {
     public void play() {
     	Move nextMove;
     	while (! board.gameOver()) {
-    		nextMove = players[current].determineMove(board);
+    		nextMove = players[current.getInt()].determineMove(board);
     		try {
 				nextMove.perform();
 			} catch (InvalidMoveException e) {
