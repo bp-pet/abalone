@@ -368,4 +368,12 @@ public class Move {
     public Field[] getFields() {
     	return this.fields;
     }
+    
+    /**
+     * toString of Move
+     * @returns "Color " + color + " moves (" + rowTail + " , " + colTail + "),(" + rowHead + "," + colHead + ") to (" + rowDest + "," + colDest + ")";
+     */
+    public String toString() {
+    	return "Color " + color + " moves (" + rowTail + " , " + colTail + "),(" + rowHead + "," + colHead + ") to (" + rowDest + "," + colDest + ")";
+    }
 }

@@ -4,13 +4,7 @@ public enum Color {
 
 	WHITE, BLACK, BLUE, RED;
 
-	/**
-	 * defines if next returns clockwise color or not, will be initialized when
-	 * first next is called.
-	 */
-	private Boolean clockwise;
-
-	public Color next(int numOfPlayers) {
+	public Color next(int numOfPlayers, boolean clockwise) {
 		switch (numOfPlayers) {
 		case 2:
 			switch (this) {
@@ -20,9 +14,6 @@ public enum Color {
 				return WHITE;
 			}
 		default:
-			if (clockwise == null) {
-				clockwise = (Math.random() < 0.5);
-			}
 			if (clockwise) {
 				switch (this) {
 				case BLUE:
@@ -62,13 +53,13 @@ public enum Color {
 	public int getInt() {
 		switch (this) {
 		case WHITE:
-			return 1;
+			return 0;
 		case BLACK:
-			return 2;
+			return 1;
 		case BLUE:
-			return 3;
+			return 2;
 		case RED:
-			return 4;
+			return 3;
 		default:
 			return 0;
 		}

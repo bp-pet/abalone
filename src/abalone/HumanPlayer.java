@@ -37,24 +37,26 @@ public class HumanPlayer extends Player {
 	public Move determineMove(Board board) {
 		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice? ";
 		String choice;
-		
+
+		view.showMessage(board.toString());
 		choice = view.getString(prompt);
 		while (! (choice.matches(PATTERN))) {
-			view.showMessage("ERROR: field " + choice + " is no valid choice (must match pattern " + PATTERN + ").");
+			view.showMessage("ERROR: field " + choice + " is not a valid choice (must match pattern " + PATTERN + ").");
 			choice = view.getString(prompt);
 		}
 
 		Board copy = board.deepCopy();
-		Move move = new Move(copy, getColor(), board.getColFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getColFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getColFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
+		Move move = new Move(copy, getColor(), board.getRowFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getRowFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getRowFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
 		
 		try {
 			move.perform();
 		} catch (InvalidMoveException e) {
-			view.showMessage(e.getMessage());
+			view.showMessage(move.toString() + "\n" + e.getMessage());
 			move = determineMove(board);
 		}
 		
-		return new Move(board, getColor(), board.getColFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getColFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getColFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
+		System.out.println("Abalone " + choice.charAt(0) + " goes to " + board.getRowFromLetter(choice.charAt(0)));
+		return new Move(board, getColor(), board.getRowFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getRowFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getRowFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
 	}
 
 }

@@ -65,12 +65,13 @@ public class Board {
 	 */
 	/* @pure */
 	public boolean isField(int row, int col) {
-		return row < WIDTH && col < WIDTH && getField(row, col).isValid();
+		return row < WIDTH && col < WIDTH && fields[row][col].isValid();
 	}
 
 	/**
 	 * get Field with given row and col
 	 * 
+	 * @requires 
 	 * @param row
 	 * @param col
 	 * @return will return null if field doesn't exist
@@ -120,9 +121,9 @@ public class Board {
 	 */
 	public int getRowFromLetter(char letter) {
 		if (letter >= 'a' && letter <= 'z') {
-			return letter - 97;
+			return ((int)letter) - 97;
 		}
-		return letter - 65;
+		return ((int)letter) - 65;
 	}
 
 	/**

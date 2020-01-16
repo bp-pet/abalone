@@ -24,6 +24,11 @@ public class Game {
      * Array of players.
      */
     private Player[] players;
+    
+    /**
+     * indicates direction of playing
+     */
+    private boolean clockwise;
 
     // -- Constructors -----------------------------------------------
     
@@ -35,7 +40,16 @@ public class Game {
     public Game(Player[] players) {
         board = new Board();
         this.players = players;
+        for (int i = 0; players.length > i; i++) {
+        	System.out.println("Game Player " + i + " " + players[i].getColor());
+        	}
         reset();
+        clockwise = (Math.random() < 0.5);
+    }
+    
+    public Game(Player[] players, boolean clockwise) {
+        this(players);
+        this.clockwise = clockwise;
     }
 
     // -- Queries ----------------------------------------------------
@@ -87,7 +101,11 @@ public class Game {
 				System.out.println("Player not correctly implemented!");
 				e.printStackTrace();
 			}
-    		current.next(getNumberOfPlayers());
+    		current.next(getNumberOfPlayers(), clockwise);
     	}
     }
+
+	public void start() {
+		play();
+	}
 }
