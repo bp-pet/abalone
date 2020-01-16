@@ -159,7 +159,7 @@ public class Move {
      */
     private boolean areAllOccupied() {
     	for (Field f : fields) {
-    		if (f.getMarble() == null) {
+    		if (f.getMarble().getColor() == color) {
     			return false;
     		}
     	}

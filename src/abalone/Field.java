@@ -3,6 +3,8 @@ package abalone;
 public class Field {
 	private Marble marble;
 	private boolean valid;
+	private int row;
+	private int col;
 	
 	public Field(boolean valid) {
 		this.valid = valid;
@@ -23,5 +25,23 @@ public class Field {
 	
 	public boolean isValid() {
 		return valid;
+	}
+	
+	public int getRow() {
+		return row;
+	}
+	
+	public int getCol() {
+		return col;
+	}
+	
+	public String toString() {
+		if (! valid) {
+			return " ";
+		}
+		if (marble == null) {
+			return "+";
+		}
+		return marble.toString();
 	}
 }

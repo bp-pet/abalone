@@ -2,6 +2,8 @@ package abalone;
 
 import java.util.Random;
 
+import abalone.exceptions.InvalidMoveException;
+
 public class Game {
 	 // -- Instance variables -----------------------------------------
 
@@ -51,6 +53,10 @@ public class Game {
     public /*@ pure */ Color getCurrent() {
         return current;
     }
+    
+    public int getNumberOfPlayers() {
+    	return players.length;
+    }
 
 
     // -- Commands ---------------------------------------------------
@@ -63,20 +69,10 @@ public class Game {
     public void reset() {
     	Random r = new Random();
     	current = players[r.nextInt(players.length)].getColor();
-        board.reset();
+        board.reset(getNumberOfPlayers());
     }
 
-    /*@
-       requires 0 <= i & i < Board.DIM * Board.DIM;
-       requires this.getBoard().isEmptyField(i);
-     */
-    /**
-     * Sets the current mark in field i. 
-     * Passes the turn to the other mark.
-     * @param    i the index of the field where to place the mark
-     */
-    public void takeTurn(int i) {
-        board.setField(i, current);
-        current = current.next();
+    public void takeTurn(Move move) throws InvalidMoveException {
+    	board.move(move);
     }
 }
