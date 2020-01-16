@@ -2,6 +2,7 @@ package abalone;
 
 import abalone.client.AbaloneClientTUI;
 import abalone.client.AbaloneClientView;
+import abalone.exceptions.InvalidMoveException;
 
 public class HumanPlayer extends Player {
 
@@ -15,7 +16,7 @@ public class HumanPlayer extends Player {
 	 * view of the HumanPlayer
 	 */
 	AbaloneClientView view;
-
+	
 	// -- Constructors -----------------------------------------------
 
 	/**
@@ -36,22 +37,24 @@ public class HumanPlayer extends Player {
 	public Move determineMove(Board board) {
 		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice? ";
 		String choice;
-		Move move = null;
 		
 		choice = view.getString(prompt);
-		if (choice.matches(PATTERN)) {
-			move = new Move(board, board.getColFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getColFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getColFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
-		}
-
-		while (! (choice.matches(PATTERN) && move.isValidMove())) {
+		while (! (choice.matches(PATTERN))) {
 			view.showMessage("ERROR: field " + choice + " is no valid choice (must match pattern " + PATTERN + ").");
 			choice = view.getString(prompt);
-			if (choice.matches(PATTERN)) {
-				move = new Move(board, board.getColFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getColFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getColFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
-			}
+		}
+
+		Board copy = board.deepCopy();
+		Move move = new Move(copy, getColor(), board.getColFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getColFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getColFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
+		
+		try {
+			move.perform();
+		} catch (InvalidMoveException e) {
+			view.showMessage(e.getMessage());
+			move = determineMove(board);
 		}
 		
-		return move;
+		return new Move(board, getColor(), board.getColFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getColFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getColFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
 	}
 
 }

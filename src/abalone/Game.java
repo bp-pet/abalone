@@ -72,7 +72,22 @@ public class Game {
         board.reset(getNumberOfPlayers());
     }
 
-    public void takeTurn(Move move) throws InvalidMoveException {
-    	board.move(move);
+    public void takeTurn(Color color, int rowTail, int colTail, int rowHead, int colHead,
+    		int rowDest, int colDest) {
+    	
+    }
+    
+    public void play() {
+    	Move nextMove;
+    	while (! board.gameOver()) {
+    		nextMove = players[current].determineMove(board);
+    		try {
+				nextMove.perform();
+			} catch (InvalidMoveException e) {
+				System.out.println("Player not correctly implemented!");
+				e.printStackTrace();
+			}
+    		current.next(getNumberOfPlayers());
+    	}
     }
 }

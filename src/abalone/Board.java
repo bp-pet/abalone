@@ -94,19 +94,17 @@ public class Board {
 		return getField(row, col).getMarble();
 	}
 
-    /**
-     * Returns true if the field referred to by the (row, col) pair it empty.
-     * 
-     * @param row
-     *            the row of the field
-     * @param col
-     *            the column of the field
-     * @return true if the field is empty
-     */
-    /*@pure*/
-    public boolean isEmptyField(int row, int col) {
-        return isField(row, col) && getFieldContent(row, col) == null;
-    }
+	/**
+	 * Returns true if the field referred to by the (row, col) pair it empty.
+	 * 
+	 * @param row the row of the field
+	 * @param col the column of the field
+	 * @return true if the field is empty
+	 */
+	/* @pure */
+	public boolean isEmptyField(int row, int col) {
+		return isField(row, col) && getFieldContent(row, col) == null;
+	}
 
 	/**
 	 * get row with given letter; translates [A-I] to [0-8] or [a-i] to [0-8]
@@ -134,7 +132,7 @@ public class Board {
 	public int getColFromLetter(char letter) {
 		return letter - 48 - 1;
 	}
-	
+
 	/**
 	 * inverse function of {@link #getRowFromLetter(int)}.
 	 * 
@@ -145,7 +143,7 @@ public class Board {
 	public char getRowLetter(int row) {
 		return (char) (row + 65);
 	}
-	
+
 	/**
 	 * inverse function of {@link #getColFromLetter(int)}.
 	 * 
@@ -174,7 +172,7 @@ public class Board {
 	 * <li>3 players: don't distinguish colours</li>
 	 * <li>4 players: 6 marbles of the opposing team</li>
 	 * <li>No, pushing off your teammate does not count</li>
-	 * </ul> 
+	 * </ul>
 	 * 
 	 * @return true if the game is over
 	 */
@@ -218,9 +216,10 @@ public class Board {
 	}
 
 	// -- Commands ---------------------------------------------------
-	
+
 	/**
 	 * empties board
+	 * 
 	 * @param numberOfPlayers
 	 */
 	public void reset() {
@@ -236,9 +235,10 @@ public class Board {
 			}
 		}
 	}
-	
+
 	/**
 	 * empties board and fills it with marbles for numberOfPlayers
+	 * 
 	 * @param numberOfPlayers
 	 */
 	public void reset(int numberOfPlayers) {
@@ -341,23 +341,27 @@ public class Board {
 	public void setField(int row, int col, Marble m) {
 		fields[row][col].setMarble(m);
 	}
-    
-    /**
-     * First checks if move is valid, then if destinations is valid.
-     * @param rowTail
-     * @param colTail
-     * @param rowHead
-     * @param colHead
-     * @param rowDest
-     * @param colDest
-     * @throws InvalidMoveException 
-     */
-    public void move(int rowTail, int colTail, int rowHead, int colHead,
-    		int rowDest, int colDest) throws InvalidMoveException {
-    	Move move = new Move(this, Color.BLUE, rowTail, colTail, rowHead,
-    			colHead, rowDest, colDest);
-    	move.perform();
-    }
+
+	/**
+	 * Tries to move the move if move is invalid InvalidMoveException is trown and
+	 * no marbles are moved.
+	 * 
+	 * @param rowTail
+	 * @param colTail
+	 * @param rowHead
+	 * @param colHead
+	 * @param rowDest
+	 * @param colDest
+	 * @throws InvalidMoveException
+	 */
+	public void move(Color color, int rowTail, int colTail, int rowHead, int colHead, int rowDest, int colDest)
+			throws InvalidMoveException {
+		move(new Move(this, color, rowTail, colTail, rowHead, colHead, rowDest, colDest));
+	}
+
+	public void move(Move move) throws InvalidMoveException {
+		move.perform();
+	}
 
 	/**
 	 * Returns String representation of the board
@@ -370,14 +374,14 @@ public class Board {
 			for (int k = 0; k < WIDTH - 1 - i; k++) {
 				line = line + " ";
 			}
-			//add column index in row
+			// add column index in row
 			line = line + getRowLetter(i) + "  ";
 			for (int j = 0; j < WIDTH; j++) {
 				line += fields[i][j].toString() + " ";
 			}
 			full += line + "\n";
 		}
-		//add row of indexes
+		// add row of indexes
 		line = "";
 		int i = -1;
 		for (int k = 0; k < WIDTH - 1 - i; k++) {
