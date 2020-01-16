@@ -40,7 +40,7 @@ public class Board {
         		} else {
         			valid = true;
         		}
-        		fields[i][j] = new Field(valid);
+        		fields[i][j] = new Field(valid, i, j);
         	}
         }
     }
@@ -137,7 +137,7 @@ public class Board {
      */
     /*@pure*/
     public boolean isEmptyField(int row, int col) {
-        return getFieldContent(row, col) == null;
+        return isField(row, col) && getFieldContent(row, col) == null;
     }
 
     /*@
@@ -252,7 +252,7 @@ Game is over when:
      */
     public void move(int rowTail, int colTail, int rowHead, int colHead,
     		int rowDest, int colDest) {
-    	Move move = new Move(this, rowTail, colTail, rowHead,
+    	Move move = new Move(this, Color.BLUE, rowTail, colTail, rowHead,
     			colHead, rowDest, colDest);
     	if (move.isValidmove()) {
     		if (move.areAdjacent()) {

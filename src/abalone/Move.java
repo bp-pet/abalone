@@ -1,5 +1,7 @@
 package abalone;
 
+import abalone.exceptions.InvalidMoveException;
+
 public class Move {
 	
 	private Board board;
@@ -9,7 +11,10 @@ public class Move {
 	private int colHead;
 	private int rowDest;
 	private int colDest;
+	private int rowMove;
+	private int colMove;
 	private Field[] fields;
+	private Color color;
 	
 	/**
 	 * Makes a new selection associated to given board and given coordinates.
@@ -21,16 +26,16 @@ public class Move {
 	 * @param rowDest
 	 * @param colDest
 	 */
-	public Move(Board board, int rowTail, int colTail, int rowHead,
+	public Move(Board board, Color color, int rowTail, int colTail, int rowHead,
     		int colHead, int rowDest, int colDest) {
 		this.board = board;
+		this.color = color;
 		this.rowTail = rowTail;
 		this.colTail = colTail;
 		this.rowHead = rowHead;
 		this.colHead = colHead;
 		this.rowDest = rowDest;
 		this.colDest = colDest;
-		this.fields = getSelectedFields();
 	}
 	
     /**
@@ -41,7 +46,7 @@ public class Move {
      * @param colDest
      * @return
      */
-    public boolean areAdjacent() {
+    private boolean areAdjacent() {
         if (!((rowTail - rowDest) * (rowTail - rowDest)
         		+ (colTail - colDest) * (colTail - colDest) == 1)) {
             return false;
@@ -61,7 +66,50 @@ public class Move {
      * @param colHead
      * @return
      */
-    public boolean isValidMove() {
+    public void perform() throws InvalidMoveException {
+    	if (isValidSelection()) {
+    		this.fields = getSelectedFields();
+    		if (areAllOccupied() && areAdjacent()) {
+    			if (moveIsAlongAxis()) {
+    				
+    			} else {
+    				moveOneByOne();
+    			}
+    		}
+    	}
+    }
+    
+    private void moveOneByOne() throws InvalidMoveException {
+    	for (Field f : fields) {
+    		if (!board.isEmptyField(f.getRow(), f.getCol())) {
+    			throw new InvalidMoveException(f.toString() + " cannot be moved.");
+    		}
+    	}
+    }
+    
+    /**
+     * Check if move is along axis by checking if moving tail in the direction of
+     * the move vector (rowMove, colMove) or opposite that direction ends
+     * up in one of the other fields. 
+     * @return
+     */
+    private boolean moveIsAlongAxis() {
+    	if (fields.length == 1) {
+    		return false;
+    	}
+    	rowMove = rowDest - rowTail;
+    	colMove = colDest - colTail;
+    	for (Field f : fields) {
+    		if (board.getField(rowTail + rowMove, colTail + colMove)
+    				== f || board.getField(rowTail - rowMove, colTail
+    				- colMove) == f) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean isValidSelection() {
     	if (!board.isField(rowTail, colTail) || !board.isField(rowHead, colHead)) {
     		return false;
     	}
@@ -71,13 +119,10 @@ public class Move {
     	if (!distance2orSmaller()) {
     		return false;
     	}
-    	if (!areAllOccupied()) {
-    		return false;
-    	}
     	return true;
     }
     
-    public Field[] getSelectedFields() {
+    private Field[] getSelectedFields() {
     	int rowDiff = rowHead - rowTail;
     	if (rowDiff != 0) {
     		rowDiff = rowDiff/Math.abs(rowDiff);
@@ -99,7 +144,7 @@ public class Move {
     	return result;
     }
     
-    public boolean distance2orSmaller() {
+    private boolean distance2orSmaller() {
     	return Math.abs(rowTail - rowHead) <= 2 || Math.abs(colTail - colHead) <= 2;
     }
     
@@ -112,7 +157,7 @@ public class Move {
      * @param colHead
      * @return
      */
-    public boolean areAllOccupied() {
+    private boolean areAllOccupied() {
     	for (Field f : fields) {
     		if (f.getMarble() == null) {
     			return false;
@@ -129,7 +174,7 @@ public class Move {
      * @param colHead
      * @return
      */
-    public boolean areInSameLine() {
+    private boolean areInSameLine() {
     	return (rowTail == rowHead) || (colTail == colHead) || (rowTail - colTail
     			== rowHead - colHead);
     }
