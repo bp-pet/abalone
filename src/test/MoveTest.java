@@ -1,10 +1,11 @@
-package abalone;
+package test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import abalone.Board;
 import abalone.exceptions.InvalidMoveException;
 
 class MoveTest {
