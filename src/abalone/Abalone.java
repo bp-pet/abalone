@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import ss.utils.TextIO;
 
 /**
- * creates a standard abalone game for local play.
+ * creates a standard Abalone game for local play.
  * 
  * @author Daan Pluister
  */
