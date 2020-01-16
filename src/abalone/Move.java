@@ -71,22 +71,189 @@ public class Move {
     		this.fields = getSelectedFields();
     		if (areAllOccupied() && areAdjacent()) {
     			if (moveIsAlongAxis()) {
-    				
+    				if (canMoveField(findHead(), fields.length)) {
+    					moveAllFields();
+    				} else {
+    					throw new InvalidMoveException("Cannot move");
+    				}
     			} else {
-    				moveOneByOne();
+    				if (canMoveOneByOne()) {
+    					moveAllFields();
+    				} else {
+    					throw new InvalidMoveException("Cannot move");
+    				}
+    			}
+    		} else {
+				throw new InvalidMoveException("Move not valid");
+    		}
+    	} else {
+			throw new InvalidMoveException("Selection not valid");
+    	}
+    }
+    
+    /**
+     * Moves every field in selection.
+     * @requires move is valid
+     */
+    public void moveAllFields() {
+    	if (!moveIsAlongAxis()) {
+    		for (Field f : fields) {
+    			doMoveField(f);
+    		}
+    	} else {
+    		doMoveField(findTail());
+    	}
+    }
+
+    /**
+     * Moves a field.
+     * If next field is empty, nothing special.
+     * If next field is taken, recursively move next field.
+     * If next field is invalid, kill marble.
+     * @param field
+     */
+    private void doMoveField(Field f) {
+    	Field nextField = getNextField(f);
+    	if (nextField == null || !nextField.isValid()) {
+    		f.setMarble(null);
+    	} else if (nextField.getMarble() == null) {
+    		nextField.setMarble(f.getMarble());
+    		f.setMarble(null);
+    	} else {
+    		doMoveField(nextField);
+    		nextField.setMarble(f.getMarble());
+    		f.setMarble(null);
+    	}
+    }
+        
+    /**
+     * Finds head field.
+     * If move is not along axis, returns any field.
+     * @return
+     */
+    private Field findHead() {
+    	if (!moveIsAlongAxis()) {
+    		return fields[0];
+    	}
+    	for (Field f : fields) {
+    		boolean ind = true;
+    		Field nextField = getNextField(f);
+    		for (Field g : fields) {
+    			if (g == nextField) {
+    				ind = false;
+    				break;
     			}
     		}
-    	}
-    }
-    
-    private void moveOneByOne() throws InvalidMoveException {
-    	for (Field f : fields) {
-    		if (!board.isEmptyField(f.getRow(), f.getCol())) {
-    			throw new InvalidMoveException(f.toString() + " cannot be moved.");
+    		if (ind) {
+    			return f;
     		}
     	}
+    	return null;
     }
     
+    /**
+     * Finds tail field.
+     * If move is not along axis, returns any field.
+     * @return
+     */
+    private Field findTail() {
+    	if (!moveIsAlongAxis()) {
+    		return fields[0];
+    	}
+    	for (Field f : fields) {
+    		boolean ind = true;
+    		Field prevField = getPrevField(f);
+    		for (Field g : fields) {
+    			if (g == prevField) {
+    				ind = false;
+    				break;
+    			}
+    		}
+    		if (ind) {
+    			return f;
+    		}
+    	}
+    	return null;
+    }
+    
+    /**
+     * Checks if each marble in selection can be moved without pushing
+     * @requires not along axis
+     */
+    private boolean canMoveOneByOne() {
+    	for (Field f : fields) {
+    		if (!canMoveField(f, 0)) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    /**
+     * Gets the next field in direction of the movement vector.
+     */
+    private Field getNextField(Field f) {
+    	return board.getField(f.getRow() + rowMove, f.getCol() + colMove);
+    }
+
+    /**
+     * Gets the previous field, or the one opposite the direction
+     * of the movement vector.
+     */
+    private Field getPrevField(Field f) {
+    	return board.getField(f.getRow() - rowMove, f.getCol() - colMove);
+    }
+    
+    /**
+     * Check if a marble can be moved with a given force.
+     * If next field is out of board, movement can only be done if current marble
+     * to be pushed is not friendly, since suicide is not allowed.
+     * If force is 0, nothing can be pushed, so move only works towards
+     * a free space.
+     * If force is positive, but less than three: a friendly marble can be pushed
+     * which starts a move of said marble with force increased by 1; an enemy marble
+     * can be pushed which decreases force by 1.
+     * An enemy marble cannot again push a friendly one.
+     * Also force cannot increase above three since only 3 marbles can be moved at
+     * a time. 
+     * @param f
+     * @param force
+     * @return
+     * TODO: currently, friendly color means specifically the same color as the
+     * selection.
+     */
+    private boolean canMoveField(Field f, int force) {
+		Field nextField = getNextField(f);
+		Color currentColor = f.getMarble().getColor();
+		if (nextField == null || !nextField.isValid()) {
+			return currentColor != color;
+		}
+    	if (force == 0) {
+    		return nextField.getMarble() == null;
+		} else {
+    		if (nextField.getMarble() == null) {
+    			return true;
+    		}
+    		Marble nextMarble = nextField.getMarble();
+    		if (currentColor == color) {
+    			if (nextMarble.getColor() == color) {
+    				if (force == 3) {
+    					return false;
+    				} else {
+    					return canMoveField(nextField, force + 1);
+    				}
+    			} else {
+    				return canMoveField(nextField, force - 1);
+    			}
+    		} else {
+    			if (nextMarble.getColor() != color) {
+    				return canMoveField(nextField, force - 1);
+    			}
+    		}
+		}
+    	return false;
+    }
+
     /**
      * Check if move is along axis by checking if moving tail in the direction of
      * the move vector (rowMove, colMove) or opposite that direction ends
@@ -95,7 +262,7 @@ public class Move {
      */
     private boolean moveIsAlongAxis() {
     	if (fields.length == 1) {
-    		return false;
+    		return true;
     	}
     	rowMove = rowDest - rowTail;
     	colMove = colDest - colTail;
@@ -109,6 +276,12 @@ public class Move {
     	return false;
     }
     
+    /**
+     * Checks if selection is valid based on three conditions:
+     * -head and tail fields are valid
+     * -they are in the same line
+     * -the distance between is 2 or less
+     */
     public boolean isValidSelection() {
     	if (!board.isField(rowTail, colTail) || !board.isField(rowHead, colHead)) {
     		return false;
@@ -122,6 +295,11 @@ public class Move {
     	return true;
     }
     
+    /**
+     * Finds the fields belonging to selection and makes an array of them.
+     * @requires selection is valid
+     * @return an array of fields in selection
+     */
     private Field[] getSelectedFields() {
     	int rowDiff = rowHead - rowTail;
     	if (rowDiff != 0) {
@@ -144,6 +322,10 @@ public class Move {
     	return result;
     }
     
+    /**
+     * Checks if distance between head and tail is 2 or less.
+     * @requires fields are in line
+     */
     private boolean distance2orSmaller() {
     	return Math.abs(rowTail - rowHead) <= 2 || Math.abs(colTail - colHead) <= 2;
     }
@@ -179,6 +361,10 @@ public class Move {
     			== rowHead - colHead);
     }
     
+    /**
+     * Returns the array of fields.
+     * This is null until the selection gets checked and the fields are found.
+     */
     public Field[] getFields() {
     	return this.fields;
     }

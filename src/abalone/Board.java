@@ -73,10 +73,14 @@ public class Board {
 	 * 
 	 * @param row
 	 * @param col
-	 * @return
+	 * @return will return null if field doesn't exist
 	 */
 	public Field getField(int row, int col) {
-		return fields[row][col];
+		if (isField(row, col)) {
+			return fields[row][col];
+		} else {
+			return null;
+		}
 	}
 
 	/*
