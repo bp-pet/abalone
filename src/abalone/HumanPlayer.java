@@ -40,14 +40,14 @@ public class HumanPlayer extends Player {
 		
 		choice = view.getString(prompt);
 		if (choice.matches(PATTERN)) {
-			move = new Move(board, board.getCol(choice.charAt(0)), board.getCol(choice.charAt(1)), board.getCol(choice.charAt(3)), board.getCol(choice.charAt(4)), board.getCol(choice.charAt(6)), board.getCol(choice.charAt(7)));
+			move = new Move(board, board.getColFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getColFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getColFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
 		}
 
 		while (! (choice.matches(PATTERN) && move.isValidMove())) {
 			view.showMessage("ERROR: field " + choice + " is no valid choice (must match pattern " + PATTERN + ").");
 			choice = view.getString(prompt);
 			if (choice.matches(PATTERN)) {
-				move = new Move(board, board.getCol(choice.charAt(0)), board.getCol(choice.charAt(1)), board.getCol(choice.charAt(3)), board.getCol(choice.charAt(4)), board.getCol(choice.charAt(6)), board.getCol(choice.charAt(7)));
+				move = new Move(board, board.getColFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getColFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getColFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
 			}
 		}
 		

@@ -24,4 +24,14 @@ public class Field {
 	public boolean isValid() {
 		return valid;
 	}
+	
+	public String toString() {
+		if (! valid) {
+			return " ";
+		}
+		if (marble == null) {
+			return "+";
+		}
+		return marble.toString();
+	}
 }
