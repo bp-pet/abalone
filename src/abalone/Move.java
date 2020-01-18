@@ -37,23 +37,6 @@ public class Move {
 		this.rowDest = rowDest;
 		this.colDest = colDest;
 	}
-	
-    /**
-     * Check if two coordinates are adjacent.
-     * @param rowTail
-     * @param colTail
-     * @param rowDest
-     * @param colDest
-     * @return
-     */
-    private boolean areAdjacent() {
-        if (!((rowTail - rowDest) * (rowTail - rowDest)
-        		+ (colTail - colDest) * (colTail - colDest) == 1)) {
-            return false;
-        }
-    return !(rowTail - rowDest == colTail - colDest);
-
-    }
     
     /**
      * Checks if given coordinates are fields, if they are in same line,
@@ -67,28 +50,16 @@ public class Move {
      * @return
      */
     public void perform() throws InvalidMoveException {
-    	if (isValidSelection()) {
-    		this.fields = getSelectedFields();
-    		if (areAllOccupied() && areAdjacent()) {
-    			if (moveIsAlongAxis()) {
-    				if (canMoveField(findHead(), fields.length)) {
-    					moveAllFields();
-    				} else {
-    					throw new InvalidMoveException("Cannot move");
-    				}
-    			} else {
-    				if (canMoveOneByOne()) {
-    					moveAllFields();
-    				} else {
-    					throw new InvalidMoveException("Cannot move");
-    				}
-    			}
-    		} else {
-				throw new InvalidMoveException("Move not valid");
-    		}
+    	isValidSelection();
+    	this.fields = getSelectedFields();
+    	areAllOccupied();
+    	areAdjacent();
+    	if (moveIsAlongAxis()) {
+    		canMoveField(findHead(), fields.length);
     	} else {
-			throw new InvalidMoveException("Selection not valid");
+    		canMoveOneByOne();
     	}
+		moveAllFields();
     }
     
     /**
@@ -125,6 +96,25 @@ public class Move {
     		f.setMarble(null);
     	}
     }
+    
+    /**
+     * Check if two coordinates are adjacent.
+     * @param rowTail
+     * @param colTail
+     * @param rowDest
+     * @param colDest
+     * @return
+     * @throws InvalidMoveException 
+     */
+    private void areAdjacent() throws InvalidMoveException {
+    	if (!(Math.abs(rowTail - rowDest) == 1 && Math.abs(colTail - colDest) == 0)
+    			&& !(Math.abs(rowTail - rowDest) == 0
+    			&& Math.abs(colTail - colDest) == 1)
+    			&& !(Math.abs(rowTail - rowDest) == 1
+    			&& Math.abs(colTail - colDest) == 1)){
+    		throw new InvalidMoveException("Move destination not adjacent");
+    	}
+    }
         
     /**
      * Finds head field.
@@ -132,9 +122,6 @@ public class Move {
      * @return
      */
     private Field findHead() {
-    	if (!moveIsAlongAxis()) {
-    		return fields[0];
-    	}
     	for (Field f : fields) {
     		boolean ind = true;
     		Field nextField = getNextField(f);
@@ -178,15 +165,15 @@ public class Move {
     
     /**
      * Checks if each marble in selection can be moved without pushing
+     * @throws InvalidMoveException 
      * @requires not along axis
      */
-    private boolean canMoveOneByOne() {
+    private void canMoveOneByOne() throws InvalidMoveException {
     	for (Field f : fields) {
     		if (!canMoveField(f, 0)) {
-    			return false;
+    			throw new InvalidMoveException("Cannot move");
     		}
     	}
-    	return true;
     }
     
     /**
@@ -221,37 +208,39 @@ public class Move {
      * @return
      * TODO: currently, friendly color means specifically the same color as the
      * selection.
+     * @throws InvalidMoveException 
      */
-    private boolean canMoveField(Field f, int force) {
+    private void canMoveField(Field f, int force) throws InvalidMoveException {
 		Field nextField = getNextField(f);
 		Color currentColor = f.getMarble().getColor();
-		if (nextField == null || !nextField.isValid()) {
-			return currentColor != color;
-		}
-    	if (force == 0) {
-    		return nextField.getMarble() == null;
+		if ((nextField == null || !nextField.isValid())
+				&& currentColor == color) {
+			throw new InvalidMoveException("You are not allowed to "
+					+ "commit suicide");
 		} else {
-    		if (nextField.getMarble() == null) {
-    			return true;
-    		}
-    		Marble nextMarble = nextField.getMarble();
-    		if (currentColor == color) {
-    			if (nextMarble.getColor() == color) {
-    				if (force == 3) {
-    					return false;
-    				} else {
-    					return canMoveField(nextField, force + 1);
-    				}
-    			} else {
-    				return canMoveField(nextField, force - 1);
-    			}
-    		} else {
-    			if (nextMarble.getColor() != color) {
-    				return canMoveField(nextField, force - 1);
-    			}
-    		}
+	    	if (force == 0 && nextField.getMarble() != null) {
+	    		throw new InvalidMoveException("Invalid push");
+			} else {
+	    		if (!(nextField.getMarble() == null)) {
+	    			Marble nextMarble = nextField.getMarble();
+	    			if (currentColor == color) {
+	    				if (nextMarble.getColor() == color) {
+	    					if (force == 3) {
+	    						throw new InvalidMoveException("Invalid push");
+	    					} else {
+	    						canMoveField(nextField, force + 1);
+	    					}
+	    				} else {
+	    					canMoveField(nextField, force - 2);
+	    				}
+	    			} else {
+	    				if (nextMarble.getColor() != color) {
+	    					canMoveField(nextField, force - 1);
+	    				}
+	    			}
+	    		}
+			}
 		}
-    	return false;
     }
 
     /**
@@ -281,18 +270,14 @@ public class Move {
      * -head and tail fields are valid
      * -they are in the same line
      * -the distance between is 2 or less
+     * @throws InvalidMoveException 
      */
-    public boolean isValidSelection() {
+    public void isValidSelection() throws InvalidMoveException {
     	if (!board.isField(rowTail, colTail) || !board.isField(rowHead, colHead)) {
-    		return false;
+    		throw new InvalidMoveException("Selection not valid");
     	}
-    	if (!areInSameLine()) {
-    		return false;
-    	}
-    	if (!distance2orSmaller()) {
-    		return false;
-    	}
-    	return true;
+    	areInSameLine();
+    	distance2orSmaller();
     }
     
     /**
@@ -324,10 +309,13 @@ public class Move {
     
     /**
      * Checks if distance between head and tail is 2 or less.
+     * @throws InvalidMoveException 
      * @requires fields are in line
      */
-    private boolean distance2orSmaller() {
-    	return Math.abs(rowTail - rowHead) <= 2 || Math.abs(colTail - colHead) <= 2;
+    private void distance2orSmaller() throws InvalidMoveException {
+    	if (!(Math.abs(rowTail - rowHead) <= 2 || Math.abs(colTail - colHead) <= 2)) {
+    		throw new InvalidMoveException("Selection too long");
+    	}
     }
     
     /**
@@ -338,11 +326,12 @@ public class Move {
      * @param rowHead
      * @param colHead
      * @return
+     * @throws InvalidMoveException 
      */
-    private boolean areAllOccupied() {
+    private boolean areAllOccupied() throws InvalidMoveException {
     	for (Field f : fields) {
-    		if (f.getMarble().getColor() == color) {
-    			return false;
+    		if (f.getMarble() == null || f.getMarble().getColor() != color) {
+    			throw new InvalidMoveException("Field not occupied: " + f.toString());
     		}
     	}
     	return true;
@@ -355,10 +344,13 @@ public class Move {
      * @param rowHead
      * @param colHead
      * @return
+     * @throws InvalidMoveException 
      */
-    private boolean areInSameLine() {
-    	return (rowTail == rowHead) || (colTail == colHead) || (rowTail - colTail
-    			== rowHead - colHead);
+    private void areInSameLine() throws InvalidMoveException {
+    	if (!((rowTail == rowHead) || (colTail == colHead) || (rowTail - colTail
+    			== rowHead - colHead))){
+    		throw new InvalidMoveException("Fields not in same line");
+    	}
     }
     
     /**
@@ -374,6 +366,6 @@ public class Move {
      * @returns "Color " + color + " moves (" + rowTail + " , " + colTail + "),(" + rowHead + "," + colHead + ") to (" + rowDest + "," + colDest + ")";
      */
     public String toString() {
-    	return "Color " + color + " moves (" + rowTail + " , " + colTail + "),(" + rowHead + "," + colHead + ") to (" + rowDest + "," + colDest + ")";
+    	return "Color " + color + " moves (" + rowTail + ", " + colTail + "), (" + rowHead + ", " + colHead + ") to (" + rowDest + ", " + colDest + ")";
     }
 }

@@ -6,9 +6,11 @@ public class Field {
 	private int row;
 	private int col;
 	
-	public Field(boolean valid) {
+	public Field(boolean valid, int row, int col) {
 		this.valid = valid;
 		marble = null;
+		this.row = row;
+		this.col = col;
 	}
 	
 	/**
@@ -33,6 +35,10 @@ public class Field {
 	
 	public int getCol() {
 		return col;
+	}
+	
+	public String getFullString() {
+		return "Field " + toString() + " Coordinates " + row + col + "\n";
 	}
 	
 	public String toString() {

@@ -65,7 +65,8 @@ public class Board {
 	 */
 	/* @pure */
 	public boolean isField(int row, int col) {
-		return row < WIDTH && col < WIDTH && fields[row][col].isValid();
+		return row < WIDTH  && row >= 0
+				&& col < WIDTH && col >= 0 && fields[row][col].isValid();
 	}
 
 	/**
@@ -236,7 +237,7 @@ public class Board {
 				} else {
 					valid = true;
 				}
-				fields[i][j] = new Field(valid);
+				fields[i][j] = new Field(valid, i, j);
 			}
 		}
 	}
