@@ -5,6 +5,7 @@ import abalone.exceptions.InvalidMoveException;
 public class Board {
 
 	private static final int DIM = 5;
+	public final int maxPush = 3;
 
 	// -- Constants --------------------------------------------------
 

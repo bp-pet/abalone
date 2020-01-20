@@ -55,7 +55,7 @@ public class Move {
     	areAllOccupied();
     	areAdjacent();
     	if (moveIsAlongAxis()) {
-    		canMoveField(findHead(), fields.length);
+    		canMoveField(findHead(), fields.length - 1);
     	} else {
     		canMoveOneByOne();
     	}
@@ -170,9 +170,7 @@ public class Move {
      */
     private void canMoveOneByOne() throws InvalidMoveException {
     	for (Field f : fields) {
-    		if (!canMoveField(f, 0)) {
-    			throw new InvalidMoveException("Cannot move");
-    		}
+    		canMoveField(f, 0);
     	}
     }
     
@@ -225,13 +223,13 @@ public class Move {
 	    			Marble nextMarble = nextField.getMarble();
 	    			if (currentColor == color) {
 	    				if (nextMarble.getColor() == color) {
-	    					if (force == 3) {
+	    					if (force == board.maxPush) {
 	    						throw new InvalidMoveException("Invalid push");
 	    					} else {
 	    						canMoveField(nextField, force + 1);
 	    					}
 	    				} else {
-	    					canMoveField(nextField, force - 2);
+	    					canMoveField(nextField, force - 1);
 	    				}
 	    			} else {
 	    				if (nextMarble.getColor() != color) {
@@ -250,11 +248,11 @@ public class Move {
      * @return
      */
     private boolean moveIsAlongAxis() {
+    	rowMove = rowDest - rowTail;
+    	colMove = colDest - colTail;
     	if (fields.length == 1) {
     		return true;
     	}
-    	rowMove = rowDest - rowTail;
-    	colMove = colDest - colTail;
     	for (Field f : fields) {
     		if (board.getField(rowTail + rowMove, colTail + colMove)
     				== f || board.getField(rowTail - rowMove, colTail
@@ -313,7 +311,8 @@ public class Move {
      * @requires fields are in line
      */
     private void distance2orSmaller() throws InvalidMoveException {
-    	if (!(Math.abs(rowTail - rowHead) <= 2 || Math.abs(colTail - colHead) <= 2)) {
+    	if (!(Math.abs(rowTail - rowHead) <= board.maxPush - 1
+    			|| Math.abs(colTail - colHead) <= board.maxPush - 1)) {
     		throw new InvalidMoveException("Selection too long");
     	}
     }
