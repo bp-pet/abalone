@@ -101,7 +101,7 @@ public class Game {
 				System.out.println("Player not correctly implemented!");
 				e.printStackTrace();
 			}
-    		current.next(getNumberOfPlayers(), clockwise);
+    		current = current.next(getNumberOfPlayers(), clockwise);
     	}
     }
 

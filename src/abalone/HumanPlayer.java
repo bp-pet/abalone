@@ -55,7 +55,6 @@ public class HumanPlayer extends Player {
 			move = determineMove(board);
 		}
 		
-		System.out.println("Abalone " + choice.charAt(0) + " goes to " + board.getRowFromLetter(choice.charAt(0)));
 		return new Move(board, getColor(), board.getRowFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getRowFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getRowFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
 	}
 

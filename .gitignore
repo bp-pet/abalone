@@ -1,11 +1,11 @@
 /bin/
 
-#eclipse
+# eclipse
 .classpath
 .project
 .settings/
 
-#visual paradigm
+# visual paradigm
 *.vpp.bak*
 *.vpp.lck
 
