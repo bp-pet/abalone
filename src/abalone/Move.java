@@ -170,7 +170,7 @@ public class Move {
      */
     private void canMoveOneByOne() throws InvalidMoveException {
     	for (Field f : fields) {
-    		if (!canMoveField(f, 0)) {
+    		if (! canMoveField(f, 0)) {
     			throw new InvalidMoveException("Cannot move");
     		}
     	}
@@ -210,7 +210,7 @@ public class Move {
      * selection.
      * @throws InvalidMoveException 
      */
-    private void canMoveField(Field f, int force) throws InvalidMoveException {
+    private boolean canMoveField(Field f, int force) throws InvalidMoveException {
 		Field nextField = getNextField(f);
 		Color currentColor = f.getMarble().getColor();
 		if ((nextField == null || !nextField.isValid())
@@ -241,6 +241,7 @@ public class Move {
 	    		}
 			}
 		}
+		return true;
     }
 
     /**
