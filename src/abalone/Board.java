@@ -31,9 +31,8 @@ public class Board {
 	 * Creates an empty board.
 	 */
 	public Board() {
-		this.fields = new Field[WIDTH + 2][WIDTH + 2];
+		this.fields = new Field[WIDTH][WIDTH];
 		this.reset();
-		this.makeMapOfColors();
 	}
 
 	/**
@@ -231,7 +230,7 @@ public class Board {
 	// -- Commands ---------------------------------------------------
 
 	/**
-	 * empties board
+	 * empties board and makes a new mapOfColors afterwards
 	 * 
 	 * @param numberOfPlayers
 	 */
@@ -247,10 +246,11 @@ public class Board {
 				fields[i][j] = new Field(valid, i, j);
 			}
 		}
+		this.makeMapOfColors();
 	}
 
 	/**
-	 * empties board and fills it with marbles for numberOfPlayers
+	 * empties board and fills it with marbles for numberOfPlayers and makes a new mapOfColors afterwards
 	 * 
 	 * @param numberOfPlayers
 	 */
@@ -324,6 +324,7 @@ public class Board {
 		default:
 			break;
 		}
+		this.makeMapOfColors();
 	}
 
 	/**
@@ -394,6 +395,12 @@ public class Board {
 				}
 			}
 		}
+//		for (Color k : mapOfColors.keySet()) {
+//			System.out.println(k.toString());
+//			for (Field f : mapOfColors.get(k)) {
+//				System.out.println(f.toString());
+//			}
+//		}
 	}
 	
 	public Map<Color, ArrayList<Field>> getMapOfcolors() {
