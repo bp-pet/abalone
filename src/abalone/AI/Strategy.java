@@ -17,11 +17,12 @@ public interface Strategy {
 	
 	/**
 	 * returns a next legal move.
+	 * @ensures a valid move.
 	 * @param board given board
 	 * @param mark given mark
 	 * @return
 	 */
-	public int determineMove(Board board, Color color);
+	public Move determineMove(Board board, Color color);
 	
 	default public ArrayList<Move> makeMovesList(Board board, Color color) {
 		ArrayList<Move> moveList = new ArrayList<Move>();

@@ -2,17 +2,18 @@ package abalone.AI;
 
 import abalone.Board;
 import abalone.Color;
+import abalone.Move;
 
 public class RandomStrategy  implements Strategy {
-
+	
 	public String getName() {
 		return "Random";
 	}
 
 	@Override
-	public int determineMove(Board board, Color mark) {
+	public Move determineMove(Board board, Color mark) {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 	
 }

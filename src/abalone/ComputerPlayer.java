@@ -1,16 +1,36 @@
 package abalone;
 
-public class ComputerPlayer extends Player {
+import abalone.AI.Strategy;
 
-	public ComputerPlayer(String name, Color m) {
-		super(name, m);
-		// TODO Auto-generated constructor stub
-	}
-
+public class ComputerPlayer extends Player {	
+	private Strategy strategy;
+	
+	/**
+     * Creates a new computer player object with strategy strategy.
+     * @ensures the Name of this player will be strategy.getName() + "-" + super.mark.toString()
+     * @ensures the Color of this player will be color
+     */
+	public ComputerPlayer(Color color, Strategy strategy) {
+        super(strategy.getName() + "-" + color.toString(), color);
+        this.strategy = strategy;
+    }
+	
 	@Override
 	public Move determineMove(Board board) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.strategy.determineMove(board, super.getColor());
 	}
-
+	
+	/**
+	 * getter for strategy.
+	 */
+	public Strategy getStrategy() {
+		return this.strategy;
+	}
+	
+	/**
+	 * setter for strategy.
+	 */
+	public void setStrategy(Strategy strategy) {
+		this.strategy = strategy;
+	}
 }

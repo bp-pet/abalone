@@ -81,6 +81,14 @@ public interface ServerProtocol {
 	public String doTurn();
 
 	/**
+	 * to update all other clients that a client exited the game the exitGame 
+	 * returns String <code>pm.EXIT + pm.DELIMITER + playerName + pm.DELIMITER + playerTeamName</code>
+	 * 
+	 * @return
+	 */
+	public String exitGame();
+	
+	/**
 	 * Returns <code>pm.GAME_END + pm.DELIMITER + result</code> if there is a winner
 	 * or alternatively if a player disconnects:
 	 * <code>pm.GAME_END + pm.DELIMITER + result + pm.DELIMITER + disconnectedColor</code>..
