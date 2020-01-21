@@ -74,7 +74,7 @@ public class Move {
      * Moves every field in selection.
      * @requires move is valid
      */
-    public void moveAllFields() {
+    private void moveAllFields() {
     	if (!moveIsAlongAxis()) {
     		for (Field f : fields) {
     			doMoveField(f);

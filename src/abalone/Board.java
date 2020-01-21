@@ -1,5 +1,9 @@
 package abalone;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import abalone.exceptions.InvalidMoveException;
 
 public class Board {
@@ -15,6 +19,7 @@ public class Board {
 	// -- Instance variables -----------------------------------------
 
 	private Field[][] fields;
+	Map<Color, ArrayList<Field>> mapOfColors;
 
 	// -- Constructors -----------------------------------------------
 
@@ -28,6 +33,7 @@ public class Board {
 	public Board() {
 		this.fields = new Field[WIDTH + 2][WIDTH + 2];
 		this.reset();
+		this.makeMapOfColors();
 	}
 
 	/**
@@ -364,10 +370,34 @@ public class Board {
 	public void move(Color color, int rowTail, int colTail, int rowHead, int colHead, int rowDest, int colDest)
 			throws InvalidMoveException {
 		move(new Move(this, color, rowTail, colTail, rowHead, colHead, rowDest, colDest));
+		makeMapOfColors();
 	}
 
 	public void move(Move move) throws InvalidMoveException {
 		move.perform();
+	}
+	
+	public void makeMapOfColors() {
+		mapOfColors = new HashMap<Color, ArrayList<Field>>();
+		ArrayList<Field> fieldArray;
+		for (Field[] ff : fields) {
+			for (Field f : ff) {
+				if (f.getMarble() != null) {
+					Color color = f.getMarble().getColor();
+					if (mapOfColors.containsKey(color)) {
+						mapOfColors.get(color).add(f);
+					} else {
+						fieldArray = new ArrayList<Field>();
+						fieldArray.add(f);
+						mapOfColors.put(color, fieldArray);
+					}
+				}
+			}
+		}
+	}
+	
+	public Map<Color, ArrayList<Field>> getMapOfcolors() {
+		return mapOfColors;
 	}
 
 	/**

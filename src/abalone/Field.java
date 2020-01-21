@@ -1,5 +1,7 @@
 package abalone;
 
+import java.util.ArrayList;
+
 public class Field {
 	private Marble marble;
 	private boolean valid;
