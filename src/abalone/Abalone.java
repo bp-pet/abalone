@@ -60,7 +60,7 @@ public class Abalone {
 					System.out.printf("\n> Name player " + (stringPlayers.size() + 1) + " (or 'x' to exit)?\n? ");
 				}
 				in = TextIO.getln();
-				if (!in.equals("x") && stringPlayers.size() < MAX_PLAYERS) {
+				if (!in.equals("x") && !in.equals("") && stringPlayers.size() < MAX_PLAYERS) {
 					stringPlayers.add(in);
 				}
 			}
