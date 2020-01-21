@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import org.junit.jupiter.api.Test;
@@ -20,14 +21,14 @@ public class AbaloneTest {
 	     */
 	    @BeforeEach
 	    public void setUp() {
-	    	game = new Game(null);
 	    }
 
 	    /**
 	     * checkIn First room should be a PricedRoom.
 	     */
 	    @Test
-	    public void testMove() {	        
+	    public void testMove() {
+	    	assertTrue(true);
 	    }
 	    
 }

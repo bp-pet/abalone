@@ -50,6 +50,15 @@ public class Move {
      * @return
      */
     public void perform() throws InvalidMoveException {
+    	isValidMove();
+		moveAllFields();
+    }
+    
+    /**
+     * Checks if a move is valid without performing it.
+     * @throws InvalidMoveException
+     */
+    public void isValidMove() throws InvalidMoveException {
     	isValidSelection();
     	this.fields = getSelectedFields();
     	areAllOccupied();
@@ -59,7 +68,6 @@ public class Move {
     	} else {
     		canMoveOneByOne();
     	}
-		moveAllFields();
     }
     
     /**
@@ -112,7 +120,8 @@ public class Move {
     			&& Math.abs(colTail - colDest) == 1)
     			&& !(Math.abs(rowTail - rowDest) == 1
     			&& Math.abs(colTail - colDest) == 1)){
-    		throw new InvalidMoveException("Move destination not adjacent");
+    		throw new InvalidMoveException("Move destination not adjacent; "
+    				+ toString());
     	}
     }
         
@@ -211,20 +220,23 @@ public class Move {
     private void canMoveField(Field f, int force) throws InvalidMoveException {
 		Field nextField = getNextField(f);
 		Color currentColor = f.getMarble().getColor();
-		if ((nextField == null || !nextField.isValid())
-				&& currentColor == color) {
-			throw new InvalidMoveException("You are not allowed to "
-					+ "commit suicide");
+		if (nextField == null || !nextField.isValid()) {
+			if (currentColor == color) {
+				throw new InvalidMoveException("You are not allowed to "
+						+ "commit suicide; " + toString());
+			}
 		} else {
 	    	if (force == 0 && nextField.getMarble() != null) {
-	    		throw new InvalidMoveException("Invalid push");
+	    		throw new InvalidMoveException("Not enough force to push; "
+	    				+ toString());
 			} else {
 	    		if (!(nextField.getMarble() == null)) {
 	    			Marble nextMarble = nextField.getMarble();
 	    			if (currentColor == color) {
 	    				if (nextMarble.getColor() == color) {
-	    					if (force == board.maxPush) {
-	    						throw new InvalidMoveException("Invalid push");
+	    					if (force == board.maxPush - 1) {
+	    						throw new InvalidMoveException("Too many pushed; "
+	    								+ toString());
 	    					} else {
 	    						canMoveField(nextField, force + 1);
 	    					}
@@ -272,7 +284,7 @@ public class Move {
      */
     public void isValidSelection() throws InvalidMoveException {
     	if (!board.isField(rowTail, colTail) || !board.isField(rowHead, colHead)) {
-    		throw new InvalidMoveException("Selection not valid");
+    		throw new InvalidMoveException("Selection not valid; " + toString());
     	}
     	areInSameLine();
     	distance2orSmaller();
@@ -313,7 +325,7 @@ public class Move {
     private void distance2orSmaller() throws InvalidMoveException {
     	if (!(Math.abs(rowTail - rowHead) <= board.maxPush - 1
     			|| Math.abs(colTail - colHead) <= board.maxPush - 1)) {
-    		throw new InvalidMoveException("Selection too long");
+    		throw new InvalidMoveException("Selection too long; " + toString());
     	}
     }
     
@@ -330,7 +342,8 @@ public class Move {
     private boolean areAllOccupied() throws InvalidMoveException {
     	for (Field f : fields) {
     		if (f.getMarble() == null || f.getMarble().getColor() != color) {
-    			throw new InvalidMoveException("Field not occupied: " + f.toString());
+    			throw new InvalidMoveException("Field does not contain valid marble: "
+    					+ f.toString() + "; " + toString());
     		}
     	}
     	return true;
@@ -348,7 +361,7 @@ public class Move {
     private void areInSameLine() throws InvalidMoveException {
     	if (!((rowTail == rowHead) || (colTail == colHead) || (rowTail - colTail
     			== rowHead - colHead))){
-    		throw new InvalidMoveException("Fields not in same line");
+    		throw new InvalidMoveException("Fields not in same line; " + toString());
     	}
     }
     
@@ -365,6 +378,6 @@ public class Move {
      * @returns "Color " + color + " moves (" + rowTail + " , " + colTail + "),(" + rowHead + "," + colHead + ") to (" + rowDest + "," + colDest + ")";
      */
     public String toString() {
-    	return "Color " + color + " moves (" + rowTail + ", " + colTail + "), (" + rowHead + ", " + colHead + ") to (" + rowDest + ", " + colDest + ")";
+    	return "Move: Color " + color + " moves (" + rowTail + ", " + colTail + "), (" + rowHead + ", " + colHead + ") to (" + rowDest + ", " + colDest + ")";
     }
 }
