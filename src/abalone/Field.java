@@ -38,7 +38,8 @@ public class Field {
 	}
 	
 	public String getFullString() {
-		return "Field " + toString() + " Coordinates " + row + col + "\n";
+		return "Field " + toString() + " Coordinates (" + row + ", " + col
+				+ ")";
 	}
 	
 	public String toString() {
