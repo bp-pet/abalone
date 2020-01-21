@@ -16,10 +16,8 @@ public interface ClientProtocol {
 	/**
 	 * Handles the following server-client handshake: 1. Client sends
 	 * <code>pm.HELLO +
-	 * pm.DELIMITER + pm.VERSION + optional features to be decided</code> to server.
-	 * 2. Server returns multiple lines the first one containing
-	 * <code>pm.HELLO</code>
-	 * 
+	 * pm.DELIMITER + pm.VERSION</code> to server. 2. Server sends hello back then
+	 * getLobbies should be called
 	 * 
 	 * This method sends the <code>pm.HELLO + pm.DELIMITER + pm.VERSION + optional
 	 * features to be decided</code> and checks whether the server response is valid
@@ -38,14 +36,18 @@ public interface ClientProtocol {
 	public void handleHello() throws ServerUnavailableException, ProtocolException;
 
 	/**
-	 * this method sends <code>pm.LOBBIES</code> to the server.
-	 * 
+	 * this method sends <code>pm.LOBBIES</code> to the server then getLobbies()
+	 * should be called.
+	 */
+	public void doLobbies();
+
+	/**
 	 * the result (multiple lines in the form
-	 * <code>pm.LOBBY + pm.DELIMITER + String lobbyName + pm.DELIMITER + int numberOfPlayers</code>,
+	 * <code>pm.LOBBY + pm.DELIMITER + String lobbyName + pm.DELIMITER + String player1 + pm.DELIMITER + String teamPlayer1 + optional players </code>,
 	 * and ending line with <code>ProtocolMessages.EOT</code>) is retrieved and
 	 * forwarded to the view.
 	 */
-	public void doLobbies();
+	public void getLobbies();
 
 	/**
 	 * Sends a join game request to the server.
@@ -56,11 +58,7 @@ public interface ClientProtocol {
 	 * <code>pm.JOIN + pm.DELIMITER + lobbyName + pm.DELIMITER + playerName + pm.DELIMITER + teamName</code>
 	 * 
 	 * if the join request is succesful, it will confirm the join by sending
-	 * multiple lines for each player in the lobby (including yours) in the form
-	 * <code> pm.Join + pm.DELIMITER + playerName + pm.DELIMITER + teamName + pm.DELIMITER + String assingedColor</code>
-	 * and finally a <code>pm.EOT</code> message.
-	 * <code>received lobbyName != lobbyName</code> or the player list does not
-	 * contain <code>playerName</code> a <code>ProtocolException</code> is thrown
+	 * the same message back. If <code>received lobbyName != lobbyName</code> or <code>received playerName != playerName</code>  a <code>ProtocolException</code> is thrown
 	 * with appropriate message.
 	 * 
 	 * else the server sends an exception of type 3 and tell the client what is
@@ -82,25 +80,25 @@ public interface ClientProtocol {
 			throws ServerUnavailableException, ProtocolException;
 
 	/**
-	 * Sends a startGame request to the server.
+	 * Sends a game ready request to the server.
 	 * 
-	 * The doStart() method sends the following message to the server:
-	 * <code>pm.START</code>.
+	 * The doReady() method sends the following message to the server:
+	 * <code>pm.READY</code>.
 	 * 
-	 * If there is more than 1 player in the lobby The result (one line) is then
-	 * retrieved and of the form <code>pm.START</code>. A game will be started.
+	 * If not all players are ready <code>pm.READY;playerName</code> is received.
 	 * 
-	 * Else The result (one line) is then retrieved and of the form
-	 * <code>pm.ERROR + pm.DELIMITER + pm.ERROR3 + pm.DELIMITER + String errorMessage</code>.
-	 * No game will be started and a NotEnoughPlayersException is thrown.
+	 * If all players are now ready and the game can start <code>pm.START;whitePlayerName;whitePlayerTeam;blackPlayerName;blackPlayerTeam[;bluePlayerName;bluePlayerTeam;redPlayerName;redPlayerTeam]</code> is received.
+	 * 
+	 * If all players are now ready and the game can not start <code>pm.ERROR3 + pm.DELIMITER + String message</code>. Is received.
 	 * 
 	 * @throws ServerUnavailableException if IO errors occur.
 	 * @throws NotEnoughPlayersException  if only 1 player is in the game.
 	 */
-	public void doStart() throws ServerUnavailableException, NotEnoughPlayersException;
+	public void doReady() throws ServerUnavailableException, NotEnoughPlayersException;
 
 	/**
-	 * Receives a <code>pm.START</code> from the server.
+	 * Receives a <code>pm.START</code> from the server. In the form
+	 * <code>pm.START;whitePlayerName;whitePlayerTeam;blackPlayerName;blackPlayerTeam[;bluePlayerName;bluePlayerTeam;redPlayerName;redPlayerTeam]</code>.
 	 */
 	public void getStart() throws ServerUnavailableException;
 
@@ -159,13 +157,13 @@ public interface ClientProtocol {
 	 * Sends a message to the server indicating that this client will exit:
 	 * <code>ProtocolMessages.EXIT</code>;
 	 * 
-	 * Both the server and the client then close the connection. The client does
+	 * If in a game or lobby the getLobbies() is called
+	 * 
+	 * If not in a game both the server and the client then close the connection. The client does
 	 * this using the {@link #closeConnection()} method.
 	 * 
 	 * @throws ServerUnavailableException if IO errors occur.
 	 */
 	public void sendExit() throws ServerUnavailableException;
-
-	// TODO: add extensions.
 
 }
