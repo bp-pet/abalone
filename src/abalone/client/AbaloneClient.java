@@ -208,12 +208,6 @@ public class AbaloneClient implements ClientProtocol {
 	}
 
 	@Override
-	public void doStart() throws ServerUnavailableException, NotEnoughPlayersException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void getStart() throws ServerUnavailableException {
 		// TODO Auto-generated method stub
 		

@@ -37,7 +37,7 @@ public class Move {
 		this.rowDest = rowDest;
 		this.colDest = colDest;
 	}
-    
+	
     /**
      * Checks if given coordinates are fields, if they are in same line,
      * if they are distance 2 or smaller away from each other and if they

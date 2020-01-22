@@ -140,12 +140,6 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 	}
 
 	@Override
-	public String doStart() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String doTurn() {
 		// TODO Auto-generated method stub
 		return null;
@@ -153,6 +147,30 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 
 	@Override
 	public String doGameEnd() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String doLobbies() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String doReady(String playerName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String doStart(String[] players) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String exitGame() {
 		// TODO Auto-generated method stub
 		return null;
 	}
