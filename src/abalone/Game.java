@@ -5,7 +5,14 @@ import java.util.Random;
 import abalone.exceptions.InvalidMoveException;
 
 public class Game {
-	 // -- Instance variables -----------------------------------------
+	// -- Constants --------------------------------------------------
+
+//	private static final int MAX_NUMBER_OF_TURNS = 96;
+	
+	// If you want to play the real game uncomment this.
+	private static final int MAX_NUMBER_OF_TURNS = Integer.MAX_VALUE;
+	
+	// -- Instance variables -----------------------------------------
 
     /*@
        private invariant board != null;
@@ -26,6 +33,11 @@ public class Game {
     private Player[] players;
     
     /**
+     * number of moves.
+     */
+    private int numberOfTurns;
+    
+    /**
      * indicates direction of playing
      */
     private boolean clockwise;
@@ -40,7 +52,7 @@ public class Game {
     public Game(Player[] players) {
         board = new Board();
         this.players = players;
-        for (int i = 0; players.length > i; i++) {
+        for (int i = 0; i < players.length; i++) {
         	System.out.println("Game Player " + i + " " + players[i].getColor());
         	}
         reset();
@@ -82,6 +94,7 @@ public class Game {
      */
     public void reset() {
     	Random r = new Random();
+    	numberOfTurns = 0;
     	current = players[r.nextInt(players.length)].getColor();
         board.reset(getNumberOfPlayers());
     }
@@ -93,7 +106,7 @@ public class Game {
     
     public void play() {
     	Move nextMove;
-    	while (! board.gameOver()) {
+    	while (! board.gameOver() && numberOfTurns < MAX_NUMBER_OF_TURNS) {
     		nextMove = players[current.getInt()].determineMove(board);
     		try {
 				nextMove.perform();
@@ -102,9 +115,19 @@ public class Game {
 				e.printStackTrace();
 			}
     		current = current.next(getNumberOfPlayers(), clockwise);
+    		numberOfTurns++;
+        	//TODO: remove method showBoard()
+        	showBoard();
     	}
     }
 
+    /**
+     * TODO: remove method
+     */
+    public void showBoard() {
+    	System.out.println(board.toString());
+    }
+    
 	public void start() {
 		play();
 	}
