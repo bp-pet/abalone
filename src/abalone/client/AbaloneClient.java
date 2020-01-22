@@ -249,4 +249,16 @@ public class AbaloneClient implements ClientProtocol {
 		
 	}
 
+	@Override
+	public void getLobbies() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void doReady() throws ServerUnavailableException, NotEnoughPlayersException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

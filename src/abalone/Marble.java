@@ -27,7 +27,7 @@ public class Marble {
 	public Color getColor() {
 		return color;
 	}
-
+	
 	// -- Commands ---------------------------------------------------
 	
 	public void setColor(Color color) {

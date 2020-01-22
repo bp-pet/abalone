@@ -12,8 +12,6 @@ import ss.utils.TextIO;
  */
 public class Abalone {
 
-	public static final int MAX_PLAYERS = 4;
-
 	/**
 	 * creates player with Mark mark, if arg contains -R then Random Computer, else arg is
 	 * the name of the Human player.
@@ -35,7 +33,10 @@ public class Abalone {
 		ArrayList<String> stringPlayers = new ArrayList<String>();
 		// copies args to players
 		for (int i = 0; i < args.length; i++) {
-			if (i <= 4) {
+			if (args[i].equals("x")) {
+				break;
+			}
+			if (i <= Game.MAX_PLAYERS) {
 				stringPlayers.add(args[i]);
 			} else {
 				break;
@@ -43,24 +44,24 @@ public class Abalone {
 		}
 
 		// if not 4 players ask for more players
-		if (args.length <= MAX_PLAYERS) {
+		if (args.length <= Game.MAX_PLAYERS) {
 			if (stringPlayers.size() < 2) {
 				System.out.printf("\n> Name player " + (stringPlayers.size() + 1) + "?\n? ");
 			} else {
 				System.out.printf("\n> Name player " + (stringPlayers.size() + 1) + " (or 'x' to exit)?\n? ");
 			}
 			String in = TextIO.getln();
-			if (!in.equals("x") && stringPlayers.size() < MAX_PLAYERS) {
+			if (!in.equals("x") && stringPlayers.size() < Game.MAX_PLAYERS) {
 				stringPlayers.add(in);
 			}
-			while (stringPlayers.size() < 2 || (!in.equals("x") && stringPlayers.size() < MAX_PLAYERS)) {
+			while (stringPlayers.size() < 2 || (!in.equals("x") && stringPlayers.size() < Game.MAX_PLAYERS)) {
 				if (stringPlayers.size() < 2) {
 					System.out.printf("\n> Name player " + (stringPlayers.size() + 1) + "?\n? ");
 				} else {
 					System.out.printf("\n> Name player " + (stringPlayers.size() + 1) + " (or 'x' to exit)?\n? ");
 				}
 				in = TextIO.getln();
-				if (!in.equals("x") && !in.equals("") && stringPlayers.size() < MAX_PLAYERS) {
+				if (!in.equals("x") && !in.equals("") && stringPlayers.size() < Game.MAX_PLAYERS) {
 					stringPlayers.add(in);
 				}
 			}

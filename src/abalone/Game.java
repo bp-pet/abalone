@@ -1,5 +1,6 @@
 package abalone;
 
+import java.util.Map;
 import java.util.Random;
 
 import abalone.exceptions.InvalidMoveException;
@@ -7,10 +8,12 @@ import abalone.exceptions.InvalidMoveException;
 public class Game {
 	// -- Constants --------------------------------------------------
 
-//	private static final int MAX_NUMBER_OF_TURNS = 96;
+//	private static final int MAX_TURNS = 96;
 	
 	// If you want to play the real game uncomment this.
-	private static final int MAX_NUMBER_OF_TURNS = Integer.MAX_VALUE;
+	private static final int MAX_TURNS = Integer.MAX_VALUE;
+	
+	public static final int MAX_PLAYERS = 4;
 	
 	// -- Instance variables -----------------------------------------
 
@@ -28,12 +31,20 @@ public class Game {
     private Color current;
     
     /**
-     * Array of players.
+     * Array of teams.
+     * @invariance 2 <= players.length <= MAX_PLAYERS
      */
     private Player[] players;
     
     /**
-     * number of moves.
+     * Map of Color to the score that color has.
+     * @invariance players.size == players.length;
+     */
+    private Map<Color, Integer> scores;
+    
+    /**
+     * current number of moves.
+     * @invariance 0 <= numberOfTurns <= MAX_NUMBER_OF_TURNS
      */
     private int numberOfTurns;
     
@@ -46,7 +57,7 @@ public class Game {
     
     /**
      * creates a new game with new board with an array with players. The starting player is random.
-     * @requires 2 <= players.length <= 4
+     * @requires 2 <= players.length <= MAX_PLAYERS
      * @param players array of players
      */
     public Game(Player[] players) {
@@ -106,7 +117,7 @@ public class Game {
     
     public void play() {
     	Move nextMove;
-    	while (! board.gameOver() && numberOfTurns < MAX_NUMBER_OF_TURNS) {
+    	while (! board.gameOver() && numberOfTurns < MAX_TURNS) {
     		nextMove = players[current.getInt()].determineMove(board);
     		try {
 				nextMove.perform();
@@ -115,20 +126,58 @@ public class Game {
 				e.printStackTrace();
 			}
     		current = current.next(getNumberOfPlayers(), clockwise);
+    		System.out.println(numberOfTurns);
     		numberOfTurns++;
-        	//TODO: remove method showBoard()
+        	//TODO: remove method showBoard() or not
         	showBoard();
+    	}
+    	Player winner = determineWinner();
+    	//TODO: send to server or not
+    	for (Player player : players) {
+    		if (player != null) {
+        		System.out.println(player.getName() + " has won!");
+    		} else {
+    			System.out.println("DRAW!");
+    		}
     	}
     }
 
     /**
-     * TODO: remove method
+     * @requires players.length > 1
+     * @return one player off the team that pushed off the most marbles. null if draw.
+     */
+    private Player determineWinner() {
+    	int highscore = 0;
+    	Player winner = null;
+    	for (Player player : players) {
+			int score = scores.get(player.getColor());
+			if (players.length == 4) {
+				score += scores.get(player.getColor().teamColor());
+			}
+			if (score > highscore) {
+				winner = player;
+			}
+			if (score == highscore) {
+				if (winner.getColor() != player.getColor().teamColor()) {
+					winner = null;				
+				}
+			}
+    	}
+    	return winner;
+	}
+
+	/**
+     * TODO: remove method or not
      */
     public void showBoard() {
+    	System.out.println("Moves left: " + (MAX_TURNS - numberOfTurns));
     	System.out.println(board.toString());
     }
     
 	public void start() {
-		play();
+		//TODO: implement stop game when disconnection
+		while (true) {
+			play();
+		}
 	}
 }

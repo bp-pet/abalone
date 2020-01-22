@@ -211,17 +211,10 @@ public class Board {
 		return false;
 	}
 
-	/*
-	 * @ ensures \result == isWinner(Marble.XX) | \result == isWinner(Marble.OO);
-	 * 
-	 */
 	/**
-	 * Returns true if the game has a winner. This is the case when one of the
-	 * marbles controls at least one row, column or diagonal.
 	 * 
 	 * @return true if the board has a winner.
 	 */
-	/* @pure */
 	public boolean hasWinner() {
 		// TODO: add implementation
 		return false;
