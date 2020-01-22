@@ -31,7 +31,7 @@ public class Board {
 	 * Creates an empty board.
 	 */
 	public Board() {
-		this.fields = new Field[WIDTH + 2][WIDTH + 2];
+		this.fields = new Field[WIDTH][WIDTH];
 		this.reset();
 		this.makeMapOfColors();
 	}
@@ -45,6 +45,7 @@ public class Board {
 	public Board(int playerCount) {
 		this();
 		this.reset(playerCount);
+		this.makeMapOfColors();
 	}
 
 	// -- Queries ----------------------------------------------------
