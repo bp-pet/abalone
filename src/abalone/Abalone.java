@@ -31,21 +31,18 @@ public class Abalone {
 	 */
 	public static void main(String[] args) {
 		ArrayList<String> stringPlayers = new ArrayList<String>();
-		// copies args to players
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("x")) {
-				break;
+		if (args.length >= Game.MIN_PLAYERS) {
+			// copies args to players
+			for (int i = 0; i < args.length; i++) {
+				if (i <= Game.MAX_PLAYERS) {
+					stringPlayers.add(args[i]);
+				} else {
+					break;
+				}
 			}
-			if (i <= Game.MAX_PLAYERS) {
-				stringPlayers.add(args[i]);
-			} else {
-				break;
-			}
-		}
-
-		// if not 4 players ask for more players
-		if (args.length <= Game.MAX_PLAYERS) {
-			if (stringPlayers.size() < 2) {
+		} else {
+			//if not enough input arguments ask for players
+			if (stringPlayers.size() < Game.MIN_PLAYERS) {
 				System.out.printf("\n> Name player " + (stringPlayers.size() + 1) + "?\n? ");
 			} else {
 				System.out.printf("\n> Name player " + (stringPlayers.size() + 1) + " (or 'x' to exit)?\n? ");
