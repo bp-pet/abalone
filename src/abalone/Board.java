@@ -44,6 +44,7 @@ public class Board {
 	public Board(int playerCount) {
 		this();
 		this.reset(playerCount);
+		this.makeMapOfColors();
 	}
 
 	// -- Queries ----------------------------------------------------

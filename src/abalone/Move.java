@@ -179,7 +179,7 @@ public class Move {
      */
     private void canMoveOneByOne() throws InvalidMoveException {
     	for (Field f : fields) {
-    		canMoveField(f, 0);
+    		canMoveField(f, -1);
     	}
     }
     
@@ -226,9 +226,24 @@ public class Move {
 						+ "commit suicide; " + toString());
 			}
 		} else {
-	    	if (force == 0 && nextField.getMarble() != null) {
-	    		throw new InvalidMoveException("Not enough force to push; "
-	    				+ toString());
+			if (force == -1) {
+				if (nextField.getMarble() != null) {
+	    			throw new InvalidMoveException("Cannot push laterally; "
+	    					+ toString());
+				}
+			} else if (force == 0) {
+	    		if (currentColor != color) {
+	    			throw new InvalidMoveException("Not enough force to push; "
+	    					+ toString());
+	    		}
+	    		if (nextField.getMarble() != null) {
+	    			if (nextField.getMarble().getColor() == color) {
+	    				canMoveField(nextField, force + 1);
+	    			} else {
+		    			throw new InvalidMoveException("Not enough force to push; "
+		    					+ toString());
+	    			}
+	    		}
 			} else {
 	    		if (!(nextField.getMarble() == null)) {
 	    			Marble nextMarble = nextField.getMarble();
@@ -343,7 +358,7 @@ public class Move {
     	for (Field f : fields) {
     		if (f.getMarble() == null || f.getMarble().getColor() != color) {
     			throw new InvalidMoveException("Field does not contain valid marble: "
-    					+ f.toString() + "; " + toString());
+    					+ f.getFullString() + "; " + toString());
     		}
     	}
     	return true;
@@ -371,6 +386,11 @@ public class Move {
      */
     public Field[] getFields() {
     	return this.fields;
+    }
+    
+    public Move deepCopy(Board newBoard) {
+    	return new Move(newBoard, color, rowTail, colTail, rowHead, colHead,
+    			rowDest, colDest);
     }
     
     /**
