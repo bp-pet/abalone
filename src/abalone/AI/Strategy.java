@@ -31,8 +31,10 @@ public interface Strategy {
 		boolean valid1;
 		boolean valid2;
 		int l = fieldList.size();
-		for (Field f1 : fieldList) {
-			for (Field f2 : fieldList) {
+		for (int i = 0; i < l; i++) {
+			for (int j = i; j < l; j++) {
+				Field f1 = fieldList.get(i);
+				Field f2 = fieldList.get(j);
 				int f1Row = f1.getRow();
 				int f1Col = f1.getCol();
 				int f2Row = f2.getRow();

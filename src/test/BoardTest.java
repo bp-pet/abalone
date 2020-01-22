@@ -5,12 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import abalone.Board;
 import abalone.Color;
 import abalone.Marble;
+import abalone.Field;
 
 /**
  * Test program for HumanPlayer
@@ -99,5 +103,20 @@ public class BoardTest {
 		assertEquals(copy.toString(), board.toString());
 		copy.getField(4, 4).setMarble(m);
 		assertNotEquals(copy.toString(), board.toString());
+	}
+	
+	@Test
+	public void testMapOfColors() {
+		board = new Board(2);
+		Map<Color, ArrayList<Field>> map = board.getMapOfcolors();
+		assertTrue(map.keySet().size() == 2);
+		assertTrue(map.get(Color.BLACK).size() == 14);
+		assertTrue(map.get(Color.WHITE).size() == 14);
+		for (Field f : map.get(Color.BLACK)) {
+			assertTrue(f.getMarble().getColor() == Color.BLACK);
+		}
+		for (Field f : map.get(Color.WHITE)) {
+			assertTrue(f.getMarble().getColor() == Color.WHITE);
+		}
 	}
 }
