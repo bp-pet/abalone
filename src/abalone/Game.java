@@ -126,10 +126,9 @@ public class Game {
 				e.printStackTrace();
 			}
     		current = current.next(getNumberOfPlayers(), clockwise);
-    		System.out.println(numberOfTurns);
     		numberOfTurns++;
         	//TODO: remove method showBoard() or not
-        	showBoard();
+        	//showBoard();
     	}
     	Player winner = determineWinner();
     	//TODO: send to server or not
