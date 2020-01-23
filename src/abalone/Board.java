@@ -9,7 +9,7 @@ import abalone.exceptions.InvalidMoveException;
 public class Board {
 
 	private static final int DIM = 5;
-	public final int maxPush = 3;
+	private final int maxPush = 3;
 
 	// -- Constants --------------------------------------------------
 
@@ -19,7 +19,8 @@ public class Board {
 	// -- Instance variables -----------------------------------------
 
 	private Field[][] fields;
-	Map<Color, ArrayList<Field>> mapOfColors;
+	private Map<Color, ArrayList<Field>> mapOfColors;
+	private Color[][] teams;
 
 	// -- Constructors -----------------------------------------------
 
@@ -48,6 +49,31 @@ public class Board {
 	}
 
 	// -- Queries ----------------------------------------------------
+	
+	public void setTeams(Color[][] teams) {
+		this.teams = teams;
+	}
+	
+	public boolean areTeammates(Color colorA, Color colorB) {
+		if (colorA == colorB) {
+			return true;
+		}
+		if (teams == null) {
+			return false;
+		}
+		for (Color[] team : teams) {
+			for (Color c1 : team) {
+				if (c1 == colorA) {
+					for (Color c2 : team) {
+						if (c2 == colorB) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Creates a deep copy of this field.
@@ -335,7 +361,6 @@ public class Board {
 				}
 			}
 		}
-		System.out.println(getStringMapOfColors());
 	}
 	
 	public Map<Color, ArrayList<Field>> getMapOfColors() {
@@ -378,6 +403,10 @@ public class Board {
 	
 	public int getWidth() {
 		return WIDTH;
+	}
+	
+	public int getMaxPush() {
+		return maxPush;
 	}
 	
 	/**

@@ -138,4 +138,34 @@ public class BoardTest {
 		assertEquals(board.rotate180(0, 0)[0], board.getWidth() - 1);
 		assertEquals(board.rotate180(0, 0)[1], board.getWidth() - 1);
 	}
+	
+	@Test
+	public void testTeams() {
+		Color[] team1 = new Color[2];
+		team1[0] = Color.WHITE;
+		team1[1] = Color.BLACK;
+		Color[] team2 = new Color[2];
+		team2[0] = Color.RED;
+		team2[1] = Color.BLUE;
+		Color[][] teams = new Color[2][2];
+		teams[0] = team1;
+		teams[1] = team2;
+		board.setTeams(teams);
+		assertTrue(board.areTeammates(Color.WHITE, Color.WHITE));
+		assertTrue(board.areTeammates(Color.BLACK, Color.BLACK));
+		assertTrue(board.areTeammates(Color.RED, Color.RED));
+		assertTrue(board.areTeammates(Color.BLUE, Color.BLUE));
+		assertTrue(board.areTeammates(Color.WHITE, Color.BLACK));
+		assertTrue(board.areTeammates(Color.BLACK, Color.WHITE));
+		assertTrue(board.areTeammates(Color.RED, Color.BLUE));
+		assertTrue(board.areTeammates(Color.BLUE, Color.RED));
+		assertFalse(board.areTeammates(Color.WHITE, Color.RED));
+		assertFalse(board.areTeammates(Color.RED, Color.WHITE));
+		assertFalse(board.areTeammates(Color.WHITE, Color.BLUE));
+		assertFalse(board.areTeammates(Color.BLUE, Color.WHITE));
+		assertFalse(board.areTeammates(Color.BLACK, Color.RED));
+		assertFalse(board.areTeammates(Color.RED, Color.BLACK));
+		assertFalse(board.areTeammates(Color.BLACK, Color.BLUE));
+		assertFalse(board.areTeammates(Color.BLUE, Color.BLACK));
+	}
 }

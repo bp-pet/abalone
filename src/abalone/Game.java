@@ -6,12 +6,11 @@ import java.util.Random;
 
 import abalone.AI.RandomStrategy;
 import abalone.exceptions.InvalidMoveException;
-import abalone.server.ClientPlayer;
 
 public class Game {
 	// -- Constants --------------------------------------------------
 
-	private static final int MAX_TURNS = 96;
+	private static final int MAX_TURNS = 960000;
 
 	// If you want to play the real game uncomment this.
 //	private static final int MAX_TURNS = Integer.MAX_VALUE;
@@ -86,7 +85,6 @@ public class Game {
 			players[i] = createPlayer(stringPlayers[i], current);
 			current = current.next(stringPlayers.length);
 		}
-		
 		board = new Board();
 		this.players = players;
 		reset();
@@ -224,6 +222,7 @@ public class Game {
 	 */
 	public void showBoard() {
 		System.out.println("Moves left: " + (MAX_TURNS - numberOfTurns));
+		System.out.println("Moves done: " + numberOfTurns);
 		System.out.println("current score: " + scores.toString());
 		System.out.println(board.toString());
 	}
