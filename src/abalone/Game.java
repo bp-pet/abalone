@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import abalone.AI.RandomStrategy;
 import abalone.exceptions.InvalidMoveException;
+import abalone.server.ClientPlayer;
 
 public class Game {
 	// -- Constants --------------------------------------------------
@@ -55,34 +57,39 @@ public class Game {
 	 */
 	private int numberOfTurns;
 
-	/**
-	 * indicates direction of playing
-	 */
-	private boolean clockwise;
-
 	// -- Constructors -----------------------------------------------
 
 	/**
+	 * creates player with Color color, if arg contains -R then Random Computer, else arg is
+	 * the name of the Human player.
+	 */
+	public static Player createPlayer(String arg, Color color) {
+		if (arg.contains("-R")) {
+			return new ComputerPlayer(color, new RandomStrategy());
+		} else {
+			return new HumanPlayer(arg, color);
+		}
+	}
+	
+	/**
 	 * creates a new game with new board with an array with players. The starting
-	 * player is random.
+	 * player is random. And the 
 	 * 
 	 * @requires 2 <= players.length <= MAX_PLAYERS
 	 * @param players array of players
 	 */
-	public Game(Player[] players) {
+	public Game(String[] stringPlayers) {
+		
+		Player[] players = new Player[stringPlayers.length];
+		Color current = Color.WHITE;
+		for (int i = 0; i < stringPlayers.length; i++) {
+			players[i] = createPlayer(stringPlayers[i], current);
+			current = current.next(stringPlayers.length);
+		}
+		
 		board = new Board();
 		this.players = players;
-		//TODO: decide if the color devision needs to be moved to reset()
-		for (int i = 0; i < players.length; i++) {
-			System.out.println(players[i].getName() + " has color " + players[i].getColor());
-		}
 		reset();
-		clockwise = (Math.random() < 0.5);
-	}
-
-	public Game(Player[] players, boolean clockwise) {
-		this(players);
-		this.clockwise = clockwise;
 	}
 
 	// -- Queries ----------------------------------------------------
@@ -133,7 +140,7 @@ public class Game {
 				System.out.println("Player not correctly implemented!");
 				e.printStackTrace();
 			}
-			current = current.next(getNumberOfPlayers(), clockwise);
+			current = current.next(getNumberOfPlayers());
 			numberOfTurns++;
 			// TODO: remove method showBoard() or not
 			showBoard();
