@@ -365,7 +365,6 @@ public class Board {
 	public void move(Color color, int rowTail, int colTail, int rowHead, int colHead, int rowDest, int colDest)
 			throws InvalidMoveException {
 		move(new Move(this, color, rowTail, colTail, rowHead, colHead, rowDest, colDest));
-		makeMapOfColors();
 	}
 
 	public void move(Move move) throws InvalidMoveException {
@@ -389,18 +388,51 @@ public class Board {
 				}
 			}
 		}
-//		for (Color k : mapOfColors.keySet()) {
-//			System.out.println(k.toString());
-//			for (Field f : mapOfColors.get(k)) {
-//				System.out.println(f.toString());
-//			}
-//		}
+		System.out.println(getStringMapOfColors());
 	}
 	
-	public Map<Color, ArrayList<Field>> getMapOfcolors() {
+	public Map<Color, ArrayList<Field>> getMapOfColors() {
 		return mapOfColors;
 	}
-
+	
+	public String getStringMapOfColors() {
+		String s = "MapOfColors:\n";
+		for (Color c : getMapOfColors().keySet()) {
+			s += "Color: " + c.toString() + "\n";
+			for (Field f : getMapOfColors().get(c)) {
+				s += f.getFullString() + "\n";
+			}
+		}
+		return s;
+	}
+	
+	public String getNumberOfMarbles() {
+		String s = "";
+		for (Color c : mapOfColors.keySet()) {
+			s += c.toString() + String.valueOf(mapOfColors.get(c).size());
+		}
+		return s;
+	}
+	
+	public int[] rotate180(int row, int col){
+		int[] result = new int[2];
+		result[0] = rotate180(row);
+		result[1] = rotate180(col);
+		return result;
+	}
+	
+	public int rotate180(int i) {
+		return 2 * DIM - i - 2;
+	}
+	
+	public int getDim() {
+		return DIM;
+	}
+	
+	public int getWidth() {
+		return WIDTH;
+	}
+	
 	/**
 	 * Returns String representation of the board
 	 */

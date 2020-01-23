@@ -27,7 +27,7 @@ public interface Strategy {
 	default public ArrayList<Move> makeMovesList(Board board, Color color) {
 		ArrayList<Move> moveList = new ArrayList<Move>();
 		ArrayList<Move> tempMoveList;
-		ArrayList<Field> fieldList = board.getMapOfcolors().get(color);
+		ArrayList<Field> fieldList = board.getMapOfColors().get(color);
 		boolean valid1;
 		boolean valid2;
 		int l = fieldList.size();

@@ -1,8 +1,7 @@
 package test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -197,12 +196,54 @@ class MoveTest {
 	
 	@Test
 	//should work
+	//TODO Find out why this doesnt work
 	void testPush2v1(){
 		try {
 			new Move(board, Color.WHITE, 1, 1, 2, 2, 2, 2).perform();
 			new Move(board, Color.WHITE, 2, 2, 3, 3, 3, 3).perform();
 			new Move(board, Color.BLACK, 6, 6, 6, 6, 5, 5).perform();
 			new Move(board, Color.WHITE, 3, 3, 4, 4, 4, 4).perform();
+		} catch (InvalidMoveException e) {
+			fail();
+		}
+	}
+	
+	@Test
+	//should work
+	void testPushOwn2v1() {
+		try {
+			new Move(board, Color.WHITE, 1, 4, 0, 4, 2, 4).perform();
+		} catch (InvalidMoveException e) {
+			fail();
+		}
+	}
+	
+	@Test
+	//should work
+	void testPushOw1v2() {
+		try {
+			new Move(board, Color.WHITE, 0, 4, 0, 4, 1, 4).perform();
+		} catch (InvalidMoveException e) {
+			fail();
+		}
+	}
+	
+	@Test
+	//should work
+	void testPushOwn1v2() {
+		try {
+			new Move(board, Color.WHITE, 0, 4, 0, 4, 1, 4).perform();
+		} catch (InvalidMoveException e) {
+			fail();
+		}
+	}
+	
+	@Test
+	//should not work
+	//TODO make test
+	void testPushOwn1v3() {
+		try {
+			new Move(board, Color.WHITE, 1, 4, 0, 4, 2, 4).perform();
 		} catch (InvalidMoveException e) {
 			fail();
 		}
@@ -244,5 +285,23 @@ class MoveTest {
 			msg = e.getMessage();
 		}
 		assertTrue(msg.contains("contain"));
+	}
+	
+	@Test
+	void testMirroredMove() {
+		int[] coords = new int[6];
+		coords[0] = 8;
+		coords[1] = 6;
+		coords[2] = 7;
+		coords[3] = 7;
+		coords[4] = 9;
+		coords[5] = 9;
+		int[] invCoords = new int[6];
+		for (int i = 0; i < 6; i++) {
+			invCoords[i] = board.rotate180(coords[i]);
+		}
+		Move m1 = new Move(board, Color.BLACK, coords);
+		Move m2 = new Move(board, Color.BLACK, invCoords);
+		assertTrue(m1.getMirroredMove(Color.BLACK).equalsMove(m2));
 	}
 }

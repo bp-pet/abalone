@@ -37,6 +37,11 @@ public class Move {
 		this.rowDest = rowDest;
 		this.colDest = colDest;
 	}
+	
+	public Move(Board board, Color color, int[] coords) {
+		this(board, color, coords[0], coords[1], coords[2], coords[3],
+				coords[4], coords[5]);
+	}
     
     /**
      * Checks if given coordinates are fields, if they are in same line,
@@ -52,6 +57,7 @@ public class Move {
     public void perform() throws InvalidMoveException {
     	isValidMove();
 		moveAllFields();
+		board.makeMapOfColors();
     }
     
     /**
@@ -391,6 +397,46 @@ public class Move {
     public Move deepCopy(Board newBoard) {
     	return new Move(newBoard, color, rowTail, colTail, rowHead, colHead,
     			rowDest, colDest);
+    }
+    
+    public int getRowTail() {
+    	return rowTail;
+    }
+    
+    public int getColTail() {
+    	return colTail;
+    }
+    
+    public int getRowHead() {
+    	return rowHead;
+    }
+    
+    public int getColHead() {
+    	return colHead;
+    }
+    
+    public int getRowDest() {
+    	return rowDest;
+    }
+    
+    public int getColDest() {
+    	return colDest;
+    }
+    
+    public boolean equalsMove(Move m) {
+    	return rowTail == m.getRowTail() && colTail == m.getColTail() &&
+    			rowHead == m.getRowHead() && colHead == m.getColHead() &&
+    			rowDest == m.getRowDest() && colDest == m.getColDest();
+    }
+    
+    public Move getMirroredMove(Color newColor ) {
+    	return new Move(board, newColor,
+				board.rotate180(getRowTail()),
+				board.rotate180(getColTail()),
+				board.rotate180(getRowHead()),
+				board.rotate180(getColHead()),
+				board.rotate180(getRowDest()),
+				board.rotate180(getColDest()));
     }
     
     /**

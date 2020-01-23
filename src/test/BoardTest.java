@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import abalone.Board;
 import abalone.Color;
 import abalone.Marble;
+import abalone.Move;
+import abalone.exceptions.InvalidMoveException;
 import abalone.Field;
 
 /**
@@ -34,7 +37,7 @@ public class BoardTest {
 	 */
 	@BeforeEach
 	public void setUp() {
-		board = new Board();
+		board = new Board(2);
 		m = new Marble(Color.RED);
 	}
 
@@ -83,13 +86,13 @@ public class BoardTest {
 	@Test
 	public void testReset() {
 		board = new Board();
-		System.out.println(board.toString());
-		board.reset(2);
-		System.out.println(board.toString());
-		board.reset(3);
-		System.out.println(board.toString());
-		board.reset(4);
-		System.out.println(board.toString());
+//		System.out.println(board.toString());
+//		board.reset(2);
+//		System.out.println(board.toString());
+//		board.reset(3);
+//		System.out.println(board.toString());
+//		board.reset(4);
+//		System.out.println(board.toString());
 	}
 
 	/**
@@ -107,8 +110,7 @@ public class BoardTest {
 	
 	@Test
 	public void testMapOfColors() {
-		board = new Board(2);
-		Map<Color, ArrayList<Field>> map = board.getMapOfcolors();
+		Map<Color, ArrayList<Field>> map = board.getMapOfColors();
 		assertTrue(map.keySet().size() == 2);
 		assertTrue(map.get(Color.BLACK).size() == 14);
 		assertTrue(map.get(Color.WHITE).size() == 14);
@@ -116,7 +118,24 @@ public class BoardTest {
 			assertTrue(f.getMarble().getColor() == Color.BLACK);
 		}
 		for (Field f : map.get(Color.WHITE)) {
-			assertTrue(f.getMarble().getColor() == Color.WHITE);
+			assertTrue(f.getMarble() != null);
+			assertEquals(f.getMarble().getColor(),Color.WHITE);
 		}
+	}
+	
+	@Test
+	public void testMapOfColorsAfterMove() {
+		try {
+			new Move(board, Color.WHITE, 1, 0, 1, 0, 2, 0).perform();
+		} catch (InvalidMoveException e) {
+			fail();
+		}
+		testMapOfColors();
+	}
+	
+	@Test
+	public void testRotate() {
+		assertEquals(board.rotate180(0, 0)[0], board.getWidth() - 1);
+		assertEquals(board.rotate180(0, 0)[1], board.getWidth() - 1);
 	}
 }

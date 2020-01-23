@@ -122,7 +122,7 @@ public class Game {
     	while (! board.gameOver() && numberOfTurns < MAX_TURNS) {
     		nextMove = players[current.getInt()].determineMove(board);
     		try {
-				nextMove.perform();
+    			board.move(nextMove);
 			} catch (InvalidMoveException e) {
 				System.out.println("Player not correctly implemented!");
 				e.printStackTrace();
@@ -130,7 +130,7 @@ public class Game {
     		current = current.next(getNumberOfPlayers(), clockwise);
     		numberOfTurns++;
         	//TODO: remove method showBoard() or not
-        	//showBoard();
+        	showBoard();
     	}
     	Player winner = determineWinner();
     	//TODO: send to server or not
@@ -172,6 +172,7 @@ public class Game {
      */
     public void showBoard() {
     	System.out.println("Moves left: " + (MAX_TURNS - numberOfTurns));
+    	System.out.println("Moves performed: " + numberOfTurns);
     	System.out.println(board.toString());
     }
     
