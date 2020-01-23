@@ -25,14 +25,14 @@ public interface ServerProtocol {
 	/**
 	 * to a response of a lobby request the server sends a new line with a lobby for
 	 * each lobby off the form:
-	 * <code>pm.LOBBIES + pm.DELIMITER + lobbyName + pm.DELIMITER + player1Name + pm.DELIMITER + player1TeamName + etc</code>
+	 * <code>pm.LOBBIES + pm.DELIMITER + lobbyName + pm.DELIMITER + player1Name + pm.DELIMITER + player1TeamName + etc</code> (lobby.toString())
 	 * <code> + \n + etc + \n + pm.EOT </code>.
 	 */
-	public String getLobbies();
+	public String doLobbies();
 
 	/**
 	 * If the join request is successful the method returns the String
-	 * <code>pm.JOIN + pm.DELIMITER + playerName + pm.DELIMITER + teamName</code>
+	 * <code>pm.JOIN + pm.DELIMITER + playerName + pm.DELIMITER + teamName</code> to be send to all clients in lobby. And lobby.toString() to joining player
 	 * 
 	 * If the join request has failed the server returns the String
 	 * <code>pm.ERROR + pm.DELIMITER + pm.ERROR3 + pm.DELIMITER + errorMessage</code>

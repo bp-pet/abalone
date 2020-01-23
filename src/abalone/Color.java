@@ -4,45 +4,35 @@ public enum Color {
 
 	WHITE, BLACK, BLUE, RED;
 
-	public Color next(int numOfPlayers, boolean clockwise) {
+	public Color next(int numOfPlayers) {
 		switch (numOfPlayers) {
 		case 2:
 			switch (this) {
-			case WHITE:
-				return BLACK;
-			default:
-				return WHITE;
-			}
-		default:
-			if (clockwise) {
-				switch (this) {
-				case BLUE:
+				case WHITE:
+					return BLACK;
+				default:
 					return WHITE;
-				case BLACK:
-					return BLUE;
-				case RED:
-					return BLACK;
-				default: // WHITE
-					if (numOfPlayers == 4) {
-						return RED;
-					}
-					return BLACK;
-				}
-			} else {
-				switch (this) {
+			}
+		case 3:
+			switch (this) {
 				case BLUE:
 					return BLACK;
 				case WHITE:
 					return BLUE;
+				default: 
+					return next(2);
+			}
+		case 4:
+			switch(this) {
+				case BLACK:
+					return RED;
 				case RED:
 					return WHITE;
-				default: // BLACK
-					if (numOfPlayers == 4) {
-						return RED;
-					}
-					return WHITE;
-				}
+				default:
+					return next(3);
 			}
+		default:
+			return next(2);
 		}
 	}
 

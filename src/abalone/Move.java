@@ -42,7 +42,7 @@ public class Move {
 		this(board, color, coords[0], coords[1], coords[2], coords[3],
 				coords[4], coords[5]);
 	}
-    
+
     /**
      * Checks if given coordinates are fields, if they are in same line,
      * if they are distance 2 or smaller away from each other and if they

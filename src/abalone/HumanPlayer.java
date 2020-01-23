@@ -46,15 +46,26 @@ public class HumanPlayer extends Player {
 		}
 
 		Board copy = board.deepCopy();
-		Move move = new Move(copy, getColor(), board.getRowFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getRowFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getRowFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
-		
+		Move tryMove = parseChoice(copy, choice);
+
 		try {
-			move.perform();
+			tryMove.perform();
 		} catch (InvalidMoveException e) {
-			view.showMessage(move.toString() + "\n" + e.getMessage());
-			move = determineMove(board);
+			view.showMessage(tryMove.toString() + "\n" + e.getMessage());
+			tryMove = determineMove(board);
 		}
 		
+		return parseChoice(board, choice);
+	}
+	
+	/**
+	 * 
+	 * @requires choise.matches(PATTERN);
+	 * @param board
+	 * @param choise
+	 * @return
+	 */
+	public Move parseChoice(Board board, String choice) {
 		return new Move(board, getColor(), board.getRowFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getRowFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getRowFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
 	}
 

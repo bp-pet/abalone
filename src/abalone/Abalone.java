@@ -13,18 +13,6 @@ import ss.utils.TextIO;
 public class Abalone {
 
 	/**
-	 * creates player with Mark mark, if arg contains -R then Random Computer, else arg is
-	 * the name of the Human player.
-	 */
-	public static Player createPlayer(String arg, Color color) {
-		if (arg.contains("-R")) {
-			return new ComputerPlayer(color, new RandomStrategy());
-		} else {
-			return new HumanPlayer(arg, color);
-		}
-	}
-
-	/**
 	 * priem.
 	 * 
 	 * @param args player1, player2
@@ -64,14 +52,7 @@ public class Abalone {
 			}
 		}
 
-		Player[] players = new Player[stringPlayers.size()];
-		Color current = Color.WHITE;
-		boolean clockwise = (Math.random() < 0.5);
-		for (int i = 0; i < stringPlayers.size(); i++) {
-			players[i] = createPlayer(stringPlayers.get(i), current);
-			current = current.next(stringPlayers.size(), clockwise);
-		}
-		Game game = new Game(players, clockwise);
+		Game game = new Game(stringPlayers.toArray(new String[stringPlayers.size()]));
 		game.start();
 	}
 }

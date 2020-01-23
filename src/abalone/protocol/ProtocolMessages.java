@@ -11,7 +11,7 @@ public class ProtocolMessages {
 	/**
 	 * Version of the protocol in the form other3V([0-9])^+;
 	 */
-	public static final String VERSION = "other3V1.1";
+	public static final String VERSION = "other3V1.2";
 	
 	/**
 	 * Delimiter used to separate arguments sent over the network.

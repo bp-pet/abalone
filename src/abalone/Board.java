@@ -168,59 +168,6 @@ public class Board {
 		return (char) (col + 48 + 1);
 	}
 
-	/*
-	 * @ ensures \result == this.hasWinner();
-	 * 
-	 * Game is over when: - Push off 6 marbles of an opponent - 2 players: no
-	 * complications - 3 players: don't distinguish colours - 4 players: 6 marbles
-	 * of the opposing team - No, pushing off your teammate does not count
-	 * 
-	 */
-	/**
-	 * Returns true if the game is over. Game is over when: <br>
-	 * 
-	 * <ul>
-	 * <li>Push off 6 marbles of an opponent</li>
-	 * <li>2 players: no complications</li>
-	 * <li>3 players: don't distinguish colours</li>
-	 * <li>4 players: 6 marbles of the opposing team</li>
-	 * <li>No, pushing off your teammate does not count</li>
-	 * </ul>
-	 * 
-	 * @return true if the game is over
-	 */
-	/* @pure */
-	public boolean gameOver() {
-		// TODO: add implementation
-		return false;
-	}
-
-	/*
-	 * @ // requires m == Marble.XX | m == Marble.OO; // ensures \result ==
-	 * this.hasRow(m) || // this.hasColumn(m) | // this.hasDiagonal(m);
-	 */
-	/**
-	 * Checks if the marble <code>m</code> has won. A marble wins if it has thrown
-	 * off 6 marbles of an opponent
-	 * 
-	 * @param m the marble of interest
-	 * @return true if the marble has won
-	 */
-	/* @pure */
-	public boolean isWinner(Marble m) {
-		// TODO: add implementation
-		return false;
-	}
-
-	/**
-	 * 
-	 * @return true if the board has a winner.
-	 */
-	public boolean hasWinner() {
-		// TODO: add implementation
-		return false;
-	}
-
 	// -- Commands ---------------------------------------------------
 
 	/**
