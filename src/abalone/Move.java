@@ -267,9 +267,9 @@ public class Move {
 				throw new InvalidMoveException("You are not allowed to "
 						+ "commit suicide; " + toString());
 			} else {
-				System.out.println("Marble " + field.getMarble().toString() +
-						" from field (" + field.getRow() + ", " + field.getCol() +
-						") became one with the Force.");
+//				System.out.println("Marble " + field.getMarble().toString() +
+//						" from field (" + field.getRow() + ", " + field.getCol() +
+//						") became one with the Force.");
 			}
 		} else {
 			if (force == -1) {
@@ -385,7 +385,7 @@ public class Move {
     }
     
     /**
-     * Checks if distance between head and tail is withing the bounds given by
+     * Checks if distance between head and tail is within the bounds given by
      * the board.
      * @throws InvalidMoveException if distance too large
      * @requires fields are in line
@@ -398,33 +398,23 @@ public class Move {
     }
     
     /**
-     * Goes through coordinates from tail to head and for each checks if it
-     * contains a marble.
-     * @param rowTail
-     * @param colTail
-     * @param rowHead
-     * @param colHead
-     * @return
-     * @throws InvalidMoveException 
+     * Goes through the fields and checks whether they all contain a marble of the
+     * color of the move (the color who initiated the move).
+     * @throws InvalidMoveException if a field is not occupied
      */
-    private boolean areAllOccupied() throws InvalidMoveException {
+    private void areAllOccupied() throws InvalidMoveException {
     	for (Field f : fields) {
     		if (f.getMarble() == null || f.getMarble().getColor() != color) {
     			throw new InvalidMoveException("Field does not contain valid marble: "
     					+ f.getFullString() + "; " + toString());
     		}
     	}
-    	return true;
     }
     
     /**
-     * Either in the same row, same column, or same diagonal.
-     * @param rowTail
-     * @param colTail
-     * @param rowHead
-     * @param colHead
-     * @return
-     * @throws InvalidMoveException 
+     * Checks if the head and tail of the selection are either in the same row,
+     * same column, or same diagonal.
+     * @throws InvalidMoveException if neither is the case
      */
     private void areInSameLine() throws InvalidMoveException {
     	if (!((rowTail == rowHead) || (colTail == colHead) || (rowTail - colTail
@@ -434,48 +424,90 @@ public class Move {
     }
     
     /**
-     * Returns the array of fields.
+     * Returns the array of the fields in the selection.
      * This is null until the selection gets checked and the fields are found.
+     * @return an array of fields
      */
     public Field[] getFields() {
     	return this.fields;
     }
     
+    /**
+     * Makes a deepcopy of the move. This is used when having to perform the move
+     * on a different board (for example a deepcopy of the board).
+     * @param newBoard is the board that the move should be copied to
+     * @return a new move, which is the same move but on a different board.
+     */
     public Move deepCopy(Board newBoard) {
     	return new Move(newBoard, color, rowTail, colTail, rowHead, colHead,
     			rowDest, colDest);
     }
     
+    /**
+     * Coordinate query.
+     */
     public int getRowTail() {
     	return rowTail;
     }
     
+    /**
+     * Coordinate query.
+     */
     public int getColTail() {
     	return colTail;
     }
     
+    /**
+     * Coordinate query.
+     */
     public int getRowHead() {
     	return rowHead;
     }
     
+    /**
+     * Coordinate query.
+     */
     public int getColHead() {
     	return colHead;
     }
     
+    /**
+     * Coordinate query.
+     */
     public int getRowDest() {
     	return rowDest;
     }
     
+    /**
+     * Coordinate query.
+     */
     public int getColDest() {
     	return colDest;
     }
     
+    /**
+     * Checks if two moves are equal by checking if all parameters are equal.
+     * It is irrelevant if the board or color of both moves is different.
+     * This is used for testing only.
+     * @param m is the move that is to be compared to this one
+     * @return true is the moves are equal, false if they differ in at least one
+     * coordinate
+     */
     public boolean equalsMove(Move m) {
     	return rowTail == m.getRowTail() && colTail == m.getColTail() &&
     			rowHead == m.getRowHead() && colHead == m.getColHead() &&
     			rowDest == m.getRowDest() && colDest == m.getColDest();
     }
     
+    
+    /**
+     * Makes a new move that is the exact same, except on the other side of the
+     * board (meaning after a 180 degrees rotation) and potentially belonging to
+     * a different color.
+     * This is used for testing only.
+     * @param newColor is the color the new move should correspond to
+     * @return a new move on the other side of the board
+     */
     public Move getMirroredMove(Color newColor ) {
     	return new Move(board, newColor,
 				board.rotate180(getRowTail()),
@@ -486,11 +518,23 @@ public class Move {
 				board.rotate180(getColDest()));
     }
     
+    /**
+     * Make the same move but with the head and the tail flipped.
+     * Naturally the destination also need to be changed.
+     * This is used for testing only.
+     * @return effectively the same move
+     */
     public Move getFlipMove() {
     	return new Move(board, color, rowHead, colHead, rowTail, colTail,
     			rowHead + (rowDest - rowTail), colHead + (colDest - colTail));
     }
     
+    /**
+     * Make a string of the fields contained in the move.
+     * Note: fields is empty if move is not checked yet.
+     * @return a string containing the toString of the move and of the fields
+     * related to it
+     */
     public String getStringOfFields() {
     	String s = "";
     	s += toString() + "\n";
@@ -501,8 +545,9 @@ public class Move {
     }
     
     /**
-     * toString of Move
-     * @returns "Color " + color + " moves (" + rowTail + " , " + colTail + "),(" + rowHead + "," + colHead + ") to (" + rowDest + "," + colDest + ")";
+     * Method toString of Move.
+     * @return string that contains the color and the head, tail and destination
+     * coordinates.
      */
     public String toString() {
     	return "Color " + color + " moves (" + rowTail + ", " + colTail + "), (" + rowHead + ", " + colHead + ") to (" + rowDest + ", " + colDest + ")";

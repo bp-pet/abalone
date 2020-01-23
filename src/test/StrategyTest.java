@@ -1,25 +1,18 @@
 package test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
-import java.util.Map;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import abalone.Board;
 import abalone.Color;
-import abalone.Marble;
 import abalone.Move;
 import abalone.AI.RandomStrategy;
 import abalone.AI.Strategy;
 import abalone.exceptions.InvalidMoveException;
-import abalone.Field;
 
 /**
  * Test program for HumanPlayer

@@ -10,20 +10,39 @@ import abalone.exceptions.InvalidMoveException;
 
 public interface Strategy {
 	/**
-	 * returns the name of the strategy.
-	 * @return the name of the strategy
+	 * Returns the name of the strategy.
 	 */
 	public String getName();
 	
 	/**
-	 * returns a next legal move.
-	 * @ensures a valid move.
-	 * @param board given board
-	 * @param mark given mark
-	 * @return
+	 * Returns a next legal move.
+	 * @ensures a valid move
+	 * @returns the best move for this strategy
+	 * @requires there are possible moves
 	 */
 	public Move determineMove(Board board, Color color);
 	
+	/**
+	 * Simulates the move.
+	 * Makes a copy of the board, performs the move, and returns it.
+	 * @return a new board with the move performed on it
+	 */
+	default public Board simulateMove(Board board, Move move) {
+		Board copyBoard = board.deepCopy();
+		move = move.deepCopy(copyBoard);
+		try {
+			move.perform();
+		} catch (InvalidMoveException e) {
+			//Who cares, shouldn't happen right?
+		}
+		return copyBoard;
+	}
+	
+	/**
+	 * Makes a list of all possible moves for a given color on a given board.
+	 * @returns list of valid moves
+	 * @requires board contains marbles of given color
+	 */
 	default public ArrayList<Move> makeMovesList(Board board, Color color) {
 		ArrayList<Move> moveList = new ArrayList<Move>();
 		ArrayList<Move> tempMoveList;

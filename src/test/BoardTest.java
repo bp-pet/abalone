@@ -33,7 +33,7 @@ public class BoardTest {
 	Marble m;
 
 	/**
-	 * create a test board with 2 player setup
+	 * Create a test board with 2 player setup
 	 */
 	@BeforeEach
 	public void setUp() {
@@ -80,7 +80,7 @@ public class BoardTest {
 	}
 
 	/**
-	 * creates boards for 2 to 4 players which are printed to the standard output so
+	 * Creates boards for 2 to 4 players which are printed to the standard output so
 	 * that they can be checked visually.
 	 */
 	@Test
@@ -96,7 +96,7 @@ public class BoardTest {
 	}
 
 	/**
-	 * test if toString of the deepcopy is the same as the original and if you
+	 * Test if toString of the deepcopy is the same as the original and if you
 	 * modify the deepcopy object that the original stays the same.
 	 */
 	@Test
@@ -108,6 +108,11 @@ public class BoardTest {
 		assertNotEquals(copy.toString(), board.toString());
 	}
 	
+	/**
+	 * Tests the map of colors by checking whether there are 14 marbles of each
+	 * color in the beginning, and if every field in the map is indeed of the
+	 * color of the key.
+	 */
 	@Test
 	public void testMapOfColors() {
 		Map<Color, ArrayList<Field>> map = board.getMapOfColors();
@@ -123,6 +128,9 @@ public class BoardTest {
 		}
 	}
 	
+	/*
+	 * Test whether the map of colors also works after a marble has been moved.
+	 */
 	@Test
 	public void testMapOfColorsAfterMove() {
 		try {
@@ -133,12 +141,18 @@ public class BoardTest {
 		testMapOfColors();
 	}
 	
+	/**
+	 * Test whether rotations work.
+	 */
 	@Test
 	public void testRotate() {
 		assertEquals(board.rotate180(0, 0)[0], board.getWidth() - 1);
 		assertEquals(board.rotate180(0, 0)[1], board.getWidth() - 1);
 	}
 	
+	/**
+	 * Test whether the team system works.
+	 */
 	@Test
 	public void testTeams() {
 		Color[] team1 = new Color[2];

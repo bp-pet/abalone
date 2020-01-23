@@ -15,10 +15,14 @@ class MoveTest {
 
 	/** board test instance */
 	private Board board;
+	/** used to make sure exception messages are correct */
 	private String msg;
 	
 	/**
-	 * creates a two player board.
+	 * The way this class works is that it tries different moves. Some of them are
+	 * expected to be valid so if an exception is caught, the test fails. Others
+	 * should be invalid so the test checks if an exception with the appropriate
+	 * message is thrown (only a specific word in it).
 	 * @throws Exception
 	 */
 	@BeforeEach
@@ -29,6 +33,7 @@ class MoveTest {
 	
 	@Test
 	//should not work
+	//used to be a bug
 	void testSpecial() {
 		try {
 			new Move(board, Color.BLACK, 6, 4, 8, 4, 5, 3).perform();
@@ -219,7 +224,6 @@ class MoveTest {
 	
 	@Test
 	//should work
-	//TODO Find out why this doesnt work
 	void testPush2v1(){
 		try {
 			new Move(board, Color.WHITE, 1, 1, 2, 2, 2, 2).perform();

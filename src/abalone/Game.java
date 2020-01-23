@@ -4,16 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
 import abalone.AI.RandomStrategy;
 import abalone.exceptions.InvalidMoveException;
 
 public class Game {
 	// -- Constants --------------------------------------------------
 
-	private static final int MAX_TURNS = 960000;
+//	private static final int MAX_TURNS = 96;
 
 	// If you want to play the real game uncomment this.
-//	private static final int MAX_TURNS = Integer.MAX_VALUE;
+	private static final int MAX_TURNS = Integer.MAX_VALUE;
 
 	public static final int MAX_PLAYERS = 4;
 
@@ -65,6 +66,9 @@ public class Game {
 	public static Player createPlayer(String arg, Color color) {
 		if (arg.contains("-R")) {
 			return new ComputerPlayer(color, new RandomStrategy());
+		} else if (arg.contains("-A")) {
+			return new ComputerPlayer(color,
+					new ItsOverAnakinIHaveTheHighGroundStrategy());
 		} else {
 			return new HumanPlayer(arg, color);
 		}
@@ -125,6 +129,7 @@ public class Game {
 		for (Player player : players) {
 			scores.put(player.getColor(), 0);
 		}
+		board.setTeams(makeTeams(getNumberOfPlayers()));
 	}
 
 	public void play() {
@@ -152,6 +157,45 @@ public class Game {
 			System.out.println("DRAW!");
 		}
 	}
+	
+	public Color[][] makeTeams(int numberOfPlayers){
+		Color[][] result;
+		Color[] team;
+		switch (numberOfPlayers) {
+		case 3:
+			result = new Color[3][1];
+			team = new Color[1];
+			team[0] = Color.BLACK;
+			result[0] = team;
+			team = new Color[1];
+			team[0] = Color.WHITE;
+			result[1] = team;
+			team = new Color[1];
+			team[0] = Color.RED;
+			result[1] = team;
+			break;
+		case 4:
+			result = new Color[2][2];
+			team = new Color[2];
+			team[0] = Color.BLACK;
+			team[0] = Color.WHITE;
+			result[0] = team;
+			team = new Color[2];
+			team[0] = Color.RED;
+			team[0] = Color.BLUE;
+			result[0] = team;
+		default:
+			result = new Color[2][1];
+			team = new Color[1];
+			team[0] = Color.BLACK;
+			result[0] = team;
+			team = new Color[1];
+			team[0] = Color.WHITE;
+			result[1] = team;
+			break;
+		}
+		return result;
+	}
 
 	/**
 	 * If players.length < 4: returns scores.get(p.getColor()) == 6 If
@@ -163,11 +207,15 @@ public class Game {
 	 */
 	/* @pure */
 	public boolean isWinner(Player p) {
-		if (getNumberOfPlayers() == 4) {
-			return (scores.get(p.getColor()) + scores.get(p.getColor().teamColor()) >= 6);
-		} else {
-			return (scores.get(p.getColor()) >= 6);
+		return (determineTeamScore(p) >= 6);
+	}
+	
+	public int determineTeamScore(Player p) {
+		int result = 0;
+		for (Color c : board.getTeam(p.getColor())) {
+			result += scores.get(c);
 		}
+		return result;
 	}
 
 	/**
@@ -200,15 +248,12 @@ public class Game {
 		} else {
 			int highscore = 0;
 			for (Player player : players) {
-				int score = scores.get(player.getColor());
-				if (players.length == 4) {
-					score += scores.get(player.getColor().teamColor());
-				}
+				int score = determineTeamScore(player);
 				if (score > highscore) {
 					highscore = score;
 					winner = player;
 				} else if (highscore != 0 && score == highscore) {
-					if (winner.getColor() != player.getColor().teamColor()) {
+					if (winner.getColor() != player.getColor()) {
 						winner = null;
 					}
 				}

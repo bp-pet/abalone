@@ -8,12 +8,10 @@ import abalone.exceptions.InvalidMoveException;
 
 public class Board {
 
-	private static final int DIM = 5;
-	private final int maxPush = 3;
-
 	// -- Constants --------------------------------------------------
 
-	private static final char FIELD = '+';
+	private static final int DIM = 5;
+	private static final int maxPush = 3;
 	private static final int WIDTH = 2 * DIM - 1;
 
 	// -- Instance variables -----------------------------------------
@@ -39,7 +37,7 @@ public class Board {
 	/**
 	 * Creates a new board with Marbles for playerCount players.
 	 * 
-	 * @param playerCount
+	 * @param playerCount is the number of players
 	 * @requires 2 <= playerCount <= 4;
 	 */
 	public Board(int playerCount) {
@@ -48,12 +46,39 @@ public class Board {
 		this.makeMapOfColors();
 	}
 
-	// -- Queries ----------------------------------------------------
+	// -- Commands ---------------------------------------------------
 	
+	/**
+	 * Sets the teams for the board.
+	 * @param teams is an array containing teams, which are arrays of colors
+	 */
 	public void setTeams(Color[][] teams) {
 		this.teams = teams;
 	}
 	
+	/**
+	 * Finds the team of a given color.
+	 * If color is not on any team it returns null.
+	 * @return an array of colors corresponding to that team
+	 */
+	public Color[] getTeam(Color color) {
+		for (Color[] team : teams) {
+			for (Color c : team) {
+				if (color == c) {
+					return team;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Checks if two colors are teammates on this board. It does this by first
+	 * finding in which team the first color is, then checking if the other color
+	 * is also in this team
+	 * @requires each color is in at most one team
+	 * @return true if colors are in the same team, false otherwise
+	 */
 	public boolean areTeammates(Color colorA, Color colorB) {
 		if (colorA == colorB) {
 			return true;
@@ -76,7 +101,7 @@ public class Board {
 	}
 
 	/**
-	 * Creates a deep copy of this field.
+	 * Creates a deep copy of this field with new fields but the same marbles.
 	 */
 	public Board deepCopy() {
 		Board copy = new Board();
@@ -85,6 +110,7 @@ public class Board {
 				copy.fields[i][j].setMarble(this.fields[i][j].getMarble());
 			}
 		}
+		copy.makeMapOfColors();
 		return copy;
 	}
 
@@ -92,9 +118,8 @@ public class Board {
 	 * @ ensures \result == (0 <= row && row < DIM && 0 <= col && col < DIM);
 	 */
 	/**
-	 * Returns true of the (row,col) pair refers to a valid field on the board.
-	 * 
-	 * @return true if <code>0 <= row < DIM && 0 <= col < DIM</code>
+	 * Returns true of the (row, col) pair refers to a valid field on the board.
+	 * @return true if 0 <= row < DIM && 0 <= col < DIM
 	 */
 	/* @pure */
 	public boolean isField(int row, int col) {
@@ -103,11 +128,7 @@ public class Board {
 	}
 
 	/**
-	 * get Field with given row and col
-	 * 
-	 * @requires 
-	 * @param row
-	 * @param col
+	 * Get Field with given row and col
 	 * @return will return null if field doesn't exist
 	 */
 	public Field getField(int row, int col) {
@@ -123,7 +144,7 @@ public class Board {
 	 * == Marble.XX || \result == Marble.OO; pure
 	 */
 	/**
-	 * Returns the content of the field referred to by the (row,col) pair.
+	 * Returns the content of the field referred to by the (row, col) pair.
 	 * 
 	 * @param row the row of the field
 	 * @param col the column of the field
@@ -194,8 +215,6 @@ public class Board {
 		return (char) (col + 48 + 1);
 	}
 
-	// -- Commands ---------------------------------------------------
-
 	/**
 	 * empties board and makes a new mapOfColors afterwards
 	 * 
@@ -217,9 +236,10 @@ public class Board {
 	}
 
 	/**
-	 * empties board and fills it with marbles for numberOfPlayers and makes a new mapOfColors afterwards
+	 * Empties board and fills it with marbles and makes a new mapOfColors
+	 * afterwards.
 	 * 
-	 * @param numberOfPlayers
+	 * @param numberOfPlayers indicating how many players are playing
 	 */
 	public void reset(int numberOfPlayers) {
 		Marble m;
@@ -295,10 +315,10 @@ public class Board {
 	}
 
 	/**
-	 * extraction used for {@link #Board(int)} which calculates if the given i, j
+	 * Extraction used for {@link #Board(int)} which calculates if the given i, j
 	 * field is in the region where the blue marbles should be placed on a 4 player
 	 * board.
-	 * 
+	 * TODO DAAN make this clear 
 	 * @param i
 	 * @param j
 	 * @return boolean
@@ -308,13 +328,12 @@ public class Board {
 	}
 
 	/*
-	 * @ requires this.isField(row,col); ensures this.getField(row,col) == m;
+	 * @ requires this.isField(row, col); ensures this.getField(row, col) == m;
 	 * 
 	 */
 	/**
-	 * Sets the content of the field represented by the (row,col) pair to the marble
-	 * <code>m</code>.
-	 * 
+	 * Sets the content of the field represented by the (row, col) pair to the
+	 * marble m.
 	 * @param row the field's row
 	 * @param col the field's column
 	 * @param m   the marble to be placed
@@ -324,26 +343,30 @@ public class Board {
 	}
 
 	/**
-	 * Tries to move the move if move is invalid InvalidMoveException is trown and
+	 * Tries to move the move if move is invalid InvalidMoveException is thrown and
 	 * no marbles are moved.
-	 * 
-	 * @param rowTail
-	 * @param colTail
-	 * @param rowHead
-	 * @param colHead
-	 * @param rowDest
-	 * @param colDest
 	 * @throws InvalidMoveException
 	 */
-	public void move(Color color, int rowTail, int colTail, int rowHead, int colHead, int rowDest, int colDest)
-			throws InvalidMoveException {
-		move(new Move(this, color, rowTail, colTail, rowHead, colHead, rowDest, colDest));
+	public void move(Color color, int rowTail, int colTail, int rowHead,
+			int colHead, int rowDest, int colDest) throws InvalidMoveException {
+		move(new Move(this, color, rowTail, colTail, rowHead, colHead, rowDest,
+				colDest));
 	}
 
+	/**
+	 * Performs a move.
+	 * @throws InvalidMoveException
+	 */
 	public void move(Move move) throws InvalidMoveException {
 		move.perform();
 	}
-	
+
+	/**
+	 * Makes a map of colors. This map has colors as keys and lists of fields as
+	 * entries. A list contains all fields containing marbles of the given color.
+	 * This method should run when the board is set up and whenever a move is
+	 * performed.
+	 */
 	public void makeMapOfColors() {
 		mapOfColors = new HashMap<Color, ArrayList<Field>>();
 		ArrayList<Field> fieldArray;
@@ -363,10 +386,60 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Rotates a set of coordinates by 180 degrees.
+	 */
+	public int[] rotate180(int row, int col){
+		int[] result = new int[2];
+		result[0] = rotate180(row);
+		result[1] = rotate180(col);
+		return result;
+	}
+	
+	/**
+	 * Rotates a coordinate by 180 degrees.
+	 */
+	public int rotate180(int i) {
+		return 2 * DIM - i - 2;
+	}
+	
+	// -- Queries ----------------------------------------------------
+
+	/**
+	 * Query.
+	 */
+	public int getDim() {
+		return DIM;
+	}
+	
+
+	/**
+	 * Query.
+	 */
+	public int getWidth() {
+		return WIDTH;
+	}
+	
+
+	/**
+	 * Query.
+	 */
+	public int getMaxPush() {
+		return maxPush;
+	}
+	
+
+	/**
+	 * Query.
+	 */
 	public Map<Color, ArrayList<Field>> getMapOfColors() {
 		return mapOfColors;
 	}
 	
+
+	/**
+	 * Query.
+	 */
 	public String getStringMapOfColors() {
 		String s = "MapOfColors:\n";
 		for (Color c : getMapOfColors().keySet()) {
@@ -378,6 +451,10 @@ public class Board {
 		return s;
 	}
 	
+
+	/**
+	 * Query.
+	 */
 	public String getNumberOfMarbles() {
 		String s = "";
 		for (Color c : mapOfColors.keySet()) {
@@ -385,32 +462,10 @@ public class Board {
 		}
 		return s;
 	}
-	
-	public int[] rotate180(int row, int col){
-		int[] result = new int[2];
-		result[0] = rotate180(row);
-		result[1] = rotate180(col);
-		return result;
-	}
-	
-	public int rotate180(int i) {
-		return 2 * DIM - i - 2;
-	}
-	
-	public int getDim() {
-		return DIM;
-	}
-	
-	public int getWidth() {
-		return WIDTH;
-	}
-	
-	public int getMaxPush() {
-		return maxPush;
-	}
-	
+
+
 	/**
-	 * Returns String representation of the board
+	 * Query.
 	 */
 	public String toString() {
 		String full = "";
