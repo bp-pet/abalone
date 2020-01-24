@@ -2,19 +2,18 @@ package abalone;
 
 import java.util.ArrayList;
 
-import abalone.AI.RandomStrategy;
 import ss.utils.TextIO;
 
 /**
- * creates a standard Abalone game for local play.
+ * Creates a standard Abalone game for local play.
  * 
  * @author Daan Pluister
  */
 public class Abalone {
-
+	//TODO  implement score properly
 	/**
-	 * priem.
-	 * 
+	 * Priem.
+	 * TODO DAAN write better comments
 	 * @param args player1, player2
 	 */
 	public static void main(String[] args) {

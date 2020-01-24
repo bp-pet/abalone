@@ -35,26 +35,6 @@ public enum Color {
 			return next(2);
 		}
 	}
-
-	/**
-	 * Returns the team color.
-	 * @requires game has 4 players.
-	 * @return the team color
-	 */
-	public Color teamColor() {
-		switch (this) {
-		case WHITE:
-			return BLACK;
-		case BLACK:
-			return WHITE;
-		case BLUE:
-			return RED;
-		case RED:
-			return BLUE;
-		default:
-			return null;
-		}
-	}
 	
 	/**
 	 * 

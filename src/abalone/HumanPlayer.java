@@ -20,7 +20,7 @@ public class HumanPlayer extends Player {
 	// -- Constructors -----------------------------------------------
 
 	/**
-	 * Creates a new human player object with stardard view
+	 * Creates a new human player object with standard view
 	 * 
 	 * @requires name is not null
 	 * @requires marble is of enum Marble
@@ -35,38 +35,43 @@ public class HumanPlayer extends Player {
 	// -- Commands ---------------------------------------------------
 	
 	public Move determineMove(Board board) {
-		String prompt = "> " + getName() + " (" + getColor().toString() + ")" + ", what is your choice? ";
+		String prompt = "> " + getName() + " (" + getColor().toString() +
+				")" + ", what is your choice? ";
 		String choice;
 
 		view.showMessage(board.toString());
 		choice = view.getString(prompt);
 		while (! (choice.matches(PATTERN))) {
-			view.showMessage("ERROR: field " + choice + " is not a valid choice (must match pattern " + PATTERN + ").");
+			view.showMessage("ERROR: field " + choice +
+					" is not a valid choice (must match pattern " + PATTERN + ").");
 			choice = view.getString(prompt);
 		}
-
-		Board copy = board.deepCopy();
-		Move tryMove = parseChoice(copy, choice);
+		Move move = parseChoice(board, choice);
 
 		try {
-			tryMove.perform();
+			move.isValidMove();
 		} catch (InvalidMoveException e) {
-			view.showMessage(tryMove.toString() + "\n" + e.getMessage());
-			tryMove = determineMove(board);
+			view.showMessage(e.getMessage());
+			move = determineMove(board);
 		}
 		
-		return parseChoice(board, choice);
+		return move;
 	}
 	
 	/**
 	 * 
-	 * @requires choise.matches(PATTERN);
+	 * @requires choice.matches(PATTERN);
 	 * @param board
-	 * @param choise
+	 * @param choice
 	 * @return
 	 */
 	public Move parseChoice(Board board, String choice) {
-		return new Move(board, getColor(), board.getRowFromLetter(choice.charAt(0)), board.getColFromLetter(choice.charAt(1)), board.getRowFromLetter(choice.charAt(3)), board.getColFromLetter(choice.charAt(4)), board.getRowFromLetter(choice.charAt(6)), board.getColFromLetter(choice.charAt(7)));
+		return new Move(board, getColor(), board.getRowFromLetter(choice.charAt(0)),
+				board.getColFromLetter(choice.charAt(1)),
+				board.getRowFromLetter(choice.charAt(3)),
+				board.getColFromLetter(choice.charAt(4)),
+				board.getRowFromLetter(choice.charAt(6)),
+				board.getColFromLetter(choice.charAt(7)));
 	}
 
 }

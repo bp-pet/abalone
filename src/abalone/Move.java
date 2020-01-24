@@ -18,13 +18,19 @@ public class Move {
 	
 	/**
 	 * Makes a new selection associated to given board and given coordinates.
-	 * @param board
-	 * @param rowTail
-	 * @param colTail
-	 * @param rowHead
-	 * @param colHead
-	 * @param rowDest
-	 * @param colDest
+	 * In this case head and tail do not indicate direction of movement,
+	 * and are only relevant in the context of the destination being where the
+	 * tail should go.
+	 * Later the true tail and head of the selection are defined, in case it is
+	 * along the axis.
+	 * @param board on which the move is to be performed
+	 * @param color which performs the move
+	 * @param rowTail row of the tail field
+	 * @param colTail column of the tail field
+	 * @param rowHead row of the head field
+	 * @param colHead column of the head field
+	 * @param rowDest row of the destination field for the tail
+	 * @param colDest column of the destination field for the tail
 	 */
 	public Move(Board board, Color color, int rowTail, int colTail, int rowHead,
     		int colHead, int rowDest, int colDest) {
@@ -38,40 +44,55 @@ public class Move {
 		this.colDest = colDest;
 	}
 	
+	/**
+	 * Makes a move from an array of coordinates. Used for convenience.
+	 * @requires coords (coordinates) has size 6 and no null entries
+	 */
+	public Move(Board board, Color color, int[] coords) {
+		this(board, color, coords[0], coords[1], coords[2], coords[3],
+				coords[4], coords[5]);
+	}
+
     /**
-     * Checks if given coordinates are fields, if they are in same line,
-     * if they are distance 2 or smaller away from each other and if they
-     * are occupied.
-     * If all of these conditions are okay, the selection is valid.
-     * @param rowTail
-     * @param colTail
-     * @param rowHead
-     * @param colHead
-     * @return
+     * Checks whether move is valid. If it is, it performs it. After that,
+     * the map of colors of the board is updated (perhaps this should be done
+     * in the board class, however moves are not always performed through that
+     * class, instead some methods call move.perform directly).
+     * @throws InvalidMoveException with appropriate message if any of the
+     * conditions are violated
      */
     public void perform() throws InvalidMoveException {
     	isValidMove();
 		moveAllFields();
+		board.makeMapOfColors();
     }
     
     /**
      * Checks if a move is valid without performing it.
-     * @throws InvalidMoveException
+     * First it checks if the selection is valid, then makes an array of the fields,
+     * so it can check if they are occupied and if the destination is adjacent.
+     * After that it checks whether the move is along the axis of the selection
+     * or not, then in calls the appropriate method for each case.
+     * @throws InvalidMoveException if any of the conditions are violated
      */
     public void isValidMove() throws InvalidMoveException {
     	isValidSelection();
     	this.fields = getSelectedFields();
     	areAllOccupied();
-    	areAdjacent();
+    	destinationIsAdjacent();
     	if (moveIsAlongAxis()) {
-    		canMoveField(findHead(), fields.length - 1);
+    		canMoveField(findLocomotive(), fields.length - 1);
     	} else {
     		canMoveOneByOne();
     	}
     }
     
     /**
-     * Moves every field in selection.
+     * Moves every field in selection. This assumes the move is valid. So force
+     * is not considered.
+     * If the move is along the axis, the tail is moved first, which recursively
+     * moves all other marbles in front of it.
+     * If the move is not along the axis, all marbles are moved separately.
      * @requires move is valid
      */
     private void moveAllFields() {
@@ -80,7 +101,7 @@ public class Move {
     			doMoveField(f);
     		}
     	} else {
-    		doMoveField(findTail());
+    		doMoveField(findLastWagon());
     	}
     }
 
@@ -89,7 +110,7 @@ public class Move {
      * If next field is empty, nothing special.
      * If next field is taken, recursively move next field.
      * If next field is invalid, kill marble.
-     * @param field
+     * @param field to be moved
      */
     private void doMoveField(Field f) {
     	Field nextField = getNextField(f);
@@ -106,15 +127,14 @@ public class Move {
     }
     
     /**
-     * Check if two coordinates are adjacent.
-     * @param rowTail
-     * @param colTail
-     * @param rowDest
-     * @param colDest
-     * @return
-     * @throws InvalidMoveException 
+     * Check if the destination is adjacent to the tail marble.
+     * There are three cases when this is true:
+     * if the row difference is 1 and the column difference is 0 (vertical move)
+     * if the row difference is 0 and the column difference is 1 (horizontal move)
+     * if the row difference is 1 and the column difference is 1 (diagonal move)
+     * @throws InvalidMoveException if condition is violated
      */
-    private void areAdjacent() throws InvalidMoveException {
+    private void destinationIsAdjacent() throws InvalidMoveException {
     	if (!(Math.abs(rowTail - rowDest) == 1 && Math.abs(colTail - colDest) == 0)
     			&& !(Math.abs(rowTail - rowDest) == 0
     			&& Math.abs(colTail - colDest) == 1)
@@ -126,11 +146,12 @@ public class Move {
     }
         
     /**
-     * Finds head field.
+     * Finds the field of the locomotive marble. This means the field in front.
+     * This is only relevant if the move is along the axis. 
      * If move is not along axis, returns any field.
-     * @return
+     * @return a field in the selection
      */
-    private Field findHead() {
+    private Field findLocomotive() {
     	for (Field f : fields) {
     		boolean ind = true;
     		Field nextField = getNextField(f);
@@ -148,11 +169,12 @@ public class Move {
     }
     
     /**
-     * Finds tail field.
+     * Finds last wagon of the selection. This is the marble in the back.
+     * Only relevant for moving along axis.
      * If move is not along axis, returns any field.
-     * @return
+     * @return a field of the selection
      */
-    private Field findTail() {
+    private Field findLastWagon() {
     	if (!moveIsAlongAxis()) {
     		return fields[0];
     	}
@@ -173,9 +195,10 @@ public class Move {
     }
     
     /**
-     * Checks if each marble in selection can be moved without pushing
-     * @throws InvalidMoveException 
-     * @requires not along axis
+     * Checks if each marble in selection can be moved without pushing.
+     * Used for moving laterally.
+     * The concept of force is explained in the canMoveField method.
+     * @throws InvalidMoveException if either marble cannot be moved 
      */
     private void canMoveOneByOne() throws InvalidMoveException {
     	for (Field f : fields) {
@@ -184,46 +207,69 @@ public class Move {
     }
     
     /**
-     * Gets the next field in direction of the movement vector.
+     * From a given field, gets the next field in direction of the movement.
+     * rowMove and colMove is the movement vector.
+     * @requires move along axis since moving vector is only created in such a case
      */
-    private Field getNextField(Field f) {
-    	return board.getField(f.getRow() + rowMove, f.getCol() + colMove);
+    private Field getNextField(Field field) {
+    	return board.getField(field.getRow() + rowMove, field.getCol() + colMove);
     }
 
     /**
-     * Gets the previous field, or the one opposite the direction
-     * of the movement vector.
+     * Same as getNextField but the other way.
      */
-    private Field getPrevField(Field f) {
-    	return board.getField(f.getRow() - rowMove, f.getCol() - colMove);
+    private Field getPrevField(Field field) {
+    	return board.getField(field.getRow() - rowMove, field.getCol() - colMove);
     }
     
     /**
-     * Check if a marble can be moved with a given force.
+     * The meat of the Move class.
+     * 
+     * Check if a marble can be moved with a given force. The force basically means
+     * how many more enemy marbles we have the capacity to push, and is increased
+     * if a friendly marble is encountered, or decreased if an enemy marble is
+     * encountered.
+     * 
      * If next field is out of board, movement can only be done if current marble
      * to be pushed is not friendly, since suicide is not allowed.
-     * If force is 0, nothing can be pushed, so move only works towards
-     * a free space.
-     * If force is positive, but less than three: a friendly marble can be pushed
-     * which starts a move of said marble with force increased by 1; an enemy marble
-     * can be pushed which decreases force by 1.
-     * An enemy marble cannot again push a friendly one.
-     * Also force cannot increase above three since only 3 marbles can be moved at
-     * a time. 
-     * @param f
-     * @param force
-     * @return
-     * TODO: currently, friendly color means specifically the same color as the
-     * selection.
-     * @throws InvalidMoveException 
+     * If the force is -1, which only happens if the move is lateral, nothing can
+     * be pushed.
+     * If force is 0, the only way a push can happen is if the current marble and
+     * the next marble are both from the color of the color initiating the move (to
+     * be referred as color of the move).
+     * 
+     * If the force is positive it gets complicated. If the next field is empty,
+     * the move is allowed. Otherwise there are two combinations where a push is
+     * allowed:
+     * -if the current and the next marble are friendly; in this case a push is
+     * allowed if the maximum force is not reached (in the normal game a maximum
+     * of 3 friendly marbles can be pushed.
+     * -if the current is friendly and the next is an enemy; then the next one is
+     * pushed with the force decremented by one
+     * -if the current and the next marble are both of an opponent; in this case
+     * the function is called on the next marble with the force decremented by 1.
+     * These cases are necessary in order to prevent moves like (FFEFE) where F
+     * is friendly and E is an enemy. Thus once an enemy marble is being pushed,
+     * a friendly one cannot be added to the stack.
+     * 
+     * This method works recursively: if a push is allowed for the current marble,
+     * the method is called for the next marble using the appropriate force.
+     * 
+     * @param f current field that is pushed
+     * @param force indicates how many enemy marbles can still be pushed
+     * @throws InvalidMoveException if not valid for whatever reason
      */
-    private void canMoveField(Field f, int force) throws InvalidMoveException {
-		Field nextField = getNextField(f);
-		Color currentColor = f.getMarble().getColor();
+    private void canMoveField(Field field, int force) throws InvalidMoveException {
+		Field nextField = getNextField(field);
+		Color currentColor = field.getMarble().getColor();
 		if (nextField == null || !nextField.isValid()) {
-			if (currentColor == color) {
+			if (board.areTeammates(currentColor, color)) {
 				throw new InvalidMoveException("You are not allowed to "
 						+ "commit suicide; " + toString());
+			} else {
+//				System.out.println("Marble " + field.getMarble().toString() +
+//						" from field (" + field.getRow() + ", " + field.getCol() +
+//						") became one with the Force.");
 			}
 		} else {
 			if (force == -1) {
@@ -232,25 +278,23 @@ public class Move {
 	    					+ toString());
 				}
 			} else if (force == 0) {
-	    		if (currentColor != color) {
-	    			throw new InvalidMoveException("Not enough force to push; "
-	    					+ toString());
-	    		}
 	    		if (nextField.getMarble() != null) {
-	    			if (nextField.getMarble().getColor() == color) {
+	    			if (board.areTeammates(currentColor, color) &&
+	    					board.areTeammates(nextField.getMarble().
+	    					getColor(), color)) {
 	    				canMoveField(nextField, force + 1);
 	    			} else {
-		    			throw new InvalidMoveException("Not enough force to push; "
+		    			throw new InvalidMoveException("Invalid push; "
 		    					+ toString());
 	    			}
 	    		}
 			} else {
 	    		if (!(nextField.getMarble() == null)) {
 	    			Marble nextMarble = nextField.getMarble();
-	    			if (currentColor == color) {
-	    				if (nextMarble.getColor() == color) {
-	    					if (force == board.maxPush - 1) {
-	    						throw new InvalidMoveException("Too many pushed; "
+	    			if (board.areTeammates(currentColor, color)) {
+	    				if (board.areTeammates(nextMarble.getColor(), color)) {
+	    					if (force == board.getMaxPush() - 1) {
+	    						throw new InvalidMoveException("Invalid push; "
 	    								+ toString());
 	    					} else {
 	    						canMoveField(nextField, force + 1);
@@ -259,8 +303,11 @@ public class Move {
 	    					canMoveField(nextField, force - 1);
 	    				}
 	    			} else {
-	    				if (nextMarble.getColor() != color) {
+	    				if (!board.areTeammates(nextMarble.getColor(), color)) {
 	    					canMoveField(nextField, force - 1);
+	    				} else {
+	    					throw new InvalidMoveException("Invalid push: " +
+	    								toString());
 	    				}
 	    			}
 	    		}
@@ -269,10 +316,13 @@ public class Move {
     }
 
     /**
-     * Check if move is along axis by checking if moving tail in the direction of
-     * the move vector (rowMove, colMove) or opposite that direction ends
-     * up in one of the other fields. 
-     * @return
+     * Check if move is along axis by checking if moving from the tail field
+     * of the selection in the direction of the move vector (rowMove, colMove)
+     * or opposite that direction ends up in one of the other fields. This is
+     * only the case if the movement is along the axis.
+     * If selection is of size one, the selection counts as being along the axis
+     * for pushing purposes.
+     * @return true if along axis, false otherwise
      */
     private boolean moveIsAlongAxis() {
     	rowMove = rowDest - rowTail;
@@ -293,28 +343,30 @@ public class Move {
     /**
      * Checks if selection is valid based on three conditions:
      * -head and tail fields are valid
-     * -they are in the same line
-     * -the distance between is 2 or less
-     * @throws InvalidMoveException 
+     * -they are in the same line (horizontal, vertical or diagonal)
+     * -the distance between is in the bounds given by the board (normally 3 or less)
+     * @throws InvalidMoveException if either is violated
      */
     public void isValidSelection() throws InvalidMoveException {
     	if (!board.isField(rowTail, colTail) || !board.isField(rowHead, colHead)) {
     		throw new InvalidMoveException("Selection not valid; " + toString());
     	}
     	areInSameLine();
-    	distance2orSmaller();
+    	distanceWithinBounds();
     }
     
     /**
      * Finds the fields belonging to selection and makes an array of them.
+     * First it calculates the size of the selection by looking at the vertical
+     * and horizontal distance and taking the maximum (and adding 1). So if the
+     * fields are 2 apart the distance is 3.
+     * Then, starting at the tail, it goes through the fields in the direction of
+     * the movement and stops when the array is filled.
      * @requires selection is valid
      * @return an array of fields in selection
      */
     private Field[] getSelectedFields() {
     	int rowDiff = rowHead - rowTail;
-    	if (rowDiff != 0) {
-    		rowDiff = rowDiff/Math.abs(rowDiff);
-    	}
     	int colDiff = colHead - colTail;
     	int size = Math.max(Math.abs(rowDiff), Math.abs(colDiff)) + 1;
     	Field[] result = new Field[size];
@@ -333,45 +385,36 @@ public class Move {
     }
     
     /**
-     * Checks if distance between head and tail is 2 or less.
-     * @throws InvalidMoveException 
+     * Checks if distance between head and tail is within the bounds given by
+     * the board.
+     * @throws InvalidMoveException if distance too large
      * @requires fields are in line
      */
-    private void distance2orSmaller() throws InvalidMoveException {
-    	if (!(Math.abs(rowTail - rowHead) <= board.maxPush - 1
-    			|| Math.abs(colTail - colHead) <= board.maxPush - 1)) {
+    private void distanceWithinBounds() throws InvalidMoveException {
+    	if (!(Math.abs(rowTail - rowHead) <= board.getMaxPush() - 1
+    			|| Math.abs(colTail - colHead) <= board.getMaxPush() - 1)) {
     		throw new InvalidMoveException("Selection too long; " + toString());
     	}
     }
     
     /**
-     * Goes through coordinates from tail to head and for each checks if it
-     * contains a marble.
-     * @param rowTail
-     * @param colTail
-     * @param rowHead
-     * @param colHead
-     * @return
-     * @throws InvalidMoveException 
+     * Goes through the fields and checks whether they all contain a marble of the
+     * color of the move (the color who initiated the move).
+     * @throws InvalidMoveException if a field is not occupied
      */
-    private boolean areAllOccupied() throws InvalidMoveException {
+    private void areAllOccupied() throws InvalidMoveException {
     	for (Field f : fields) {
     		if (f.getMarble() == null || f.getMarble().getColor() != color) {
     			throw new InvalidMoveException("Field does not contain valid marble: "
     					+ f.getFullString() + "; " + toString());
     		}
     	}
-    	return true;
     }
     
     /**
-     * Either in the same row, same column, or same diagonal.
-     * @param rowTail
-     * @param colTail
-     * @param rowHead
-     * @param colHead
-     * @return
-     * @throws InvalidMoveException 
+     * Checks if the head and tail of the selection are either in the same row,
+     * same column, or same diagonal.
+     * @throws InvalidMoveException if neither is the case
      */
     private void areInSameLine() throws InvalidMoveException {
     	if (!((rowTail == rowHead) || (colTail == colHead) || (rowTail - colTail
@@ -381,23 +424,132 @@ public class Move {
     }
     
     /**
-     * Returns the array of fields.
+     * Returns the array of the fields in the selection.
      * This is null until the selection gets checked and the fields are found.
+     * @return an array of fields
      */
     public Field[] getFields() {
     	return this.fields;
     }
     
+    /**
+     * Makes a deepcopy of the move. This is used when having to perform the move
+     * on a different board (for example a deepcopy of the board).
+     * @param newBoard is the board that the move should be copied to
+     * @return a new move, which is the same move but on a different board.
+     */
     public Move deepCopy(Board newBoard) {
     	return new Move(newBoard, color, rowTail, colTail, rowHead, colHead,
     			rowDest, colDest);
     }
     
     /**
-     * toString of Move
-     * @returns "Color " + color + " moves (" + rowTail + " , " + colTail + "),(" + rowHead + "," + colHead + ") to (" + rowDest + "," + colDest + ")";
+     * Coordinate query.
+     */
+    public int getRowTail() {
+    	return rowTail;
+    }
+    
+    /**
+     * Coordinate query.
+     */
+    public int getColTail() {
+    	return colTail;
+    }
+    
+    /**
+     * Coordinate query.
+     */
+    public int getRowHead() {
+    	return rowHead;
+    }
+    
+    /**
+     * Coordinate query.
+     */
+    public int getColHead() {
+    	return colHead;
+    }
+    
+    /**
+     * Coordinate query.
+     */
+    public int getRowDest() {
+    	return rowDest;
+    }
+    
+    /**
+     * Coordinate query.
+     */
+    public int getColDest() {
+    	return colDest;
+    }
+    
+    /**
+     * Checks if two moves are equal by checking if all parameters are equal.
+     * It is irrelevant if the board or color of both moves is different.
+     * This is used for testing only.
+     * @param m is the move that is to be compared to this one
+     * @return true is the moves are equal, false if they differ in at least one
+     * coordinate
+     */
+    public boolean equalsMove(Move m) {
+    	return rowTail == m.getRowTail() && colTail == m.getColTail() &&
+    			rowHead == m.getRowHead() && colHead == m.getColHead() &&
+    			rowDest == m.getRowDest() && colDest == m.getColDest();
+    }
+    
+    
+    /**
+     * Makes a new move that is the exact same, except on the other side of the
+     * board (meaning after a 180 degrees rotation) and potentially belonging to
+     * a different color.
+     * This is used for testing only.
+     * @param newColor is the color the new move should correspond to
+     * @return a new move on the other side of the board
+     */
+    public Move getMirroredMove(Color newColor ) {
+    	return new Move(board, newColor,
+				board.rotate180(getRowTail()),
+				board.rotate180(getColTail()),
+				board.rotate180(getRowHead()),
+				board.rotate180(getColHead()),
+				board.rotate180(getRowDest()),
+				board.rotate180(getColDest()));
+    }
+    
+    /**
+     * Make the same move but with the head and the tail flipped.
+     * Naturally the destination also need to be changed.
+     * This is used for testing only.
+     * @return effectively the same move
+     */
+    public Move getFlipMove() {
+    	return new Move(board, color, rowHead, colHead, rowTail, colTail,
+    			rowHead + (rowDest - rowTail), colHead + (colDest - colTail));
+    }
+    
+    /**
+     * Make a string of the fields contained in the move.
+     * Note: fields is empty if move is not checked yet.
+     * @return a string containing the toString of the move and of the fields
+     * related to it
+     */
+    public String getStringOfFields() {
+    	String s = "";
+    	s += toString() + "\n";
+    	for (Field f : fields) {
+    		s += f.getFullString() + "\n";
+    	}
+    	return s;
+    }
+    
+    /**
+     * Method toString of Move.
+     * @return string that contains the color and the head, tail and destination
+     * coordinates.
      */
     public String toString() {
-    	return "Move: Color " + color + " moves (" + rowTail + ", " + colTail + "), (" + rowHead + ", " + colHead + ") to (" + rowDest + ", " + colDest + ")";
+    	return "Color " + color + " moves (" + rowTail + ", " + colTail + "), (" + rowHead + ", " + colHead + ") to (" + rowDest + ", " + colDest + ")";
     }
 }

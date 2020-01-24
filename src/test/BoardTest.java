@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import abalone.Board;
 import abalone.Color;
 import abalone.Marble;
+import abalone.Move;
+import abalone.exceptions.InvalidMoveException;
 import abalone.Field;
 
 /**
@@ -30,11 +33,11 @@ public class BoardTest {
 	Marble m;
 
 	/**
-	 * create a test board with 2 player setup
+	 * Create a test board with 2 player setup
 	 */
 	@BeforeEach
 	public void setUp() {
-		board = new Board();
+		board = new Board(2);
 		m = new Marble(Color.RED);
 	}
 
@@ -77,23 +80,23 @@ public class BoardTest {
 	}
 
 	/**
-	 * creates boards for 2 to 4 players which are printed to the standard output so
+	 * Creates boards for 2 to 4 players which are printed to the standard output so
 	 * that they can be checked visually.
 	 */
 	@Test
 	public void testReset() {
 		board = new Board();
-		System.out.println(board.toString());
-		board.reset(2);
-		System.out.println(board.toString());
-		board.reset(3);
-		System.out.println(board.toString());
-		board.reset(4);
-		System.out.println(board.toString());
+//		System.out.println(board.toString());
+//		board.reset(2);
+//		System.out.println(board.toString());
+//		board.reset(3);
+//		System.out.println(board.toString());
+//		board.reset(4);
+//		System.out.println(board.toString());
 	}
 
 	/**
-	 * test if toString of the deepcopy is the same as the original and if you
+	 * Test if toString of the deepcopy is the same as the original and if you
 	 * modify the deepcopy object that the original stays the same.
 	 */
 	@Test
@@ -105,10 +108,14 @@ public class BoardTest {
 		assertNotEquals(copy.toString(), board.toString());
 	}
 	
+	/**
+	 * Tests the map of colors by checking whether there are 14 marbles of each
+	 * color in the beginning, and if every field in the map is indeed of the
+	 * color of the key.
+	 */
 	@Test
 	public void testMapOfColors() {
-		board = new Board(2);
-		Map<Color, ArrayList<Field>> map = board.getMapOfcolors();
+		Map<Color, ArrayList<Field>> map = board.getMapOfColors();
 		assertTrue(map.keySet().size() == 2);
 		assertTrue(map.get(Color.BLACK).size() == 14);
 		assertTrue(map.get(Color.WHITE).size() == 14);
@@ -116,7 +123,63 @@ public class BoardTest {
 			assertTrue(f.getMarble().getColor() == Color.BLACK);
 		}
 		for (Field f : map.get(Color.WHITE)) {
-			assertTrue(f.getMarble().getColor() == Color.WHITE);
+			assertTrue(f.getMarble() != null);
+			assertEquals(f.getMarble().getColor(),Color.WHITE);
 		}
+	}
+	
+	/*
+	 * Test whether the map of colors also works after a marble has been moved.
+	 */
+	@Test
+	public void testMapOfColorsAfterMove() {
+		try {
+			new Move(board, Color.WHITE, 1, 0, 1, 0, 2, 0).perform();
+		} catch (InvalidMoveException e) {
+			fail();
+		}
+		testMapOfColors();
+	}
+	
+	/**
+	 * Test whether rotations work.
+	 */
+	@Test
+	public void testRotate() {
+		assertEquals(board.rotate180(0, 0)[0], board.getWidth() - 1);
+		assertEquals(board.rotate180(0, 0)[1], board.getWidth() - 1);
+	}
+	
+	/**
+	 * Test whether the team system works.
+	 */
+	@Test
+	public void testTeams() {
+		Color[] team1 = new Color[2];
+		team1[0] = Color.WHITE;
+		team1[1] = Color.BLACK;
+		Color[] team2 = new Color[2];
+		team2[0] = Color.RED;
+		team2[1] = Color.BLUE;
+		Color[][] teams = new Color[2][2];
+		teams[0] = team1;
+		teams[1] = team2;
+		board.setTeams(teams);
+		assertTrue(board.areTeammates(Color.WHITE, Color.WHITE));
+		assertTrue(board.areTeammates(Color.BLACK, Color.BLACK));
+		assertTrue(board.areTeammates(Color.RED, Color.RED));
+		assertTrue(board.areTeammates(Color.BLUE, Color.BLUE));
+		assertTrue(board.areTeammates(Color.WHITE, Color.BLACK));
+		assertTrue(board.areTeammates(Color.BLACK, Color.WHITE));
+		assertTrue(board.areTeammates(Color.RED, Color.BLUE));
+		assertTrue(board.areTeammates(Color.BLUE, Color.RED));
+		assertFalse(board.areTeammates(Color.WHITE, Color.RED));
+		assertFalse(board.areTeammates(Color.RED, Color.WHITE));
+		assertFalse(board.areTeammates(Color.WHITE, Color.BLUE));
+		assertFalse(board.areTeammates(Color.BLUE, Color.WHITE));
+		assertFalse(board.areTeammates(Color.BLACK, Color.RED));
+		assertFalse(board.areTeammates(Color.RED, Color.BLACK));
+		assertFalse(board.areTeammates(Color.BLACK, Color.BLUE));
+		assertFalse(board.areTeammates(Color.BLUE, Color.BLACK));
 	}
 }
