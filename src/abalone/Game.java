@@ -141,6 +141,7 @@ public class Game {
 				e.printStackTrace();
 			}
 			current = current.next(getNumberOfPlayers());
+			// TODO: add score increase if marbles amount is lower
 			numberOfTurns++;
 			// TODO: remove method showBoard() or not
 			showBoard();
@@ -182,6 +183,10 @@ public class Game {
 			}
 		}
 		return false;
+	}
+	
+	public void increaseScore(Color color) {
+		scores.put(color, scores.get(color) + 1);
 	}
 
 	/**
