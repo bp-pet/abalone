@@ -8,7 +8,7 @@ import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
 import abalone.AI.RandomStrategy;
 import abalone.exceptions.InvalidMoveException;
 
-public class Game {
+public abstract class Game {
 	// -- Constants --------------------------------------------------
 
 //	private static final int MAX_TURNS = 96;
@@ -40,7 +40,7 @@ public class Game {
 	 * 
 	 * @invariance 2 <= players.length <= MAX_PLAYERS
 	 */
-	private Player[] players;
+	protected Player[] players;
 
 	/**
 	 * Map of Color to the score that color has.
@@ -60,38 +60,16 @@ public class Game {
 	// -- Constructors -----------------------------------------------
 
 	/**
-	 * creates player with Color color, if arg contains -R then Random Computer, else arg is
-	 * the name of the Human player.
-	 */
-	public static Player createPlayer(String arg, Color color) {
-		if (arg.contains("-R")) {
-			return new ComputerPlayer(color, new RandomStrategy());
-		} else if (arg.contains("-A")) {
-			return new ComputerPlayer(color,
-					new ItsOverAnakinIHaveTheHighGroundStrategy());
-		} else {
-			return new HumanPlayer(arg, color);
-		}
-	}
-	
-	/**
-	 * creates a new game with new board with an array with players. The starting
-	 * player is random. And the 
+	 * creates a new game with empty player array (Player[]) a new Board and new
+	 * scores list will be created.
 	 * 
 	 * @requires 2 <= players.length <= MAX_PLAYERS
-	 * @param players array of players
+	 * @param players NumberOfPlayers.
 	 */
-	public Game(String[] stringPlayers) {
-		
-		Player[] players = new Player[stringPlayers.length];
-		Color current = Color.WHITE;
-		for (int i = 0; i < stringPlayers.length; i++) {
-			players[i] = createPlayer(stringPlayers[i], current);
-			current = current.next(stringPlayers.length);
-		}
+	public Game(int NumberOfPlayers) {
+		this.players = new Player[NumberOfPlayers];
+		scores = new HashMap<Color, Integer>();
 		board = new Board();
-		this.players = players;
-		reset();
 	}
 
 	// -- Queries ----------------------------------------------------
@@ -118,14 +96,22 @@ public class Game {
 
 	/**
 	 * Resets the game. <br>
-	 * The board is emptied and random player becomes the current player.
+	 * The following is done:
+	 * <p>
+	 * <ul>
+	 * <li>Number of turns gets reset.
+	 * <li>Random player starts (becomes the current player).
+	 * <li>Board will be reset for getNumberOfPlayers() players.
+	 * <li>Scores are reset.
+	 * <li>Teams are set.
+	 * </ul>
+	 * <p>
 	 */
 	public void reset() {
 		Random r = new Random();
 		numberOfTurns = 0;
 		current = players[r.nextInt(players.length)].getColor();
 		board.reset(getNumberOfPlayers());
-		scores = new HashMap<Color, Integer>();
 		for (Player player : players) {
 			scores.put(player.getColor(), 0);
 		}
@@ -158,8 +144,8 @@ public class Game {
 			System.out.println("DRAW!");
 		}
 	}
-	
-	public Color[][] makeTeams(int numberOfPlayers){
+
+	public Color[][] makeTeams(int numberOfPlayers) {
 		Color[][] result;
 		Color[] team;
 		switch (numberOfPlayers) {
@@ -210,7 +196,7 @@ public class Game {
 	public boolean isWinner(Player p) {
 		return (determineTeamScore(p) >= 6);
 	}
-	
+
 	public int determineTeamScore(Player p) {
 		int result = 0;
 		for (Color c : board.getTeam(p.getColor())) {
@@ -230,7 +216,7 @@ public class Game {
 		}
 		return false;
 	}
-	
+
 	public void increaseScore(Color color) {
 		scores.put(color, scores.get(color) + 1);
 	}
@@ -277,10 +263,8 @@ public class Game {
 		System.out.println(board.toString());
 	}
 
-	public void start() {
-		// TODO: implement stop game when disconnection
-		while (true) {
-			play();
-		}
-	}
+	/**
+	 * Method that calls play(). When play is done one player has won.
+	 */
+	abstract public void start();
 }

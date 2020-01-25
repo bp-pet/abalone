@@ -10,10 +10,11 @@ import ss.utils.TextIO;
  * @author Daan Pluister
  */
 public class Abalone {
-	//TODO  implement score properly
 	/**
-	 * Priem.
-	 * TODO DAAN write better comments
+	 * Creates a LocalGame with players as given arguments. The first 4 given args are
+	 * copied to LocalGame.createplayer. If no arguments or not enough arguments are
+	 * given the arguments are asked manually.
+	 * 
 	 * @param args player1, player2
 	 */
 	public static void main(String[] args) {
@@ -51,7 +52,7 @@ public class Abalone {
 			}
 		}
 
-		Game game = new Game(stringPlayers.toArray(new String[stringPlayers.size()]));
+		Game game = new LocalGame(stringPlayers.toArray(new String[stringPlayers.size()]));
 		game.start();
 	}
 }
