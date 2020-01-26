@@ -7,6 +7,7 @@ import java.util.Random;
 import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
 import abalone.AI.RandomStrategy;
 import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 
 public abstract class Game {
 	// -- Constants --------------------------------------------------
@@ -33,7 +34,7 @@ public abstract class Game {
 	/**
 	 * Index of the current player.
 	 */
-	private Color current;
+	protected Color currentColor;
 
 	/**
 	 * Array of teams.
@@ -66,8 +67,8 @@ public abstract class Game {
 	 * @requires 2 <= players.length <= MAX_PLAYERS
 	 * @param players NumberOfPlayers.
 	 */
-	public Game(int NumberOfPlayers) {
-		this.players = new Player[NumberOfPlayers];
+	public Game(int numberOfPlayers) {
+		this.players = new Player[numberOfPlayers];
 		scores = new HashMap<Color, Integer>();
 		board = new Board();
 	}
@@ -85,7 +86,7 @@ public abstract class Game {
 	 * Returns the mark of the player whose turn it is.
 	 */
 	public /* @ pure */ Color getCurrent() {
-		return current;
+		return currentColor;
 	}
 
 	public int getNumberOfPlayers() {
@@ -94,6 +95,70 @@ public abstract class Game {
 
 	// -- Commands ---------------------------------------------------
 
+	/**
+	 * Return next color in rotation.
+	 * @return the next color; if color given not valid for given number
+	 * of players, return null.
+	 */
+	protected Color getNextColor() {
+		switch (getNumberOfPlayers()) {
+		case 2:
+			switch (currentColor) {
+				case WHITE:
+					return Color.BLACK;
+				case BLACK:
+					return Color.WHITE;
+				default:
+					return null;	
+			}
+		case 3:
+			switch (currentColor) {
+				case BLUE:
+					return Color.BLACK;
+				case BLACK:
+					return Color.WHITE;
+				case WHITE: 
+					return Color.BLUE;
+				default:
+					return null;
+			}
+		case 4:
+			switch(currentColor) {
+				case BLACK:
+					return Color.RED;
+				case RED:
+					return Color.WHITE;
+				case WHITE:
+					return Color.BLUE;
+				case BLUE:
+					return Color.BLACK;
+				default:
+					return null;
+			}
+		default:
+			return null;
+		}
+	}
+	
+	/**
+	 * Returns int representation of color.
+	 * @return (WHITE,BLACK,BLUE,RED) => (1,2,3,4)
+	 */
+	protected int getIntOfColor() {
+		switch (currentColor) {
+		case WHITE:
+			return 0;
+		case BLACK:
+			return 1;
+		case BLUE:
+			return 2;
+		case RED:
+			return 3;
+		default:
+			return 0;
+		}
+	}
+	
 	/**
 	 * Resets the game. <br>
 	 * The following is done:
@@ -110,27 +175,34 @@ public abstract class Game {
 	public void reset() {
 		Random r = new Random();
 		numberOfTurns = 0;
-		current = players[r.nextInt(players.length)].getColor();
+		currentColor = players[r.nextInt(players.length)].getColor();
 		board.reset(getNumberOfPlayers());
+		resetScores();
+		board.setTeams(makeTeams(getNumberOfPlayers()));
+	}
+	
+	private void resetScores() {
 		for (Player player : players) {
 			scores.put(player.getColor(), 0);
 		}
-		board.setTeams(makeTeams(getNumberOfPlayers()));
+		
 	}
 
 	public void play() {
 		reset();
 		Move nextMove;
 		while (!hasWinner() && numberOfTurns < MAX_TURNS) {
-			nextMove = players[current.getInt()].determineMove(board);
+			nextMove = players[getIntOfColor()].determineMove(board);
 			try {
-				nextMove.perform();
-			} catch (InvalidMoveException e) {
+				System.out.println(nextMove.toString());
+				board.move(nextMove);
+			} catch (InvalidMoveException e1) {
 				System.out.println("Player not correctly implemented!");
-				e.printStackTrace();
+				System.out.println(e1.getMessage());
+			} catch (MarbleKilledException e2) {
+				scores.put(currentColor, scores.get(currentColor) + 1);
 			}
-			current = current.next(getNumberOfPlayers());
-			// TODO: add score increase if marbles amount is lower
+			currentColor = getNextColor();
 			numberOfTurns++;
 			// TODO: remove method showBoard() or not
 			showBoard();
@@ -149,6 +221,15 @@ public abstract class Game {
 		Color[][] result;
 		Color[] team;
 		switch (numberOfPlayers) {
+		case 2:
+			result = new Color[2][1];
+			team = new Color[1];
+			team[0] = Color.BLACK;
+			result[0] = team;
+			team = new Color[1];
+			team[0] = Color.WHITE;
+			result[1] = team;
+			break;
 		case 3:
 			result = new Color[3][1];
 			team = new Color[1];
@@ -171,15 +252,9 @@ public abstract class Game {
 			team[0] = Color.RED;
 			team[0] = Color.BLUE;
 			result[0] = team;
-		default:
-			result = new Color[2][1];
-			team = new Color[1];
-			team[0] = Color.BLACK;
-			result[0] = team;
-			team = new Color[1];
-			team[0] = Color.WHITE;
-			result[1] = team;
 			break;
+		default:
+			result = null;
 		}
 		return result;
 	}
@@ -197,6 +272,10 @@ public abstract class Game {
 		return (determineTeamScore(p) >= 6);
 	}
 
+	/**
+	 * Determine the score of the team of a given color by summing the
+	 * scores of its team.
+	 */
 	public int determineTeamScore(Player p) {
 		int result = 0;
 		for (Color c : board.getTeam(p.getColor())) {
@@ -206,6 +285,8 @@ public abstract class Game {
 	}
 
 	/**
+	 * Checks if the game has a winner by checking if any of the players
+	 * is a winner.
 	 * @return true if the game has a winner.
 	 */
 	public boolean hasWinner() {
@@ -217,15 +298,18 @@ public abstract class Game {
 		return false;
 	}
 
+	/**
+	 * Increments the score of a color by one.
+	 */
 	public void increaseScore(Color color) {
 		scores.put(color, scores.get(color) + 1);
 	}
 
 	/**
 	 * Determines winning player at any given game state.
-	 * 
-	 * @return one player off the team that pushed off the most marbles. null if
-	 *         draw.
+	 * First checks if any player has won by reaching the maximum score.
+	 * If not, then checks which player has the highest score.
+	 * If draw, return null.
 	 */
 	private Player determineWinner() {
 		Player winner = null;

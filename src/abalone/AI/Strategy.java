@@ -7,6 +7,7 @@ import abalone.Color;
 import abalone.Field;
 import abalone.Move;
 import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 
 public interface Strategy {
 	/**
@@ -33,7 +34,10 @@ public interface Strategy {
 		try {
 			move.perform();
 		} catch (InvalidMoveException e) {
-			//Who cares, shouldn't happen right?
+			//Who cares, shouldn't happen right? (only valid moves are
+			//simulated)
+		} catch (MarbleKilledException e) {
+			//Not relevant.
 		}
 		return copyBoard;
 	}

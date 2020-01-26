@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 
 public class Board {
 
@@ -346,18 +347,20 @@ public class Board {
 	 * Tries to move the move if move is invalid InvalidMoveException is thrown and
 	 * no marbles are moved.
 	 * @throws InvalidMoveException
+	 * @throws MarbleKilledException 
 	 */
 	public void move(Color color, int rowTail, int colTail, int rowHead,
-			int colHead, int rowDest, int colDest) throws InvalidMoveException {
+			int colHead, int rowDest, int colDest) throws InvalidMoveException, MarbleKilledException {
 		move(new Move(this, color, rowTail, colTail, rowHead, colHead, rowDest,
 				colDest));
 	}
 
 	/**
 	 * Performs a move.
+	 * @throws MarbleKilledException 
 	 * @throws InvalidMoveException
 	 */
-	public void move(Move move) throws InvalidMoveException {
+	public void move(Move move) throws InvalidMoveException, MarbleKilledException {
 		move.perform();
 	}
 

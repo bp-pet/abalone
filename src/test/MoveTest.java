@@ -10,6 +10,7 @@ import abalone.Board;
 import abalone.Color;
 import abalone.Move;
 import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 
 class MoveTest {
 
@@ -32,6 +33,17 @@ class MoveTest {
 	}
 	
 	@Test
+	void testSpecial2() {
+		try {
+			new Move(board, Color.BLACK, 4, 1, 4, 4, 4, 2).perform();
+		} catch (InvalidMoveException e) {
+			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+		}
+		assertTrue(msg.contains("too long"));
+	}
+	
+	@Test
 	//should not work
 	//used to be a bug
 	void testSpecial() {
@@ -39,8 +51,28 @@ class MoveTest {
 			new Move(board, Color.BLACK, 6, 4, 8, 4, 5, 3).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
 		}
 		assertTrue(msg.contains("lateral"));
+	}
+	
+	@Test
+	void testPushOff4v3() {
+		try {
+			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
+			new Move(board, Color.WHITE, 0, 1, 0, 1, 0, 0).perform();
+			new Move(board, Color.WHITE, 1, 1, 3, 3, 2, 2).perform();
+			new Move(board, Color.WHITE, 2, 2, 4, 4, 3, 3).perform();
+			new Move(board, Color.WHITE, 0, 0, 0, 0, 1, 1).perform();
+			new Move(board, Color.WHITE, 1, 1, 1, 1, 2, 2).perform();
+			new Move(board, Color.WHITE, 2, 2, 2, 2, 3, 3).perform();
+		} catch (InvalidMoveException e) {
+			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertTrue(msg.contains("push"));
 	}
 	
 	@Test
@@ -82,6 +114,7 @@ class MoveTest {
 			new Move(board, Color.WHITE, 2, 2, 2, 2, 3, 3).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
 		}
 	}
 	
@@ -92,6 +125,7 @@ class MoveTest {
 			new Move(board, Color.WHITE, 1, 1, 2, 2, 2, 2).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
 		}
 	}
 
@@ -102,6 +136,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -112,6 +149,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 2, 2, 2, 4, 3, 3).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -123,6 +163,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 2, 2, 2, 4, 2, 1).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -134,6 +177,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 2, 2, 0, 0, 1, 1).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		assertTrue(msg.contains("suicide"));
 	}
@@ -150,6 +196,7 @@ class MoveTest {
 			new Move(board, Color.WHITE, 4, 4, 6, 6, 5, 5).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
 		}
 	}
 	
@@ -164,6 +211,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 3, 3, 5, 5, 2, 3).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -178,6 +228,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 3, 3, 5, 5, 4, 4).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -192,6 +245,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 2, 2, 4, 4, 3, 3).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -205,6 +261,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 2, 2, 4, 4, 3, 3).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -218,6 +277,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 3, 3, 4, 4, 4, 4).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -232,6 +294,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 3, 3, 4, 4, 4, 4).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -242,6 +307,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 1, 4, 0, 4, 2, 4).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -252,6 +320,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 0, 4, 0, 4, 1, 4).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -262,6 +333,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 0, 4, 0, 4, 1, 4).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -272,6 +346,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 0, 0, 0, 0, 1, 0).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -283,6 +360,25 @@ class MoveTest {
 			new Move(board, Color.WHITE, 2, 1, 2, 1, 2, 2).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertTrue(msg.contains("push"));
+	}
+	
+	@Test
+	//should not work
+	void testPushOwn3v1() {
+		try {
+			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
+			new Move(board, Color.WHITE, 0, 1, 0, 1, 0, 0).perform();
+			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
+		} catch (InvalidMoveException e) {
+			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -297,6 +393,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 4, 4, 4, 4, 5, 5).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		};
 		assertTrue(msg.contains("push"));
 	}
@@ -310,6 +409,9 @@ class MoveTest {
 			new Move(board, Color.WHITE, 0, 0, 3, 3, 1, 1).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		assertTrue(msg.contains("too long"));
 	}
@@ -321,6 +423,9 @@ class MoveTest {
 			new Move(board, Color.BLACK, 2, 2, 2, 2, 3, 3).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
+		} catch (MarbleKilledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		assertTrue(msg.contains("contain"));
 	}

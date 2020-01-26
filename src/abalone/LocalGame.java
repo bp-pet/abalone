@@ -13,10 +13,10 @@ public class LocalGame extends Game {
 	 */
 	public LocalGame(String[] stringPlayers) {
 		super(stringPlayers.length);
-		Color current = Color.WHITE;
+		currentColor = Color.WHITE;
 		for (int i = 0; i < stringPlayers.length; i++) {
-			players[i] = createPlayer(stringPlayers[i], current);
-			current = current.next(stringPlayers.length);
+			players[i] = createPlayer(stringPlayers[i], currentColor);
+			currentColor = getNextColor();
 		}
 	}
 	

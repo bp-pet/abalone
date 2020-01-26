@@ -1,7 +1,12 @@
 package abalone;
 
 import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 
+/**
+ * A class representing a move on a board.
+ * @authors Bozhidar Petrov, Daan Pluister
+ */
 public class Move {
 	
 	private Board board;
@@ -15,6 +20,7 @@ public class Move {
 	private int colMove;
 	private Field[] fields;
 	private Color color;
+	private boolean marbleKilled = false;
 	
 	/**
 	 * Makes a new selection associated to given board and given coordinates.
@@ -46,11 +52,11 @@ public class Move {
 	
 	/**
 	 * Makes a move from an array of coordinates. Used for convenience.
-	 * @requires coords (coordinates) has size 6 and no null entries
+	 * @requires coordinates has size 6 and no null entries
 	 */
-	public Move(Board board, Color color, int[] coords) {
-		this(board, color, coords[0], coords[1], coords[2], coords[3],
-				coords[4], coords[5]);
+	public Move(Board board, Color color, int[] coordinates) {
+		this(board, color, coordinates[0], coordinates[1], coordinates[2], coordinates[3],
+				coordinates[4], coordinates[5]);
 	}
 
     /**
@@ -60,11 +66,17 @@ public class Move {
      * class, instead some methods call move.perform directly).
      * @throws InvalidMoveException with appropriate message if any of the
      * conditions are violated
+     * @throws MarbleKilledException if a marble was killed (the boolean
+     * marbleKilled was set to true)
+     * Note: the two exceptions are mutually exclusive
      */
-    public void perform() throws InvalidMoveException {
+    public void perform() throws InvalidMoveException, MarbleKilledException {
     	isValidMove();
 		moveAllFields();
 		board.makeMapOfColors();
+		if (marbleKilled) {
+			throw new MarbleKilledException();
+		}
     }
     
     /**
@@ -109,13 +121,15 @@ public class Move {
      * Moves a field.
      * If next field is empty, nothing special.
      * If next field is taken, recursively move next field.
-     * If next field is invalid, kill marble.
+     * If next field is invalid, kill marble and set marbleKilled
+     * to true so an exception will be thrown.
      * @param field to be moved
      */
     private void doMoveField(Field f) {
     	Field nextField = getNextField(f);
     	if (nextField == null || !nextField.isValid()) {
     		f.setMarble(null);
+    		marbleKilled = true;
     	} else if (nextField.getMarble() == null) {
     		nextField.setMarble(f.getMarble());
     		f.setMarble(null);
@@ -266,10 +280,6 @@ public class Move {
 			if (board.areTeammates(currentColor, color)) {
 				throw new InvalidMoveException("You are not allowed to "
 						+ "commit suicide; " + toString());
-			} else {
-//				System.out.println("Marble " + field.getMarble().toString() +
-//						" from field (" + field.getRow() + ", " + field.getCol() +
-//						") became one with the Force.");
 			}
 		} else {
 			if (force == -1) {
@@ -314,7 +324,7 @@ public class Move {
 			}
 		}
     }
-
+    
     /**
      * Check if move is along axis by checking if moving from the tail field
      * of the selection in the direction of the move vector (rowMove, colMove)
@@ -391,8 +401,8 @@ public class Move {
      * @requires fields are in line
      */
     private void distanceWithinBounds() throws InvalidMoveException {
-    	if (!(Math.abs(rowTail - rowHead) <= board.getMaxPush() - 1
-    			|| Math.abs(colTail - colHead) <= board.getMaxPush() - 1)) {
+    	if (!(Math.abs(rowTail - rowHead) < board.getMaxPush()
+    			&& Math.abs(colTail - colHead) < board.getMaxPush())) {
     		throw new InvalidMoveException("Selection too long; " + toString());
     	}
     }

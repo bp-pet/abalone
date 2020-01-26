@@ -7,7 +7,7 @@ import ss.utils.TextIO;
 /**
  * Creates a standard Abalone game for local play.
  * 
- * @author Daan Pluister
+ * @authors Daan Pluister, Bozhidar Petrov
  */
 public class Abalone {
 	/**
