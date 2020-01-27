@@ -73,6 +73,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		ready.put(client, false);
 		this.playerNames.put(client, playerName);
 		this.teamNames.put(client, teamName);
+		client.setLobby(this);
 	}
 
 	/**
@@ -128,6 +129,9 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	 */
 	public void delClient(AbaloneClientHandler client) {
 		ready.remove(client);
+		playerNames.remove(client);
+		teamNames.remove(client);
+		client.setLobby(null);
 	}
 
 	/**
@@ -274,7 +278,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 
 	@Override
 	public String doGameEnd() {
-		// TODO Auto-generated method stub
+		// TODO implement gameEnd
 		return null;
 	}
 
@@ -332,7 +336,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	 * @return
 	 */
 	public boolean isTurn(AbaloneClientHandler client) {
-		return colors.get(client) == game.getCurrent();
+		return colors.get(client) == game.getCurrentColor();
 	}
 
 	/**

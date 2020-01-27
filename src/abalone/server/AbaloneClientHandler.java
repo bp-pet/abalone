@@ -21,13 +21,13 @@ public class AbaloneClientHandler implements Runnable {
 
 	/** The connected AbaloneServer */
 	private AbaloneServerBrowser browser;
-	
+
 	/** The lobby where the player is in */
 	private AbaloneServerLobby lobby;
 
 	/** Name of this ClientHandler */
 	private String name;
-	
+
 	/**
 	 * Constructs a new AbaloneClientHandler. Opens the In- and OutputStreams.
 	 * 
@@ -57,6 +57,7 @@ public class AbaloneClientHandler implements Runnable {
 		try {
 			msg = in.readLine();
 			while (msg != null) {
+				//TODO: make this print to serverView.
 				System.out.println("> [" + name + "] Incoming: " + msg);
 				handleCommand(msg);
 				msg = in.readLine();
@@ -80,7 +81,7 @@ public class AbaloneClientHandler implements Runnable {
 	private void handleCommand(String msg) throws IOException {
 		String[] cmd = msg.split(ProtocolMessages.DELIMITER);
 		
-		//TODO: comment following debug line
+		//TODO: comment following debug line or to serverview
 		System.out.println("Message from client:" + msg);
 
 		String s = null;
@@ -100,11 +101,19 @@ public class AbaloneClientHandler implements Runnable {
 				default:
 					s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
 			}
-		} else {
+		} else if (! lobby.inGame()) {
 			switch (cmd[0].charAt(0)) {
 				case ProtocolMessages.READY:
 					lobby.doReady(this);
 					break;
+				case ProtocolMessages.EXIT:
+					lobby.exitGame(this);
+					break;
+				default:
+					s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
+			}
+		} else {
+			switch (cmd[0].charAt(0)) {
 				case ProtocolMessages.MOVE:
 					if (lobby.inGame()) {
 						s = srv.doError(3, "Not in a lobby!");
@@ -119,12 +128,12 @@ public class AbaloneClientHandler implements Runnable {
 					break;
 				default:
 					s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
+					if (s != null) {
+						sendMessage(s);
+					}
 			}
 		}
-		
-		if (s != null) {
-			sendMessage(s);
-		}
+			
 	}
 
 	/**
@@ -132,6 +141,7 @@ public class AbaloneClientHandler implements Runnable {
 	 * OutputStreams.
 	 */
 	private void shutdown() {
+		//TODO: make this print to serverView.
 		System.out.println("> [" + name + "] Shutting down.");
 		try {
 			in.close();
@@ -142,7 +152,7 @@ public class AbaloneClientHandler implements Runnable {
 		}
 		srv.removeClient(this);
 	}
-	
+
 	/**
 	 * Sends a protocol message to the output stream.
 	 * 
@@ -152,7 +162,7 @@ public class AbaloneClientHandler implements Runnable {
 		try {
 			out.append(msg);
 
-			//TODO: comment following debug line
+			// TODO: comment following debug line
 			System.out.println("Message back to client who send the message:" + msg);
 			out.flush();
 			out.newLine();
