@@ -4,6 +4,7 @@ import abalone.Color;
 import abalone.Game;
 import abalone.Move;
 import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 
 /**
  * A local game run by the ClientGame that is synced with the server game. This method overwrites //TODO:"add overwrite" from Game.
@@ -28,7 +29,7 @@ public class ClientGame extends Game {
 			} else {
 				players[i] = new AbaloneServerPlayer(stringPlayers[1 + i], current);
 			}
-			current = current.next((stringPlayers.length - 1 ) / 2);
+			current = getNextColor();
 		}
 	}
 
@@ -44,11 +45,13 @@ public class ClientGame extends Game {
 	 * @param lineFromServer
 	 */
 	public void doMove(String[] lineFromServer) {
-		Move move = board.parseMovePattern(current, lineFromServer[1] + " " + lineFromServer[2] + " " + lineFromServer[3]);
+		Move move = board.parseMovePattern(currentColor, lineFromServer[1] + " " + lineFromServer[2] + " " + lineFromServer[3]);
 		try {
 			board.move(move);
 		} catch (InvalidMoveException e) {
 			System.out.println("Server not correctly implemented.");
+		} catch (MarbleKilledException e) {
+			increaseScore(currentColor);
 		}		
 	}
 

@@ -141,9 +141,9 @@ public class AbaloneClient implements ClientProtocol {
 	}
 
 	/**
-	 * Reads and returns one line from the server.
+	 * Reads and returns one line split on pm.DELITMITER from the server.
 	 * 
-	 * @return the line sent by the server.
+	 * @return the line split on pm.DELITMITER sent by the server.
 	 * @throws ServerUnavailableException if IO errors occur.
 	 */
 	public String[] readLineFromServer() throws ServerUnavailableException {

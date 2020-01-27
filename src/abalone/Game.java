@@ -198,7 +198,7 @@ public abstract class Game {
 				System.out.println("Player not correctly implemented!");
 				System.out.println(e1.getMessage());
 			} catch (MarbleKilledException e2) {
-				scores.put(currentColor, scores.get(currentColor) + 1);
+				increaseScore(currentColor);
 			}
 			currentColor = getNextColor();
 			numberOfTurns++;
