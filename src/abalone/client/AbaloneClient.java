@@ -22,11 +22,6 @@ public class AbaloneClient implements ClientProtocol {
 	private ClientGame game;
 	private String ownName;
 	private String ownTeam;
-	/**
-	 * private numberOfPlayers only used in lobby state to check if receive game start or not i guess i can remove this.
-	 */
-	private int numberOfPlayers;
-	private int ready;
 	private boolean isReady;
 
 	/**
@@ -253,7 +248,6 @@ public class AbaloneClient implements ClientProtocol {
 	}
 
 	public void resetReady() {
-		ready = 0;
 		this.isReady = false;
 	}
 
@@ -353,33 +347,12 @@ public class AbaloneClient implements ClientProtocol {
 		}
 		this.ownName = playerName;
 		this.ownTeam = teamName;
-		// TODO: set number of players correct.
-		numberOfPlayers = 1;
 		resetReady();
-//		String[] response = readMultipleLinesFromServer().split(ProtocolMessages.DELIMITER);
-//		if (response[0].charAt(0) == (ProtocolMessages.ERROR)) {
-//			//TODO: add if response[2] exists.
-//			view.showMessage(response[2]);
-//		}
-
 	}
 
 	@Override
 	public void doReady() throws ServerUnavailableException, ProtocolException {
 		sendMessage(ProtocolMessages.READY);
-		if (ready + 1 == numberOfPlayers) {
-			getStart(readLineFromServer());
-		} else {
-			String[] lineFromServer = readLineFromServer();
-			if (!isCommand(ProtocolMessages.READY, lineFromServer)) {
-				throw new ProtocolException("Unexpected command from server expected r");
-			}
-			if (lineFromServer.length != 2) {
-				throw new ProtocolException("Unexpected arguments from server expected 1");
-			}
-			setReady();
-			ready++;
-		}
 	}
 
 	public void getLobbyMessages() throws ServerUnavailableException, ProtocolException {
@@ -408,7 +381,6 @@ public class AbaloneClient implements ClientProtocol {
 		if (!isCommand(ProtocolMessages.JOIN, lineFromServer)) {
 			throw new ProtocolException("Unexpected command from server expected j");
 		}
-		numberOfPlayers++;
 		resetReady();
 	}
 
@@ -421,9 +393,8 @@ public class AbaloneClient implements ClientProtocol {
 			throw new ProtocolException("Unexpected arguments from server expected 2");
 		}
 		if (lineFromServer[2].equals(ownName) && lineFromServer[3].equals(ownName)) {
-			isReady = true;
+			setReady();
 		}
-		ready++;
 	}
 
 	@Override
@@ -439,7 +410,6 @@ public class AbaloneClient implements ClientProtocol {
 		if (!isCommand(ProtocolMessages.EXIT, lineFromServer)) {
 			throw new ProtocolException("Unexpected command from server expected x");
 		}
-		numberOfPlayers--;
 		resetReady();
 	}
 
