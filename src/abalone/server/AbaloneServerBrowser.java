@@ -41,7 +41,7 @@ public class AbaloneServerBrowser extends AbaloneServer implements ServerBrowser
 	@Override
 	public String getHello() {
 		//TODO: throw exception or something
-		String s = ProtocolMessages.HELLO + ProtocolMessages.DELIMITER + ProtocolMessages.VERSION;
+		String s = Character.toString(ProtocolMessages.HELLO);
 		return s + "\n" + doLobbies();
 	}
 
@@ -71,6 +71,7 @@ public class AbaloneServerBrowser extends AbaloneServer implements ServerBrowser
 		}
 		if (addedToLobby == null) {
 			addedToLobby = new AbaloneServerLobby(lobbyName, client, playerName, teamName);
+			lobbies.add(addedToLobby);
 		}
 		addedToLobby.sendMessageToLobby(ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + playerName + ProtocolMessages.DELIMITER + teamName);
 		return addedToLobby.toString();

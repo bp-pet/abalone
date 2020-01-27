@@ -21,7 +21,7 @@ public class ProtocolMessages {
 	/**
 	 * Sent as last line in a multi-line response to indicate the end of the text.
 	 */
-	public static final String EOT = "--EOT--";
+	public static final String EOT = "---EOT---";
 
 	/** Used for the server-client handshake. */
 	public static final char HELLO = 'h';

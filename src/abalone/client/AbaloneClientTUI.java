@@ -14,7 +14,7 @@ public class AbaloneClientTUI implements AbaloneClientView {
 
 	AbaloneClient c;
 	private static final String INPUT = "Command ? ";
-	private static final String GETIP = "Give a valid ip ? ";
+	private static final String GETIP = "Give a ip (default: 127.0.0.1) ? ";
 	private static final String IP_PATTERN = "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.)"
 			+ "{3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
 	private static final String HELPMENU_BROWSER =   "\n" + "> Welcome to the Abalone game\r\n" + 
@@ -42,14 +42,19 @@ public class AbaloneClientTUI implements AbaloneClientView {
 	@Override
 	public void start() throws ServerUnavailableException {
 		String msg = getString(INPUT);
-		System.out.println("input msg: " + msg);
 		while (! msg.equals(String.valueOf(ProtocolMessages.EXIT))) {
 			try {
-				//TODO: implement the ready thingy motor.
 				handleUserInput(msg);
+				//TODO: remove debug line
+				showMessage("debug, state: "+ (c.getState() == State.LOBBY) + " and is ready: " + (c.isReady()));
+				while(c.getState() == State.LOBBY && c.isReady()) {
+					c.getLobbyMessages();
+				}
 				msg = getString(INPUT);
 			} catch (ExitProgram e) {
 				msg = String.valueOf(ProtocolMessages.EXIT);
+			} catch (ProtocolException e) {
+				showMessage("ProtocolException: " + e.getMessage());
 			}
 		}
 	}
@@ -57,7 +62,9 @@ public class AbaloneClientTUI implements AbaloneClientView {
 	@Override
 	public void handleUserInput(String input) throws ExitProgram, ServerUnavailableException {
 		String[] cmd = input.split(" ");
-		System.out.println("length" + cmd.length + "input: " + input);
+		if (cmd.length == 0 || cmd[0].equals("")) {
+			return;
+		}
 		switch (c.getState()) {
 		case BROWSER:
 			switch (cmd[0].charAt(0)) {
@@ -67,12 +74,13 @@ public class AbaloneClientTUI implements AbaloneClientView {
 				case ProtocolMessages.JOIN:
 					if (cmd.length != 4) {
 						showMessage("Expected 3 arguments.");
+					} else {
+						try {
+							c.doJoinLobby(cmd[1], cmd[2], cmd[3]);
+						} catch (ProtocolException e1) {
+							showMessage(e1.getMessage());
+						}
 					}
-				try {
-					c.doJoinLobby(cmd[1], cmd[2], cmd[3]);
-				} catch (ProtocolException e1) {
-					showMessage(e1.getMessage());
-				}
 					break;
 				case ProtocolMessages.EXIT:
 					c.sendExit();
@@ -136,16 +144,18 @@ public class AbaloneClientTUI implements AbaloneClientView {
 	public InetAddress getIp() {
 		String ip = getString(GETIP);
 		
-		while (! ip.matches(IP_PATTERN)) {
+		while (! (ip.matches(IP_PATTERN) || ip.equals(""))) {
 			ip = getString("WRONG! " + GETIP);
 		}
 		
 		try {
-			return InetAddress.getByAddress(ip.getBytes());
+			if (ip.equals("")) {
+				ip = "127.0.0.1";
+			}
+			return InetAddress.getByName(ip);
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			return getIp();
 		}
-		return null;
 	}
 
 	@Override
@@ -156,10 +166,14 @@ public class AbaloneClientTUI implements AbaloneClientView {
 
 	@Override
 	public int getInt(String question) {
-		showMessage(question);
-    	return Integer.parseInt(input.next());
+		String in = getString(question);
+		if (in.equals("")) {
+			return 2727;
+		} else
+    	return Integer.parseInt(in);
 	}
 
+	//TODO: this does not work and is never used
 	@Override
 	public boolean getBoolean(String question) {
 		showMessage(question);

@@ -79,14 +79,14 @@ public abstract class Game {
 	/**
 	 * Returns the board.
 	 */
-	public /* @ pure */ Board getBoard() {
+	public Board getBoard() {
 		return board;
 	}
 
 	/**
 	 * Returns the mark of the player whose turn it is.
 	 */
-	public /* @ pure */ Color getCurrent() {
+	public Color getCurrentColor() {
 		return currentColor;
 	}
 

@@ -2,10 +2,9 @@ package abalone.server;
 
 import abalone.Color;
 import abalone.Game;
+import abalone.Player;
 
 public class ServerGame extends Game {
-
-	private AbaloneClientPlayer[] players;
 	
 	/**
 	 * constructs a game with all ClientPlayers
@@ -26,13 +25,8 @@ public class ServerGame extends Game {
 					if (teamPlayer1.equals(lobby.getTeamName(client))) {
 						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
 					} else {
-<<<<<<< HEAD
-						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), current);
-						current = getNextColor();
-=======
 						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
 						currentColor = getNextColor();
->>>>>>> c8c1b7dd9e35f7e6e24057f10d7d61ff8d74a705
 					}
 				}
 				i++;
@@ -42,22 +36,15 @@ public class ServerGame extends Game {
 			currentColor = Color.WHITE;
 			int i = 0;
 			for (AbaloneClientHandler client : lobby.getClients()) {
-<<<<<<< HEAD
-				players[i++] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), current);
-				current = getNextColor();
-=======
+				//TODO: remove debug lines
+				System.out.println(lobby.toString());
+				System.out.println(lobby.getPlayerName(client));
+				System.out.println(lobby.getTeamName(client));
+				System.out.println(currentColor);
 				players[i++] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
 				currentColor = getNextColor();
->>>>>>> c8c1b7dd9e35f7e6e24057f10d7d61ff8d74a705
 			}
 		}
-	}
-
-	/**
-	 * Query that returns the players
-	 */
-	public AbaloneClientPlayer[] getPlayers() {
-		return players;
 	}
 
 	@Override
@@ -71,5 +58,10 @@ public class ServerGame extends Game {
 		while (true) {
 			play();
 		}
+	}
+
+	public Player[] getPlayers() {
+		// TODO Auto-generated method stub
+		return players;
 	}
 }

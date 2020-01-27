@@ -9,6 +9,7 @@ import java.util.Set;
 import abalone.Color;
 import abalone.Game;
 import abalone.Move;
+import abalone.Player;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.LobbyException;
 import abalone.protocol.ProtocolMessages;
@@ -70,9 +71,11 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		if (hasPlayerNameAndTeamName(playerName, teamName)) {
 			throw new LobbyException(ProtocolMessages.ERROR_MESSAGE_LOBBY_TEAMS);
 		}
-		ready.put(client, false);
+		this.ready.put(client, false);
+		resetReady();
 		this.playerNames.put(client, playerName);
 		this.teamNames.put(client, teamName);
+		client.setLobby(this);
 	}
 
 	/**
@@ -102,6 +105,19 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	public Boolean getReady(AbaloneClientHandler client) {
 		return ready.get(client);
 	}
+	
+	/**
+	 * query that returns if all clients are ready.
+	 * @return
+	 */
+	private boolean everyoneReady() {
+		boolean everyoneReady = true;
+		for (AbaloneClientHandler client : ready.keySet()) {
+			everyoneReady = everyoneReady && ready.get(client);
+		}
+		return everyoneReady;
+	}
+
 
 	/**
 	 * Setter that set client to ready.
@@ -128,6 +144,9 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	 */
 	public void delClient(AbaloneClientHandler client) {
 		ready.remove(client);
+		playerNames.remove(client);
+		teamNames.remove(client);
+		client.setLobby(null);
 	}
 
 	/**
@@ -214,7 +233,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	 * player1teamName + etc[;p;<player name>;<team name>]*</code>.
 	 */
 	public String toString() {
-		String s = Character.toString(ProtocolMessages.LOBBY);
+		String s = ProtocolMessages.LOBBY + ProtocolMessages.DELIMITER + name;
 		for (AbaloneClientHandler client : getClients()) {
 			s += ProtocolMessages.DELIMITER + ProtocolMessages.PLAYER + ProtocolMessages.DELIMITER
 					+ playerNames.get(client) + ProtocolMessages.DELIMITER + teamNames.get(client);
@@ -274,24 +293,29 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 
 	@Override
 	public String doGameEnd() {
-		// TODO Auto-generated method stub
+		// TODO implement gameEnd
 		return null;
 	}
 
 	@Override
 	public void doReady(AbaloneClientHandler client) {
 		setReady(client);
-		sendMessageToLobby(ProtocolMessages.READY + ProtocolMessages.DELIMITER + getPlayerName(client)
-				+ ProtocolMessages.DELIMITER + getTeamName(client));
+		if (everyoneReady() && getNumberOfPlayers() >= 2) {
+			sendMessageToLobby(doStart());
+		} else {
+			sendMessageToLobby(ProtocolMessages.READY + ProtocolMessages.DELIMITER + getPlayerName(client)
+			+ ProtocolMessages.DELIMITER + getTeamName(client));
+		}
 	}
-
+	
 	@Override
 	public String doStart() {
 		setupGame();
 		String s = Character.toString(ProtocolMessages.START);
-		for (AbaloneClientPlayer player : game.getPlayers()) {
+		//TODO: fix ask TA whatever
+		for (Player player : game.getPlayers()) {
 			s += ProtocolMessages.DELIMITER + ProtocolMessages.PLAYER + ProtocolMessages.DELIMITER
-					+ player.getPlayerName() + ProtocolMessages.DELIMITER + player.getTeamName()
+					+ ((AbaloneClientPlayer)player).getPlayerName() + ProtocolMessages.DELIMITER + ((AbaloneClientPlayer)player).getTeamName()
 					+ ProtocolMessages.DELIMITER + player.getColor();
 		}
 		return s;
@@ -301,6 +325,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	public void exitGame(AbaloneClientHandler client) {
 		sendMessageToLobby(ProtocolMessages.EXIT + ProtocolMessages.DELIMITER + getPlayerName(client)
 				+ ProtocolMessages.DELIMITER + getTeamName(client));
+		resetReady();
 	}
 
 	@Override
@@ -315,7 +340,6 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		try {
 			move.isValidMove();
 		} catch (InvalidMoveException e) {
-			// TODO: you may want to add e.getMessage()
 			return Character.toString(ProtocolMessages.UNEXPECTED_MOVE);
 		}
 		nextMove = move;
@@ -332,7 +356,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	 * @return
 	 */
 	public boolean isTurn(AbaloneClientHandler client) {
-		return colors.get(client) == game.getCurrent();
+		return colors.get(client) == game.getCurrentColor();
 	}
 
 	/**
