@@ -9,7 +9,6 @@ import java.util.Set;
 import abalone.Color;
 import abalone.Game;
 import abalone.Move;
-import abalone.Player;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.LobbyException;
 import abalone.protocol.ProtocolMessages;

@@ -13,11 +13,12 @@ import abalone.Move;
 import abalone.AI.RandomStrategy;
 import abalone.AI.Strategy;
 import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 
 /**
- * Test program for HumanPlayer
+ * Test program for the Strategy interface.
  * 
- * @author Daan Pluister
+ * @author Bozhidar Petrov, Daan Pluister
  */
 public class StrategyTest {
 	
@@ -102,6 +103,7 @@ public class StrategyTest {
 			}
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e1) {
 		}
 	}
 }

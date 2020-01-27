@@ -2,7 +2,6 @@ package abalone.server;
 
 import abalone.Color;
 import abalone.Game;
-import abalone.Player;
 
 public class ServerGame extends Game {
 
@@ -18,28 +17,38 @@ public class ServerGame extends Game {
 		if (getNumberOfPlayers() == 4) {
 			int i = 0;
 			String teamPlayer1 = null;
-			Color current = Color.BLUE;
+			currentColor = Color.BLUE;
 			for (AbaloneClientHandler client : lobby.getClients()) {
 				if (i == 0) {
 					teamPlayer1 = lobby.getTeamName(client);
-					players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), current);
+					players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
 				} else {
 					if (teamPlayer1.equals(lobby.getTeamName(client))) {
-						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), current);
+						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
 					} else {
+<<<<<<< HEAD
 						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), current);
 						current = getNextColor();
+=======
+						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
+						currentColor = getNextColor();
+>>>>>>> c8c1b7dd9e35f7e6e24057f10d7d61ff8d74a705
 					}
 				}
 				i++;
 			}
 			
 		} else {
-			Color current = Color.WHITE;
+			currentColor = Color.WHITE;
 			int i = 0;
 			for (AbaloneClientHandler client : lobby.getClients()) {
+<<<<<<< HEAD
 				players[i++] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), current);
 				current = getNextColor();
+=======
+				players[i++] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
+				currentColor = getNextColor();
+>>>>>>> c8c1b7dd9e35f7e6e24057f10d7d61ff8d74a705
 			}
 		}
 	}

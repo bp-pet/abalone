@@ -9,6 +9,11 @@ import abalone.Move;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.MarbleKilledException;
 
+/**
+ * An interface for a strategy for an AI for Abalone.
+ * 
+ * @authors Bozhidar Petrov, Daan Pluister
+ */
 public interface Strategy {
 	/**
 	 * Returns the name of the strategy.

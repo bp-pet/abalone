@@ -17,12 +17,15 @@ import abalone.Color;
 import abalone.Marble;
 import abalone.Move;
 import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 import abalone.Field;
 
 /**
- * Test program for HumanPlayer
+ * Test program for the board class. Tests the coordinate system (the
+ * transformation between the user interface coordinates and the internal
+ * ones, as well as other functions of the class.
  * 
- * @author Daan Pluister
+ * @authors Daan Pluister, Bozhidar Petrov
  */
 public class BoardTest {
 
@@ -137,6 +140,7 @@ public class BoardTest {
 			new Move(board, Color.WHITE, 1, 0, 1, 0, 2, 0).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
 		}
 		testMapOfColors();
 	}

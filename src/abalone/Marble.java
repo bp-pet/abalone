@@ -1,10 +1,11 @@
 package abalone;
 
 /**
- * Marble class
+ * Marble class.
  * 
  * @invariance ensures color != null
- * @author Daan Pluister
+ * 
+ * @authors Daan Pluister, Bozhidar Petrov
  */
 public class Marble {
 
@@ -24,16 +25,25 @@ public class Marble {
 	
 	// -- Queries ----------------------------------------------------
 	
+	/**
+	 * @ensures color != null
+	 */
 	public Color getColor() {
 		return color;
 	}
 	
 	// -- Commands ---------------------------------------------------
 	
+	/**
+	 * @requires color is a valid color
+	 */
 	public void setColor(Color color) {
 		this.color = color;
 	}
 	
+	/**
+	 * The toString of the marble is the toString of the color.
+	 */
 	public String toString() {
 		return color.toString();
 	}

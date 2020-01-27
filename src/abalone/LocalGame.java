@@ -3,10 +3,14 @@ package abalone;
 import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
 import abalone.AI.RandomStrategy;
 import abalone.AI.ReverseAnakinStrategy;
-import abalone.client.AbaloneClientTUI;
 import abalone.client.AbaloneClientView;
 import ss.utils.TextIO;
 
+/**
+ * A game of Abalone to be played locally.
+ * 
+ * @authors Daan Pluister, Bozhidar Petrov
+ */
 public class LocalGame extends Game {
 
 	/**

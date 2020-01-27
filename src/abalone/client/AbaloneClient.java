@@ -91,9 +91,9 @@ public class AbaloneClient implements ClientProtocol {
 				view.showMessage("ERROR: could not create a socket on " + host + " and port " + port + ".");
 
 				// Do you want to try again? (ask user) TODO: implement
-				if (false) {
-					throw new ExitProgram("User indicated to exit.");
-				}
+//				if (false) {
+//					throw new ExitProgram("User indicated to exit.");
+//				}
 			}
 		}
 	}

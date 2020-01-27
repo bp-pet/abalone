@@ -7,12 +7,15 @@ import java.util.Random;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.MarbleKilledException;
 
+/**
+ * An abstract class for, which is a generalization of LocalGame, ClientGame and ServerGame.
+ * 
+ * @authors Daan Pluister, Bozhidar Petrov
+ */
 public abstract class Game {
 	// -- Constants --------------------------------------------------
 
 	private static final int MAX_TURNS = 96;
-
-	// If you want to play the real game uncomment this.
 //	private static final int MAX_TURNS = Integer.MAX_VALUE;
 
 	public static final int MAX_PLAYERS = 4;

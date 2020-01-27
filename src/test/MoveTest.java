@@ -12,6 +12,13 @@ import abalone.Move;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.MarbleKilledException;
 
+
+/**
+ * A test for the move class. Checks for all kinds of specific
+ * moves whether they are valid or invalid, depending on the move.
+ * 
+ * @author Bozhidar Petrov, Daan Pluister
+ */
 class MoveTest {
 
 	/** board test instance */
@@ -24,21 +31,22 @@ class MoveTest {
 	 * expected to be valid so if an exception is caught, the test fails. Others
 	 * should be invalid so the test checks if an exception with the appropriate
 	 * message is thrown (only a specific word in it).
-	 * @throws Exception
 	 */
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUp() {
 		board = new Board(2);
 		msg = "";
 	}
 	
 	@Test
+	//should not work
 	void test1() {
 		try {
 			new Move(board, Color.BLACK, 4, 1, 4, 4, 4, 2).perform();
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
+			fail();
 		}
 		assertTrue(msg.contains("too long"));
 	}
@@ -51,6 +59,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
+			fail();
 		}
 		assertTrue(msg.contains("lateral"));
 	}
@@ -68,8 +77,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -103,7 +111,6 @@ class MoveTest {
 			msg = e.getMessage();
 		}
 		assertTrue(msg.contains("Selection"));
-		msg = "";
 	}
 	
 	@Test
@@ -114,6 +121,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
+			fail();
 		}
 	}
 	
@@ -125,6 +133,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
+			fail();
 		}
 	}
 
@@ -136,8 +145,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 	}
 	
@@ -149,8 +157,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 	}
 	
@@ -163,8 +170,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -177,8 +183,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 		assertTrue(msg.contains("suicide"));
 	}
@@ -196,7 +201,9 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
+			msg = e.getMessage();
 		}
+		assertTrue(!msg.equals(""));
 	}
 	
 	@Test
@@ -211,8 +218,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -228,8 +234,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -245,8 +250,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 	}
 	
@@ -261,8 +265,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 	}
 	
@@ -277,8 +280,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -294,8 +296,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 	}
 	
@@ -307,8 +308,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 	}
 	
@@ -320,8 +320,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 	}
 	
@@ -333,8 +332,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 	}
 	
@@ -346,8 +344,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 	}
 	
@@ -360,8 +357,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -376,8 +372,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 		assertTrue(msg.contains("push"));
 	}
@@ -393,8 +388,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		};
 		assertTrue(msg.contains("push"));
 	}
@@ -409,8 +403,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 		assertTrue(msg.contains("too long"));
 	}
@@ -423,8 +416,7 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
 		assertTrue(msg.contains("contain"));
 	}
