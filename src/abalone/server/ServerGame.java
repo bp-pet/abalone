@@ -28,7 +28,7 @@ public class ServerGame extends Game {
 						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), current);
 					} else {
 						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), current);
-						current = current.next(2);
+						current = getNextColor();
 					}
 				}
 				i++;
@@ -39,7 +39,7 @@ public class ServerGame extends Game {
 			int i = 0;
 			for (AbaloneClientHandler client : lobby.getClients()) {
 				players[i++] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), current);
-				current = current.next(getNumberOfPlayers());
+				current = getNextColor();
 			}
 		}
 	}
@@ -50,10 +50,15 @@ public class ServerGame extends Game {
 	public AbaloneClientPlayer[] getPlayers() {
 		return players;
 	}
+
+	@Override
+	public Color getNextTurn() {
+		return getNextColor();
+	}
 	
 	@Override
 	public void start() {
-		// TODO: implement stop game when disconnection
+		// TODO: implement stop game when disconnection and go back to lobby
 		while (true) {
 			play();
 		}

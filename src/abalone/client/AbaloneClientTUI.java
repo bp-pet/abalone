@@ -102,6 +102,9 @@ public class AbaloneClientTUI implements AbaloneClientView {
 		case GAME:
 			switch (cmd[0].charAt(0)) {
 			case ProtocolMessages.MOVE:
+				if (cmd.length != 4) {
+					showMessage("Expected 3 arguments.");
+				}
 				try {
 					c.sendMove(cmd[1], cmd[2], cmd[3]);
 				} catch (InvalidMoveException e) {

@@ -1,5 +1,6 @@
 package abalone.protocol;
 
+import abalone.Color;
 import abalone.exceptions.*;
 
 /**
@@ -131,7 +132,7 @@ public interface ClientProtocol {
 	 * @throws ServerUnavailableException if IO errors occur.
 	 * @throws ProtocolException
 	 */
-	public String getTurn() throws ServerUnavailableException, ProtocolException;
+	public Color getTurn() throws ServerUnavailableException, ProtocolException;
 
 	/**
 	 * given the move parameters doMove() sends a move request to the server.
@@ -146,6 +147,7 @@ public interface ClientProtocol {
 	 * @param arg1 coordinates of Marble 1
 	 * @param arg2 coordinates of Marble 2
 	 * @param arg3 destination of Marble 1
+	 * @return 
 	 * @requires arg1 != null && arg2 != null && arg3 != null.
 	 * @throws ServerUnavailableException if IO errors occur.
 	 * @throws InvalidMoveException       if move is invalid.
@@ -166,7 +168,7 @@ public interface ClientProtocol {
 	 * @throws ServerUnavailableException if IO errors occur.
 	 * @throws ProtocolException          if no move command is send.
 	 */
-	public void getMove() throws ServerUnavailableException, ProtocolException;
+	public String[] getMove(Color color) throws ServerUnavailableException, ProtocolException;
 
 	/**
 	 * Receives a <code>pm.GAME_END + pm.DELIMITER + result</code> if there is a

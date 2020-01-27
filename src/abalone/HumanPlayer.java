@@ -23,9 +23,9 @@ public class HumanPlayer extends Player {
 	 * @ensures the Name of this player will be name
 	 * @ensures the Mark of this player will be mark
 	 */
-	public HumanPlayer(String name, Color color) {
+	public HumanPlayer(AbaloneClientView view, String name, Color color) {
 		super(name, color);
-		view = new AbaloneClientTUI(null);
+		this.view = view;
 	}
 
 	// -- Commands ---------------------------------------------------
@@ -37,17 +37,13 @@ public class HumanPlayer extends Player {
 
 		view.showMessage(board.toString());
 		choice = view.getString(prompt);
-		while (! (choice.matches(board.getMovePattern()))) {
-			view.showMessage("ERROR: field " + choice +
-					" is not a valid choice (must match pattern " + board.getMovePattern() + ").");
-			choice = view.getString(prompt);
-		}
-		Move move = board.parseMovePattern(getColor(), choice);
-
+		
+		Move move;
 		try {
+			move = board.parseMovePattern(getColor(), choice);
 			move.isValidMove();
-		} catch (InvalidMoveException e) {
-			view.showMessage(e.getMessage());
+		} catch (InvalidMoveException e1) {
+			view.showMessage(e1.getMessage());
 			move = determineMove(board);
 		}
 		

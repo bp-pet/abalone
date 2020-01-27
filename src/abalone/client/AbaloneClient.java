@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import abalone.Color;
+import abalone.Move;
 import abalone.exceptions.*;
 import abalone.protocol.ClientProtocol;
 import abalone.protocol.ProtocolMessages;
@@ -271,6 +273,25 @@ public class AbaloneClient implements ClientProtocol {
 	
 	// -- Methods for/from SuperClass/Interfaces ---------------------
 
+	/**
+	 * translates pm.COLOR_COLOR to enum Color.
+	 * @param color
+	 * @return
+	 */
+	public Color getColor(String color) throws ProtocolException {
+		switch (color) {
+			case ProtocolMessages.COLOR_BLACK:
+				return Color.BLACK;
+			case ProtocolMessages.COLOR_WHITE:
+				return Color.WHITE;
+			case ProtocolMessages.COLOR_BLUE:
+				return Color.BLUE;
+			case ProtocolMessages.COLOR_RED:
+				return Color.RED;
+			default:
+				throw new ProtocolException(color + " is not a valid color according to the protocol");
+		}
+	}
 	@Override
 	public void handleHello() throws ServerUnavailableException, ProtocolException {
 		sendMessage(ProtocolMessages.HELLO + ProtocolMessages.DELIMITER + ProtocolMessages.VERSION);
@@ -361,18 +382,18 @@ public class AbaloneClient implements ClientProtocol {
 		if (!isCommand(ProtocolMessages.START, lineFromServer)) {
 			throw new ProtocolException("Unexpected command from server");
 		}
-		game = new ClientGame(lineFromServer, ownName, ownTeam);
+		game = new ClientGame(lineFromServer, this, view, ownName, ownTeam);
 		game.start();
 	}
 
 	@Override
-	public String getTurn() throws ServerUnavailableException, ProtocolException {
+	public Color getTurn() throws ServerUnavailableException, ProtocolException {
 		String[] lineFromServer = readLineFromServer();
 		if (!isCommand(ProtocolMessages.TURN, lineFromServer)) {
 			throw new ProtocolException("Unexpected command from server");
 		}
 		if (lineFromServer.length != 2) {
-			return "It is " + lineFromServer[1] + " turn.";
+			return getColor(lineFromServer[1]);
 		} else {
 			throw new ProtocolException("Unexpected arguments from server");
 		}
@@ -399,11 +420,11 @@ public class AbaloneClient implements ClientProtocol {
 		if (lineFromServer.length != 4) {
 			throw new ProtocolException("Unexpected arguments from server");
 		}
-		game.doMove(lineFromServer);
+		//TODO: confirm correct move from server.
 	}
 
 	@Override
-	public void getMove() throws ServerUnavailableException, ProtocolException {
+	public String[] getMove(Color color) throws ServerUnavailableException, ProtocolException {
 		String[] lineFromServer = readLineFromServer();
 		if (! isCommand(ProtocolMessages.MOVE, lineFromServer)) {
 			throw new ProtocolException("Unexpected command from server");
@@ -411,7 +432,8 @@ public class AbaloneClient implements ClientProtocol {
 		if (lineFromServer.length != 4) {
 			throw new ProtocolException("Unexpected arguments from server");
 		}
-		game.doMove(lineFromServer);
+		
+		return lineFromServer;
 	}
 
 	@Override
@@ -454,4 +476,5 @@ public class AbaloneClient implements ClientProtocol {
 	public static void main(String[] args) {
 		(new AbaloneClient()).start();
 	}
+
 }

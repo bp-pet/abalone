@@ -12,7 +12,7 @@ public class Board {
 	// -- Constants --------------------------------------------------
 
 	private static final String MOVE_PATTERN = "^([A-Ia-i][1-9][ ,.]){2}[A-Ia-i][1-9]$";
-	
+
 	private static final int DIM = 5;
 	private static final int maxPush = 3;
 	private static final int WIDTH = 2 * DIM - 1;
@@ -22,9 +22,9 @@ public class Board {
 	private Field[][] fields;
 	private Map<Color, ArrayList<Field>> mapOfColors;
 	private Color[][] teams;
-	
+
 	// -- Used for evaluating moves for strategies -------------------
-	
+
 	public boolean marbleKilled = false;
 
 	// -- Constructors -----------------------------------------------
@@ -54,19 +54,20 @@ public class Board {
 	}
 
 	// -- Commands ---------------------------------------------------
-	
+
 	/**
 	 * Sets the teams for the board.
+	 * 
 	 * @param teams is an array containing teams, which are arrays of colors
 	 */
-	//TODO implement in Game
+	// TODO implement in Game
 	public void setTeams(Color[][] teams) {
 		this.teams = teams;
 	}
-	
+
 	/**
-	 * Finds the team of a given color.
-	 * If color is not on any team it returns null.
+	 * Finds the team of a given color. If color is not on any team it returns null.
+	 * 
 	 * @return an array of colors corresponding to that team
 	 */
 	public Color[] getTeam(Color color) {
@@ -79,11 +80,12 @@ public class Board {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Checks if two colors are teammates on this board. It does this by first
-	 * finding in which team the first color is, then checking if the other color
-	 * is also in this team
+	 * finding in which team the first color is, then checking if the other color is
+	 * also in this team
+	 * 
 	 * @requires each color is in at most one team
 	 * @return true if colors are in the same team, false otherwise
 	 */
@@ -127,16 +129,17 @@ public class Board {
 	 */
 	/**
 	 * Returns true of the (row, col) pair refers to a valid field on the board.
+	 * 
 	 * @return true if 0 <= row < DIM && 0 <= col < DIM
 	 */
 	/* @pure */
 	public boolean isField(int row, int col) {
-		return row < WIDTH  && row >= 0
-				&& col < WIDTH && col >= 0 && fields[row][col].isValid();
+		return row < WIDTH && row >= 0 && col < WIDTH && col >= 0 && fields[row][col].isValid();
 	}
 
 	/**
 	 * Get Field with given row and col
+	 * 
 	 * @return will return null if field doesn't exist
 	 */
 	public Field getField(int row, int col) {
@@ -184,9 +187,9 @@ public class Board {
 	 */
 	public int getRowFromLetter(char letter) {
 		if (letter >= 'a' && letter <= 'z') {
-			return ((int)letter) - 97;
+			return ((int) letter) - 97;
 		}
-		return ((int)letter) - 65;
+		return ((int) letter) - 65;
 	}
 
 	/**
@@ -325,8 +328,8 @@ public class Board {
 	/**
 	 * Extraction used for {@link #Board(int)} which calculates if the given i, j
 	 * field is in the region where the blue marbles should be placed on a 4 player
-	 * board.
-	 * TODO DAAN make this clear 
+	 * board. TODO DAAN make this clear
+	 * 
 	 * @param i
 	 * @param j
 	 * @return boolean
@@ -342,6 +345,7 @@ public class Board {
 	/**
 	 * Sets the content of the field represented by the (row, col) pair to the
 	 * marble m.
+	 * 
 	 * @param row the field's row
 	 * @param col the field's column
 	 * @param m   the marble to be placed
@@ -353,18 +357,19 @@ public class Board {
 	/**
 	 * Tries to move the move if move is invalid InvalidMoveException is thrown and
 	 * no marbles are moved.
+	 * 
 	 * @throws InvalidMoveException
-	 * @throws MarbleKilledException 
+	 * @throws MarbleKilledException
 	 */
-	public void move(Color color, int rowTail, int colTail, int rowHead,
-			int colHead, int rowDest, int colDest) throws InvalidMoveException, MarbleKilledException {
-		move(new Move(this, color, rowTail, colTail, rowHead, colHead, rowDest,
-				colDest));
+	public void move(Color color, int rowTail, int colTail, int rowHead, int colHead, int rowDest, int colDest)
+			throws InvalidMoveException, MarbleKilledException {
+		move(new Move(this, color, rowTail, colTail, rowHead, colHead, rowDest, colDest));
 	}
 
 	/**
 	 * Performs a move.
-	 * @throws MarbleKilledException 
+	 * 
+	 * @throws MarbleKilledException
 	 * @throws InvalidMoveException
 	 */
 	public void move(Move move) throws InvalidMoveException, MarbleKilledException {
@@ -395,42 +400,42 @@ public class Board {
 			}
 		}
 	}
-	
+
 	/**
 	 * Rotates a set of coordinates by 180 degrees.
 	 */
-	public int[] rotate180(int row, int col){
+	public int[] rotate180(int row, int col) {
 		int[] result = new int[2];
 		result[0] = rotate180(row);
 		result[1] = rotate180(col);
 		return result;
 	}
-	
+
 	/**
 	 * Rotates a coordinate by 180 degrees.
 	 */
 	public int rotate180(int i) {
 		return 2 * DIM - i - 2;
 	}
-	
 
 	/**
 	 * constructs a new move from the MOVE_PATTERN.
 	 * 
-	 * @requires choice.matches(MOVE_PATTERN);
+	 * @throws InvalidMoveException if ! choice.matches(MOVE_PATTERN);
 	 * @param board
 	 * @param choice
 	 * @return Move
 	 */
-	public Move parseMovePattern(Color color, String choice) {
-		return new Move(this, color, getRowFromLetter(choice.charAt(0)),
-				getColFromLetter(choice.charAt(1)),
-				getRowFromLetter(choice.charAt(3)),
-				getColFromLetter(choice.charAt(4)),
-				getRowFromLetter(choice.charAt(6)),
-				getColFromLetter(choice.charAt(7)));
+	public Move parseMovePattern(Color color, String choice) throws InvalidMoveException {
+		if (!(choice.matches(MOVE_PATTERN))) {
+			throw new InvalidMoveException(
+					"ERROR: field " + choice + " is not a valid choice (must match pattern " + MOVE_PATTERN + ").");
+		}
+		return new Move(this, color, getRowFromLetter(choice.charAt(0)), getColFromLetter(choice.charAt(1)),
+				getRowFromLetter(choice.charAt(3)), getColFromLetter(choice.charAt(4)),
+				getRowFromLetter(choice.charAt(6)), getColFromLetter(choice.charAt(7)));
 	}
-	
+
 	// -- Queries ----------------------------------------------------
 
 	/**
@@ -439,7 +444,6 @@ public class Board {
 	public int getDim() {
 		return DIM;
 	}
-	
 
 	/**
 	 * Query.
@@ -447,7 +451,6 @@ public class Board {
 	public int getWidth() {
 		return WIDTH;
 	}
-	
 
 	/**
 	 * Query.
@@ -455,7 +458,6 @@ public class Board {
 	public int getMaxPush() {
 		return maxPush;
 	}
-	
 
 	/**
 	 * Query.
@@ -463,7 +465,6 @@ public class Board {
 	public Map<Color, ArrayList<Field>> getMapOfColors() {
 		return mapOfColors;
 	}
-	
 
 	/**
 	 * Query.
@@ -478,7 +479,6 @@ public class Board {
 		}
 		return s;
 	}
-	
 
 	/**
 	 * Query.
@@ -491,14 +491,6 @@ public class Board {
 		return s;
 	}
 
-	/**
-	 * Query for MOVE_PATTERN which can be parsed to get a move.
-	 * @return
-	 */
-	public String getMovePattern() {
-		return MOVE_PATTERN;
-	}
-	
 	/**
 	 * Query.
 	 */

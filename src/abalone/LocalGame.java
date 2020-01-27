@@ -3,6 +3,8 @@ package abalone;
 import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
 import abalone.AI.RandomStrategy;
 import abalone.AI.ReverseAnakinStrategy;
+import abalone.client.AbaloneClientTUI;
+import abalone.client.AbaloneClientView;
 import ss.utils.TextIO;
 
 public class LocalGame extends Game {
@@ -16,28 +18,39 @@ public class LocalGame extends Game {
 		super(stringPlayers.length);
 		currentColor = Color.WHITE;
 		for (int i = 0; i < stringPlayers.length; i++) {
-			players[i] = createPlayer(stringPlayers[i], currentColor);
-			currentColor = nextColor();
+			players[i] = createPlayer(null, stringPlayers[i], currentColor);
+			currentColor = getNextColor();
 		}
 	}
 	
 	/**
-	 * creates player with Color color, if arg contains -R then Random Computer, else arg is
-	 * the name of the Human player.
+	 * creates player with Color color with name as name of human player except if one of the following:
+	 * <li>if name.contains("RandomStrategy") RandomStrategy
+	 * <li>if name.contains("ItsOverAnakinIHaveTheHighGroundStrategy") ItsOverAnakinIHaveTheHighGroundStrategy
+	 * <li>if name.contains("ReverseAnakinStrategy") ReverseAnakinStrategy
+	 * <li>else HumanPlayer with view
+	 * 
+	 * @requires if humanplayer then view != null.
+	 * @param view the view needed for humanplayer
 	 */
-	public static Player createPlayer(String arg, Color color) {
-		if (arg.contains("-R")) {
+	public static Player createPlayer(AbaloneClientView view, String name, Color color) {
+		if (name.contains("RandomStrategy")) {
 			return new ComputerPlayer(color, new RandomStrategy());
-		} else if (arg.contains("-A")) {
+		} else if (name.contains("ItsOverAnakinIHaveTheHighGroundStrategy")) {
 			return new ComputerPlayer(color,
 					new ItsOverAnakinIHaveTheHighGroundStrategy());
-		} else if (arg.contains("-F")) {
+		} else if (name.contains("ReverseAnakinStrategy")) {
 			return new ComputerPlayer(color, new ReverseAnakinStrategy());
 		} else {
-			return new HumanPlayer(arg, color);
+			return new HumanPlayer(view, name, color);
 		}
 	}
 
+	@Override
+	public Color getNextTurn() {
+		return getNextColor();
+	}
+	
 	@Override
 	public void start() {
 		boolean again = true;
@@ -54,6 +67,4 @@ public class LocalGame extends Game {
 			  }
 		}
 	}
-
-
 }

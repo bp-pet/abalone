@@ -229,7 +229,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	 * @param lobby
 	 * @param message
 	 */
-	public void sendMessage(String message) {
+	public void sendMessageToLobby(String message) {
 		for (AbaloneClientHandler client : getClients()) {
 			client.sendMessage(message);
 		}
@@ -270,7 +270,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		default:
 			protocolColorMessage = ProtocolMessages.COLOR_WHITE;
 		}
-		sendMessage(ProtocolMessages.TURN + ProtocolMessages.DELIMITER + protocolColorMessage);
+		sendMessageToLobby(ProtocolMessages.TURN + ProtocolMessages.DELIMITER + protocolColorMessage);
 	}
 
 	@Override
@@ -282,7 +282,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	@Override
 	public void doReady(AbaloneClientHandler client) {
 		setReady(client);
-		sendMessage(ProtocolMessages.READY + ProtocolMessages.DELIMITER + getPlayerName(client)
+		sendMessageToLobby(ProtocolMessages.READY + ProtocolMessages.DELIMITER + getPlayerName(client)
 				+ ProtocolMessages.DELIMITER + getTeamName(client));
 	}
 
@@ -300,14 +300,19 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 
 	@Override
 	public void exitGame(AbaloneClientHandler client) {
-		sendMessage(ProtocolMessages.EXIT + ProtocolMessages.DELIMITER + getPlayerName(client)
+		sendMessageToLobby(ProtocolMessages.EXIT + ProtocolMessages.DELIMITER + getPlayerName(client)
 				+ ProtocolMessages.DELIMITER + getTeamName(client));
 	}
 
 	@Override
 	public String doMove(AbaloneClientHandler client, String pos1, String pos2, String des1) {
 		Color color = colors.get(client);
-		Move move = game.getBoard().parseMovePattern(color, pos1 + " " + pos2 + " " + des1);
+		Move move = null;
+		try {
+			move = game.getBoard().parseMovePattern(color, pos1 + " " + pos2 + " " + des1);
+		} catch (InvalidMoveException e1) {
+			return (doError(2, "Unexcpected arguments we want the form m;a1;b2;c3"));
+		}
 		try {
 			move.isValidMove();
 		} catch (InvalidMoveException e) {
@@ -315,7 +320,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 			return Character.toString(ProtocolMessages.UNEXPECTED_MOVE);
 		}
 		nextMove = move;
-		sendMessage(ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + pos1 + ProtocolMessages.DELIMITER + pos2
+		sendMessageToLobby(ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + pos1 + ProtocolMessages.DELIMITER + pos2
 				+ ProtocolMessages.DELIMITER + des1);
 		return null;
 	}

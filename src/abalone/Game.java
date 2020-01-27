@@ -98,7 +98,7 @@ public abstract class Game {
 	 * @return the next color; if color given not valid for given number
 	 * of players, return null.
 	 */
-	protected Color getNextColor() {
+	public Color getNextColor() {
 		switch (getNumberOfPlayers()) {
 		case 2:
 			switch (currentColor) {
@@ -142,7 +142,7 @@ public abstract class Game {
 	 * Returns int representation of color.
 	 * @return (WHITE,BLACK,BLUE,RED) => (1,2,3,4)
 	 */
-	protected int getIntOfColor() {
+	protected int getIntOfCurrentColor() {
 		switch (currentColor) {
 		case WHITE:
 			return 0;
@@ -190,7 +190,7 @@ public abstract class Game {
 		reset();
 		Move nextMove;
 		while (!hasWinner() && numberOfTurns < MAX_TURNS) {
-			nextMove = players[getIntOfColor()].determineMove(board);
+			nextMove = players[getIntOfCurrentColor()].determineMove(board);
 			try {
 				board.move(nextMove);
 			} catch (InvalidMoveException e1) {
@@ -199,7 +199,7 @@ public abstract class Game {
 			} catch (MarbleKilledException e2) {
 				increaseScore(currentColor);
 			}
-			currentColor = getNextColor();
+			currentColor = getNextTurn();
 			numberOfTurns++;
 			// TODO: remove method showBoard() or not
 			showBoard();
@@ -343,9 +343,18 @@ public abstract class Game {
 		System.out.println("current score: " + scores.toString());
 		System.out.println(board.toString());
 	}
-
+	
+	// -- Abstract methods --------------------------------------
+	
+	/**
+	 * Returns the color for the next turn.
+	 * @return
+	 */
+	abstract public Color getNextTurn();
+	
 	/**
 	 * Method that calls play(). When play is done one player has won.
 	 */
 	abstract public void start();
+	
 }

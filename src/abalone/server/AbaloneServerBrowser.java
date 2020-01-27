@@ -72,7 +72,7 @@ public class AbaloneServerBrowser extends AbaloneServer implements ServerBrowser
 		if (addedToLobby == null) {
 			addedToLobby = new AbaloneServerLobby(lobbyName, client, playerName, teamName);
 		}
-		addedToLobby.sendMessage(ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + playerName + ProtocolMessages.DELIMITER + teamName);
+		addedToLobby.sendMessageToLobby(ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + playerName + ProtocolMessages.DELIMITER + teamName);
 		return addedToLobby.toString();
 	}
 
