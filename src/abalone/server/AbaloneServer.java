@@ -6,24 +6,31 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
 import abalone.exceptions.*;
+import abalone.protocol.ProtocolMessages;
 import abalone.protocol.ServerProtocol;
 
 public class AbaloneServer implements Runnable, ServerProtocol {
 
-	/** The ServerSocket of this HotelServer. */
+	// -- Instance variables -----------------------------------------
+	
+	/** The ServerSocket of this AbaloneServer. */
 	private ServerSocket ssock;
 
-	/** List of HotelClientHandlers, one for each connected client. */
+	/** List of AbaloneClientHandlers, one for each connected client. */
 	private List<AbaloneClientHandler> clients;
 
 	/** Next client number, increasing for every new connection. */
 	private int next_client_no;
 
-	/** The view of this HotelServer. */
+	/** The view of this AbaloneServer. */
 	private AbaloneServerView view;
 
+	/** The unique browser of the server */
+	private AbaloneServerBrowser browser;
+	
+	// -- Constructors -----------------------------------------------
+	
 	/**
 	 * Constructs a new AbaloneServer. Initializes the clients list, the view and the
 	 * next_client_no.
@@ -46,14 +53,14 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 		boolean openNewSocket = true;
 		while (openNewSocket) {
 			try {
-				// Sets up the abalone application
+				// Sets up the AbaloneServer
 				setup();
 
 				while (true) {
 					Socket sock = ssock.accept();
 					String name = "Client " + String.format("%02d", next_client_no++);
 					view.showMessage("New client [" + name + "] connected!");
-					AbaloneClientHandler handler = new AbaloneClientHandler(sock, this, name);
+					AbaloneClientHandler handler = new AbaloneClientHandler(sock, this, browser, name);
 					new Thread(handler).start();
 					clients.add(handler);
 				}
@@ -74,7 +81,7 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 	}
 
 	/**
-	 * Sets up a new Game using {@link #setupGame()} and opens a new ServerSocket
+	 * Sets up a new Browser using {@link #setupBrowser()} and opens a new ServerSocket
 	 * at localhost on a user-defined port.
 	 * 
 	 * The user is asked to input a port, after which a socket is attempted to be
@@ -87,8 +94,8 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 	 * @ensures a serverSocket is opened.
 	 */
 	public void setup() throws ExitProgram {
-		// First, initialize the Game.
-		setupGame();
+		// First, initialize the Browser.
+		setupBrowser();
 
 		ssock = null;
 		while (ssock == null) {
@@ -108,14 +115,11 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 			}
 		}
 	}
-
-	/**
-	 * Creates a new game instance
-	 */
-	public void setupGame() {
-		//TODO: implement setupGame
-	}
 	
+	private void setupBrowser() {
+		browser = new AbaloneServerBrowser();		
+	}
+
 	/**
 	 * Removes a clientHandler from the client list.
 	 * 
@@ -128,51 +132,26 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 	// ------------------ Server Methods --------------------------
 	
 	@Override
-	public String getHello() {
-		// TODO Auto-generated method stub
-		return null;
+	public String doError(int errorType, String errorMessage) {
+		String errorTypeString;
+		switch(errorType) {
+			case 3:
+				errorTypeString = ProtocolMessages.ERROR3;
+			case 2:
+				errorTypeString = ProtocolMessages.ERROR2;
+			default:
+				errorTypeString = ProtocolMessages.ERROR1;
+				
+		} 
+		return errorTypeString + ProtocolMessages.DELIMITER + errorMessage;
 	}
+	
+	// ------------------ Main --------------------------
 
-	@Override
-	public String doJoinGame(String lobbyName, String playerName, String teamName) {
-		// TODO Auto-generated method stub
-		return null;
+	/** Start a new AbaloneServer */
+	public static void main(String[] args) {
+		AbaloneServer server = new AbaloneServer();
+		System.out.println("Welcome to the Abalone Server! Starting...");
+		new Thread(server).start();
 	}
-
-	@Override
-	public String doTurn() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String doGameEnd() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String doLobbies() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String doReady(String playerName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String doStart(String[] players) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String exitGame() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

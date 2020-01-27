@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
-import abalone.AI.RandomStrategy;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.MarbleKilledException;
 
@@ -29,7 +27,7 @@ public abstract class Game {
 	/**
 	 * The board.
 	 */
-	private Board board;
+	protected Board board;
 
 	/**
 	 * Index of the current player.

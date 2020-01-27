@@ -5,7 +5,7 @@ import abalone.exceptions.*;
 /**
  * Defines the methods that the Abalone Client should support.
  * 
- * @version Other3V0.9
+ * @version Other3V1.3
  * @author Daan Pluister
  */
 public interface ClientProtocol {
@@ -39,7 +39,7 @@ public interface ClientProtocol {
 	 * this method sends <code>pm.LOBBIES</code> to the server then getLobbies()
 	 * should be called.
 	 */
-	public void doLobbies();
+	public void doLobbies() throws ServerUnavailableException;
 
 	/**
 	 * the result (multiple lines in the form
@@ -47,7 +47,7 @@ public interface ClientProtocol {
 	 * and ending line with <code>ProtocolMessages.EOT</code>) is retrieved and
 	 * forwarded to the view.
 	 */
-	public void getLobbies();
+	public void getLobbies() throws ServerUnavailableException;
 
 	/**
 	 * Sends a join game request to the server.
@@ -57,14 +57,17 @@ public interface ClientProtocol {
 	 * following message to the server:
 	 * <code>pm.JOIN + pm.DELIMITER + lobbyName + pm.DELIMITER + playerName + pm.DELIMITER + teamName</code>
 	 * 
-	 * if the join request is succesful, it will confirm the join by sending
-	 * the same message back. If <code>received lobbyName != lobbyName</code> or <code>received playerName != playerName</code>  a <code>ProtocolException</code> is thrown
-	 * with appropriate message.
+	 * 
+	 * if the join request is successful, it will confirm the join by sending the
+	 * same message back. If <code>received lobbyName != lobbyName</code> or
+	 * <code>received playerName != playerName</code> a
+	 * <code>ProtocolException</code> is thrown with appropriate message.
 	 * 
 	 * else the server sends an exception of type 3 and tell the client what is
 	 * wrong:
 	 * <code> pm.ERROR + pm.DELIMITER + pm.ERROR3 + pm.DELIMITER + String errorMessage</code>.
 	 * then doLobbies() will be called.
+	 * 
 	 * 
 	 * @requires lobbyName != null
 	 * @requires playerName != null
@@ -76,8 +79,16 @@ public interface ClientProtocol {
 	 * @throws ProtocolException          if server responds with unexpected
 	 *                                    message.
 	 */
-	public void doJoinGame(String lobbyName, String playerName, String teamName)
+	public void doJoinLobby(String lobbyName, String playerName, String teamName)
 			throws ServerUnavailableException, ProtocolException;
+
+	/**
+	 * Receives a new player joining the lobby ready will be set to 0
+	 * 
+	 * @throws ServerUnavailableException
+	 * @throws ProtocolException
+	 */
+	public void getJoinGame() throws ServerUnavailableException, ProtocolException;
 
 	/**
 	 * Sends a game ready request to the server.
@@ -85,30 +96,42 @@ public interface ClientProtocol {
 	 * The doReady() method sends the following message to the server:
 	 * <code>pm.READY</code>.
 	 * 
-	 * If not all players are ready <code>pm.READY;playerName</code> is received.
+	 * If not all players are ready getReady() should be called.
 	 * 
-	 * If all players are now ready and the game can start <code>pm.START;whitePlayerName;whitePlayerTeam;blackPlayerName;blackPlayerTeam[;bluePlayerName;bluePlayerTeam;redPlayerName;redPlayerTeam]</code> is received.
-	 * 
-	 * If all players are now ready and the game can not start <code>pm.ERROR3 + pm.DELIMITER + String message</code>. Is received.
-	 * 
+	 * If all players are ready getStart() should be called.
+	 *
 	 * @throws ServerUnavailableException if IO errors occur.
-	 * @throws NotEnoughPlayersException  if only 1 player is in the game.
+	 * @throws ProtocolException 
 	 */
-	public void doReady() throws ServerUnavailableException, NotEnoughPlayersException;
+	public void doReady() throws ServerUnavailableException, ProtocolException;
 
 	/**
-	 * Receives a <code>pm.START</code> from the server. In the form
-	 * <code>pm.START;whitePlayerName;whitePlayerTeam;blackPlayerName;blackPlayerTeam[;bluePlayerName;bluePlayerTeam;redPlayerName;redPlayerTeam]</code>.
+	 * get <code>pm.READY;playerName</code>
+	 * 
+	 * @throws ServerUnavailableException if IO errors occur.
+	 * @throws ProtocolException          if error is received.
 	 */
-	public void getStart() throws ServerUnavailableException;
+	public void getReady() throws ServerUnavailableException, ProtocolException;
+
+	/**
+	 * If all players are now ready and the game can start
+	 * <code>pm.START;whitePlayerName;whitePlayerTeam;blackPlayerName;blackPlayerTeam[;bluePlayerName;bluePlayerTeam;redPlayerName;redPlayerTeam]</code>
+	 * is received.
+	 * 
+	 * If all players are now ready and the game can not start
+	 * <code>pm.ERROR3 + pm.DELIMITER + String message</code>. Is received.
+	 * 
+	 */
+	public void getStart() throws ServerUnavailableException, ProtocolException;
 
 	/**
 	 * Returns a string of the color as a response to a
 	 * <code>pm.TURN + pm.DELIMITER + String color</code> server message.
 	 * 
 	 * @throws ServerUnavailableException if IO errors occur.
+	 * @throws ProtocolException
 	 */
-	public String getTurn() throws ServerUnavailableException;
+	public String getTurn() throws ServerUnavailableException, ProtocolException;
 
 	/**
 	 * given the move parameters doMove() sends a move request to the server.
@@ -126,32 +149,35 @@ public interface ClientProtocol {
 	 * @requires arg1 != null && arg2 != null && arg3 != null.
 	 * @throws ServerUnavailableException if IO errors occur.
 	 * @throws InvalidMoveException       if move is invalid.
+	 * @throws ProtocolException
 	 */
-	public void doMove(String arg1, String arg2, String arg3) throws ServerUnavailableException, InvalidMoveException;
+	public void sendMove(String arg1, String arg2, String arg3)
+			throws ServerUnavailableException, InvalidMoveException, ProtocolException;
 
 	/**
 	 * Returns a String with a move that is received from the server.
 	 * 
 	 * the server sends a move in the form
 	 * <code>pm.Move + pm.DELIMITER + arg1 + pm.DELIMITER + arg2 + pm.DELIMITER + arg3</code>.
-	 * And will be forwarded to the view.
+	 * And will be done in the ClientGame.
 	 * 
 	 * @return String
 	 *         <code>pm.Move + pm.DELIMITER + arg1 + pm.DELIMITER + arg2 + pm.DELIMITER + arg3</code>.
 	 * @throws ServerUnavailableException if IO errors occur.
+	 * @throws ProtocolException          if no move command is send.
 	 */
-	public String getMove() throws ServerUnavailableException;
+	public void getMove() throws ServerUnavailableException, ProtocolException;
 
 	/**
 	 * Receives a <code>pm.GAME_END + pm.DELIMITER + result</code> if there is a
 	 * winner or alternatively if a player disconnects:
 	 * <code>pm.GAME_END + pm.DELIMITER + result + pm.DELIMITER + disconnectedColor</code>.
-	 * these messages will be returned.
+	 * these messages will be forwarded to the view.
 	 * 
 	 * @return
 	 * @throws ServerUnavailableException
 	 */
-	public String getGameEnd() throws ServerUnavailableException;
+	public void getGameEnd() throws ServerUnavailableException, ProtocolException;
 
 	/**
 	 * Sends a message to the server indicating that this client will exit:
@@ -159,11 +185,10 @@ public interface ClientProtocol {
 	 * 
 	 * If in a game or lobby the getLobbies() is called
 	 * 
-	 * If not in a game both the server and the client then close the connection. The client does
-	 * this using the {@link #closeConnection()} method.
+	 * If not in a game both the server and the client then close the connection.
+	 * The client does this using the {@link #closeConnection()} method.
 	 * 
 	 * @throws ServerUnavailableException if IO errors occur.
 	 */
 	public void sendExit() throws ServerUnavailableException;
-
 }
