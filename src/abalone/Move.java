@@ -61,6 +61,16 @@ public class Move {
 		this(board, color, coordinates[0], coordinates[1], coordinates[2], coordinates[3],
 				coordinates[4], coordinates[5]);
 	}
+	
+	/**
+	 * Makes a move from two fields AND A MOVE VECTOR, not a destination. Used for convenience.
+	 * @param field1 is the tail
+	 * @param field2 is the head
+	 */
+	public Move(Board board, Color color, Field field1, Field field2, int rowMove, int colMove) {
+		this(board, color, field1.getRow(), field1.getCol(), field2.getRow(),
+				field2.getCol(), field1.getRow() + rowMove, field1.getCol() + colMove);
+	}
 
     /**
      * Checks whether move is valid. If it is, it performs it. After that,
@@ -100,6 +110,16 @@ public class Move {
     	} else {
     		canMoveOneByOne();
     	}
+    }
+    
+    
+    /**
+     * Get the size of the selection
+     * @requires selection is valid
+     * @return the length of the field array
+     */
+    public int getSelectionSize() {
+    	return getSelectedFields().length;
     }
     
     /**

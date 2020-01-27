@@ -11,12 +11,12 @@ public class ComputerPlayer extends Player {
      * @ensures the Color of this player will be color
      */
 	public ComputerPlayer(Color color, Strategy strategy) {
-        super(strategy.getName() + "-" + color.toString(), color);
+        super(strategy.getName(), color);
         this.strategy = strategy;
     }
 	
 	@Override
-	public Move determineMove(Board board) {
+	public Move determineMove(Board board, String string) {
 		return this.strategy.determineMove(board, super.getColor());
 	}
 	

@@ -41,6 +41,13 @@ public abstract class Player {
     public Color getColor() {
         return color;
     }
+    
+    /**
+     * Set the color of the player.
+     */
+    public void setColor(Color color) {
+    	this.color = color;
+    }
 
     /**
      * Determines the Move for the next move.
@@ -49,5 +56,5 @@ public abstract class Player {
      * @param board the current game board
      * @return the player's chosen Move
      */
-    public abstract Move determineMove(Board board);
+    public abstract Move determineMove(Board board, String string);
 }

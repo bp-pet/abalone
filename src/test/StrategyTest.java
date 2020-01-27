@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import abalone.Board;
 import abalone.Color;
 import abalone.Move;
+import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
 import abalone.AI.RandomStrategy;
 import abalone.AI.Strategy;
 import abalone.exceptions.InvalidMoveException;
@@ -92,8 +93,13 @@ public class StrategyTest {
 	@Test
 	public void testMovesListAfterMoving() {
 		try {
-			new Move(board, Color.WHITE, 1, 0, 1, 0, 2, 0).perform();
+			new Move(board, Color.WHITE, 2, 3, 2, 4, 3, 3).perform();
+			new Move(board, Color.BLACK, 6, 6, 6, 5, 5, 6).perform();
+			new Move(board, Color.WHITE, 3, 3, 3, 4, 4, 3).perform();
+			new Move(board, Color.BLACK, 5, 5, 5, 6, 4, 5).perform();
 			movesList = strategy.makeMovesList(board, Color.WHITE);
+			assertEquals(strategy.makeMovesList(board, Color.WHITE).size(),
+					strategy.makeMovesList(board, Color.BLACK).size());
 			for (Move m : movesList) {
 				try {
 					m.isValidMove();
@@ -105,5 +111,21 @@ public class StrategyTest {
 			fail();
 		} catch (MarbleKilledException e1) {
 		}
+	}
+	
+	/**
+	 * Checks whether the distance finding method works.
+	 */
+	@Test
+	public void testDistance() {
+		ItsOverAnakinIHaveTheHighGroundStrategy strategy2 = new ItsOverAnakinIHaveTheHighGroundStrategy("20");
+		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(0, 0)), 4);
+		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(1, 1)), 3);
+		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(2, 2)), 2);
+		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(3, 3)), 1);
+		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(4, 4)), 0);
+		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(8, 6)), 4);
+		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(5, 8)), 4);
+		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(6, 2)), 4);
 	}
 }

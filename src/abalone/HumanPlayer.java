@@ -1,6 +1,5 @@
 package abalone;
 
-import abalone.client.AbaloneClientTUI;
 import abalone.client.AbaloneClientView;
 import abalone.exceptions.InvalidMoveException;
 
@@ -38,11 +37,11 @@ public class HumanPlayer extends Player {
 	/**
 	 * Determines the move the player wants to do by asking for input.
 	 */
-	public Move determineMove(Board board) {
+	public Move determineMove(Board board, String stateOfGame) {
 		String prompt = "> " + getName() + " (" + getColor().toString() +
 				")" + ", what is your choice? ";
 		String choice;
-
+		view.showMessage(stateOfGame);
 		view.showMessage(board.toString());
 		choice = view.getString(prompt);
 		
@@ -52,7 +51,7 @@ public class HumanPlayer extends Player {
 			move.isValidMove();
 		} catch (InvalidMoveException e1) {
 			view.showMessage(e1.getMessage());
-			move = determineMove(board);
+			move = determineMove(board, stateOfGame);
 		}
 		
 		return move;

@@ -189,11 +189,12 @@ public abstract class Game {
 		
 	}
 
-	public void play() {
+	public Player play() {
 		reset();
 		Move nextMove;
 		while (!hasWinner() && numberOfTurns < MAX_TURNS) {
-			nextMove = players[getIntOfCurrentColor()].determineMove(board);
+			Player nextPlayer = players[getIntOfCurrentColor()];
+			nextMove = nextPlayer.determineMove(board, toString());
 			try {
 				board.move(nextMove);
 			} catch (InvalidMoveException e1) {
@@ -204,16 +205,16 @@ public abstract class Game {
 			}
 			currentColor = getNextTurn();
 			numberOfTurns++;
-			// TODO: remove method showBoard() or not
-			showBoard();
 		}
 
 		Player winner = determineWinner();
 		// TODO: send to server or not
 		if (winner != null) {
-			System.out.println(winner.getName() + " has won!");
+//			System.out.println(winner.getName() + " has won!");
+			return winner;
 		} else {
-			System.out.println("DRAW!");
+//			System.out.println("DRAW!");
+			return null;
 		}
 	}
 
@@ -336,15 +337,11 @@ public abstract class Game {
 		}
 		return winner;
 	}
-
-	/**
-	 * TODO: remove method or not
-	 */
-	public void showBoard() {
-		System.out.println("Moves left: " + (MAX_TURNS - numberOfTurns));
-		System.out.println("Moves done: " + numberOfTurns);
-		System.out.println("current score: " + scores.toString());
-		System.out.println(board.toString());
+	
+	public String toString() {
+		return "Moves left: " + String.valueOf(MAX_TURNS - numberOfTurns) +
+				"\nMoves done: " + String.valueOf(numberOfTurns) +
+				"\nCurrent score :" + scores.toString() + "\n" + board.toString();
 	}
 	
 	// -- Abstract methods --------------------------------------
@@ -358,6 +355,6 @@ public abstract class Game {
 	/**
 	 * Method that calls play(). When play is done one player has won.
 	 */
-	abstract public void start();
+	abstract public Map<Player, Integer> start(int numberOfRounds);
 	
 }

@@ -1,5 +1,8 @@
 package abalone;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
 import abalone.AI.RandomStrategy;
 import abalone.AI.ReverseAnakinStrategy;
@@ -14,9 +17,8 @@ import ss.utils.TextIO;
 public class LocalGame extends Game {
 
 	/**
-	 * creates a new LocalGame using {@Link Game#Game(int)} and initialize players according to {@link #createPlayer(String, Color)}.
-	 * 
-	 * @param stringPlayers
+	 * Creates a new LocalGame using {@Link Game#Game(int)} and initialize players
+	 * according to {@link #createPlayer(String, Color)}.
 	 */
 	public LocalGame(String[] stringPlayers) {
 		super(stringPlayers.length);
@@ -25,6 +27,20 @@ public class LocalGame extends Game {
 			players[i] = createPlayer(null, stringPlayers[i], currentColor);
 			currentColor = getNextColor();
 		}
+	}
+	
+	/**
+	 * Creates a LocalGame from a list of players.
+	 * @param inputPlayers with length 2 to 4
+	 */
+	public LocalGame(Player[] inputPlayers) {
+		super(inputPlayers.length);
+		currentColor = Color.WHITE;
+		for (Player p : inputPlayers) {
+			p.setColor(currentColor);
+			currentColor = getNextColor();
+		}
+		players = inputPlayers;
 	}
 	
 	/**
@@ -56,19 +72,34 @@ public class LocalGame extends Game {
 	}
 	
 	@Override
-	public void start() {
-		boolean again = true;
-		while (again) {
-			play();
-			System.out.println("> Want to play again? (Y/n)");
-			String yn = TextIO.getlnString();
-			  if (yn.equals("n")) {
-			    again = false;
-			    break;
-			  } else if (yn.equals("y") || yn.equals("")) {
-			  } else {
-			     System.out.println("Sorry, I didn't catch that. Please answer y/n");
-			  }
+	public Map<Player, Integer> start(int numberOfRounds) {
+		if (numberOfRounds <= 0) {
+			boolean again = true;
+			while (again) {
+				play();
+				System.out.println("> Want to play again? (Y/n)");
+				String yn = TextIO.getlnString();
+				if (yn.equals("n")) {
+					again = false;
+				    break;
+				} else if (yn.equals("y") || yn.equals("")) {
+				} else {
+				     System.out.println("Sorry, I didn't catch that. Please answer y/n");
+				}
+			}
+			return null;
+		} else {
+			Map<Player, Integer> result = new HashMap<Player, Integer>();
+			for (Player p : players) {
+				result.put(p, 0);
+			}
+			for (int i = 0; i < numberOfRounds; i++) {
+				Player winner = play();
+				if (winner != null) {
+					result.put(winner, result.get(winner) + 1);
+				}
+			}
+			return result;
 		}
 	}
 }

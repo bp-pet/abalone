@@ -55,50 +55,36 @@ public interface Strategy {
 		ArrayList<Move> moveList = new ArrayList<Move>();
 		ArrayList<Move> tempMoveList;
 		ArrayList<Field> fieldList = board.getMapOfColors().get(color);
-		boolean valid1;
-		boolean valid2;
 		int l = fieldList.size();
 		for (int i = 0; i < l; i++) {
 			for (int j = i; j < l; j++) {
-				Field f1 = fieldList.get(i);
-				Field f2 = fieldList.get(j);
-				int f1Row = f1.getRow();
-				int f1Col = f1.getCol();
-				int f2Row = f2.getRow();
-				int f2Col = f2.getCol();
-				Move move = new Move(board, color, f1Row, f1Col,
-						f2Row, f2Col,0 ,0);
-				valid1 = true;
+				Move move = new Move(board, color, fieldList.get(i),
+						fieldList.get(j), 0 ,0);
 				try {
 					move.isValidSelection();
 				} catch (InvalidMoveException e) {
-					valid1 = false;
+					continue;
 				}
-				if (valid1) {
-					 tempMoveList = new ArrayList<Move>();
-					 tempMoveList.add(new Move(board, color, f1Row, f1Col,
-							 f2Row, f2Col, f1Row + 1, f1Col + 0));
-					 tempMoveList.add(new Move(board, color, f1Row, f1Col,
-							 f2Row, f2Col, f1Row - 1, f1Col + 0));
-					 tempMoveList.add(new Move(board, color, f1Row, f1Col,
-							 f2Row, f2Col, f1Row + 0, f1Col + 1));
-					 tempMoveList.add(new Move(board, color, f1Row, f1Col,
-							 f2Row, f2Col, f1Row + 0, f1Col - 1));
-					 tempMoveList.add(new Move(board, color, f1Row, f1Col,
-							 f2Row, f2Col, f1Row + 1, f1Col + 1));
-					 tempMoveList.add(new Move(board, color, f1Row, f1Col,
-							 f2Row, f2Col, f1Row - 1, f1Col - 1));
-					 for (Move m : tempMoveList) {
-						 valid2 = true;
-						 try {
-								m.isValidMove();
-						 } catch (InvalidMoveException e) {
-								valid2 = false;
-						 }
-						 if (valid2) {
-							 moveList.add(m);
-						 }
-					 }
+				tempMoveList = new ArrayList<Move>();
+				tempMoveList.add(new Move(board, color, fieldList.get(i),
+						fieldList.get(j), 1, 0));
+				tempMoveList.add(new Move(board, color, fieldList.get(i),
+						fieldList.get(j), -1, 0));
+				tempMoveList.add(new Move(board, color, fieldList.get(i),
+						fieldList.get(j), 0, 1));
+				tempMoveList.add(new Move(board, color, fieldList.get(i),
+						fieldList.get(j), 0, -1));
+				tempMoveList.add(new Move(board, color, fieldList.get(i),
+						fieldList.get(j), 1, 1));
+				tempMoveList.add(new Move(board, color, fieldList.get(i),
+						fieldList.get(j), -1, -1));
+				for (Move m : tempMoveList) {
+					try {
+						m.isValidMove();
+					} catch (InvalidMoveException e) {
+						continue;
+					}
+					moveList.add(m);
 				}
 			}
 		}

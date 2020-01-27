@@ -53,6 +53,6 @@ public class Abalone {
 		}
 
 		Game game = new LocalGame(stringPlayers.toArray(new String[stringPlayers.size()]));
-		game.start();
+		game.start(0);
 	}
 }
