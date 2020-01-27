@@ -1,8 +1,5 @@
 package abalone.protocol;
 
-import abalone.Color;
-import abalone.exceptions.InvalidMoveException;
-import abalone.exceptions.ServerUnavailableException;
 import abalone.server.AbaloneClientHandler;
 
 /**

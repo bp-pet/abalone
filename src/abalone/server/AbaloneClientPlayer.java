@@ -4,7 +4,6 @@ import abalone.Board;
 import abalone.Color;
 import abalone.Move;
 import abalone.Player;
-import abalone.exceptions.InvalidMoveException;
 
 public class AbaloneClientPlayer extends Player {
 

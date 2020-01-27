@@ -17,6 +17,7 @@ import abalone.Color;
 import abalone.Marble;
 import abalone.Move;
 import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 import abalone.Field;
 
 /**
@@ -137,6 +138,7 @@ public class BoardTest {
 			new Move(board, Color.WHITE, 1, 0, 1, 0, 2, 0).perform();
 		} catch (InvalidMoveException e) {
 			fail();
+		} catch (MarbleKilledException e) {
 		}
 		testMapOfColors();
 	}

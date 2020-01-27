@@ -17,7 +17,7 @@ public class LocalGame extends Game {
 		currentColor = Color.WHITE;
 		for (int i = 0; i < stringPlayers.length; i++) {
 			players[i] = createPlayer(stringPlayers[i], currentColor);
-			currentColor = nextColor();
+			currentColor = getNextColor();
 		}
 	}
 	
