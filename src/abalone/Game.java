@@ -12,10 +12,10 @@ import abalone.exceptions.MarbleKilledException;
 public abstract class Game {
 	// -- Constants --------------------------------------------------
 
-//	private static final int MAX_TURNS = 96;
+	private static final int MAX_TURNS = 96;
 
 	// If you want to play the real game uncomment this.
-	private static final int MAX_TURNS = Integer.MAX_VALUE;
+//	private static final int MAX_TURNS = Integer.MAX_VALUE;
 
 	public static final int MAX_PLAYERS = 4;
 
@@ -194,7 +194,6 @@ public abstract class Game {
 		while (!hasWinner() && numberOfTurns < MAX_TURNS) {
 			nextMove = players[getIntOfColor()].determineMove(board);
 			try {
-				System.out.println(nextMove.toString());
 				board.move(nextMove);
 			} catch (InvalidMoveException e1) {
 				System.out.println("Player not correctly implemented!");

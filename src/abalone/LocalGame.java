@@ -2,6 +2,7 @@ package abalone;
 
 import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
 import abalone.AI.RandomStrategy;
+import abalone.AI.ReverseAnakinStrategy;
 import ss.utils.TextIO;
 
 public class LocalGame extends Game {
@@ -30,6 +31,8 @@ public class LocalGame extends Game {
 		} else if (arg.contains("-A")) {
 			return new ComputerPlayer(color,
 					new ItsOverAnakinIHaveTheHighGroundStrategy());
+		} else if (arg.contains("-F")) {
+			return new ComputerPlayer(color, new ReverseAnakinStrategy());
 		} else {
 			return new HumanPlayer(arg, color);
 		}

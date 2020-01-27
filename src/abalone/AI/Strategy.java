@@ -34,10 +34,9 @@ public interface Strategy {
 		try {
 			move.perform();
 		} catch (InvalidMoveException e) {
-			//Who cares, shouldn't happen right? (only valid moves are
-			//simulated)
+			System.out.println("PROBLEM: Only valid moves should be simulated.");
 		} catch (MarbleKilledException e) {
-			//Not relevant.
+			copyBoard.marbleKilled = true;
 		}
 		return copyBoard;
 	}
