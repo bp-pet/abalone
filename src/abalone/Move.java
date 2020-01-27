@@ -5,6 +5,7 @@ import abalone.exceptions.MarbleKilledException;
 
 /**
  * A class representing a move on a board.
+ * 
  * @authors Bozhidar Petrov, Daan Pluister
  */
 public class Move {

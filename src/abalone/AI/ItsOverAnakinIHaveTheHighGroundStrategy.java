@@ -6,6 +6,14 @@ import abalone.Color;
 import abalone.Field;
 import abalone.Move;
 
+/**
+ * A strategy that focuses on staying in the middle of the board, going
+ * from the assumption that once one team has the middle, the game over.
+ * Inspired by the movie Star Wars Episode III: Revenge of the Sith.
+ * 
+ * @authors Bozhidar Petrov, Daan Pluister
+ *
+ */
 public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	
 	/**
@@ -39,6 +47,9 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 		return bestMove;
 	}
 	
+	/**
+	 * 
+	 */
 	private int evaluateBoard(Board board, Color color) {
 		ArrayList<Field> fields = board.getMapOfColors().get(color);
 		int totalScore = 0;
@@ -51,6 +62,13 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 		return totalScore;
 	}
 	
+
+	/**
+	 * Get a field's distance from the center of the board.
+	 * @param board
+	 * @param field
+	 * @return
+	 */
 	private int distanceFromCenter(Board board, Field field) {
 		int center = board.getDim() - 1;
 		return (field.getRow() - center) *

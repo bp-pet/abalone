@@ -21,9 +21,11 @@ import abalone.exceptions.MarbleKilledException;
 import abalone.Field;
 
 /**
- * Test program for HumanPlayer
+ * Test program for the board class. Tests the coordinate system (the
+ * transformation between the user interface coordinates and the internal
+ * ones, as well as other functions of the class.
  * 
- * @author Daan Pluister
+ * @authors Daan Pluister, Bozhidar Petrov
  */
 public class BoardTest {
 

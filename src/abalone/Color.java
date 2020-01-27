@@ -1,10 +1,13 @@
 package abalone;
 
+/**
+ * An enum representing the color of a marble.
+ * 
+ * @authors Daan Pluister, Bozhidar Petrov
+ */
 public enum Color {
 
 	WHITE, BLACK, BLUE, RED;
-	
-	
 
 	/**
 	 * toString method of enum Marble.

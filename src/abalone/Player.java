@@ -1,7 +1,11 @@
 package abalone;
 
-
-	
+/**
+ * An abstact class for an Abalone player, generalization of
+ * HumanPlayer and ComputerPlayer.
+ * 
+ * @authors Daan Pluister, Bozhidar Petrov
+ */
 public abstract class Player {
 	// -- Instance variables -----------------------------------------
 

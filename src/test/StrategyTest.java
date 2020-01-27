@@ -16,9 +16,9 @@ import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.MarbleKilledException;
 
 /**
- * Test program for HumanPlayer
+ * Test program for the Strategy interface.
  * 
- * @author Daan Pluister
+ * @author Bozhidar Petrov, Daan Pluister
  */
 public class StrategyTest {
 	

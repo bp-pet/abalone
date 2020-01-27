@@ -4,19 +4,24 @@ import abalone.client.AbaloneClientTUI;
 import abalone.client.AbaloneClientView;
 import abalone.exceptions.InvalidMoveException;
 
+/**
+ * A human player for Abalone. Gets input from user.
+ * 
+ * @authors Daan Pluister, Bozhidar Petrov
+ */
 public class HumanPlayer extends Player {
 
 	// -- Instance variables -----------------------------------------
 
 	/**
-	 * view of the HumanPlayer
+	 * View of the HumanPlayer.
 	 */
 	AbaloneClientView view;
 	
 	// -- Constructors -----------------------------------------------
 
 	/**
-	 * Creates a new human player object with standard view
+	 * Creates a new human player object with standard view.
 	 * 
 	 * @requires name is not null
 	 * @requires marble is of enum Marble
@@ -30,6 +35,9 @@ public class HumanPlayer extends Player {
 
 	// -- Commands ---------------------------------------------------
 	
+	/**
+	 * Determines the move the player wants to do by asking for input.
+	 */
 	public Move determineMove(Board board) {
 		String prompt = "> " + getName() + " (" + getColor().toString() +
 				")" + ", what is your choice? ";

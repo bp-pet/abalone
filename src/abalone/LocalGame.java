@@ -5,6 +5,11 @@ import abalone.AI.RandomStrategy;
 import abalone.AI.ReverseAnakinStrategy;
 import ss.utils.TextIO;
 
+/**
+ * A game of Abalone to be played locally.
+ * 
+ * @authors Daan Pluister, Bozhidar Petrov
+ */
 public class LocalGame extends Game {
 
 	/**

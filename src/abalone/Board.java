@@ -7,6 +7,12 @@ import java.util.Map;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.MarbleKilledException;
 
+/**
+ * The main class of the Abalone game.
+ * Represents the board.
+ * 
+ * @authors Daan Pluister, Bozhidar Petrov
+ */
 public class Board {
 
 	// -- Constants --------------------------------------------------
@@ -59,7 +65,6 @@ public class Board {
 	 * Sets the teams for the board.
 	 * @param teams is an array containing teams, which are arrays of colors
 	 */
-	//TODO implement in Game
 	public void setTeams(Color[][] teams) {
 		this.teams = teams;
 	}
@@ -323,16 +328,13 @@ public class Board {
 	}
 
 	/**
-	 * Extraction used for {@link #Board(int)} which calculates if the given i, j
-	 * field is in the region where the blue marbles should be placed on a 4 player
-	 * board.
-	 * TODO DAAN make this clear 
-	 * @param i
-	 * @param j
-	 * @return boolean
+	 * Extraction which calculates if the given coordinates correspond to a field
+	 * where a blue marbles should be placed on a 4 player board.
+	 * Only used for making a 4 player board.
+	 * @return true if blue marble should be placed there
 	 */
-	private boolean extracted(int i, int j) {
-		return i < j && i <= DIM / 2 + 1 - 1 && j < DIM + 1 - 1;
+	private boolean extracted(int row, int col) {
+		return row < col && row <= DIM / 2 + 1 - 1 && col < DIM + 1 - 1;
 	}
 
 	/*
