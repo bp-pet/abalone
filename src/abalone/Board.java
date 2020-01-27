@@ -11,6 +11,8 @@ public class Board {
 
 	// -- Constants --------------------------------------------------
 
+	private static final String MOVE_PATTERN = "^([A-Ia-i][1-9][ ,.]){2}[A-Ia-i][1-9]$";
+	
 	private static final int DIM = 5;
 	private static final int maxPush = 3;
 	private static final int WIDTH = 2 * DIM - 1;
@@ -411,6 +413,24 @@ public class Board {
 		return 2 * DIM - i - 2;
 	}
 	
+
+	/**
+	 * constructs a new move from the MOVE_PATTERN.
+	 * 
+	 * @requires choice.matches(MOVE_PATTERN);
+	 * @param board
+	 * @param choice
+	 * @return Move
+	 */
+	public Move parseMovePattern(Color color, String choice) {
+		return new Move(this, color, getRowFromLetter(choice.charAt(0)),
+				getColFromLetter(choice.charAt(1)),
+				getRowFromLetter(choice.charAt(3)),
+				getColFromLetter(choice.charAt(4)),
+				getRowFromLetter(choice.charAt(6)),
+				getColFromLetter(choice.charAt(7)));
+	}
+	
 	// -- Queries ----------------------------------------------------
 
 	/**
@@ -471,7 +491,14 @@ public class Board {
 		return s;
 	}
 
-
+	/**
+	 * Query for MOVE_PATTERN which can be parsed to get a move.
+	 * @return
+	 */
+	public String getMovePattern() {
+		return MOVE_PATTERN;
+	}
+	
 	/**
 	 * Query.
 	 */
