@@ -72,8 +72,4 @@ public interface AbaloneClientView {
 	 */
 	public boolean getBoolean(String question);
 
-	/**
-	 * Prints the help menu with available input options.
-	 */
-	public void printHelpMenu();
 }

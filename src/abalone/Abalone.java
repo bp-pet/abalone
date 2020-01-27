@@ -29,7 +29,7 @@ public class Abalone {
 				}
 			}
 		} else {
-			//if not enough input arguments ask for players
+			// if not enough input arguments ask for players
 			if (stringPlayers.size() < Game.MIN_PLAYERS) {
 				System.out.printf("\n> Name player " + (stringPlayers.size() + 1) + "?\n? ");
 			} else {

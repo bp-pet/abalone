@@ -9,6 +9,8 @@ import abalone.exceptions.MarbleKilledException;
  */
 public class Move {
 	
+	// -- Instance variables -----------------------------------------
+	
 	private Board board;
 	private int rowTail;
 	private int colTail;

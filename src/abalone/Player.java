@@ -5,8 +5,8 @@ package abalone;
 public abstract class Player {
 	// -- Instance variables -----------------------------------------
 
-    private String name;
-    private Color color;
+	protected String name;
+    protected Color color;
 
     // -- Constructors -----------------------------------------------
 

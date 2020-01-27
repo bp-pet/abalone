@@ -6,10 +6,6 @@ import abalone.exceptions.InvalidMoveException;
 
 public class HumanPlayer extends Player {
 
-	// -- Constants --------------------------------------------------
-	
-	public static final String PATTERN = "^([A-Ia-i][1-9][ ,.]){2}[A-Ia-i][1-9]$";
-	
 	// -- Instance variables -----------------------------------------
 
 	/**
@@ -41,12 +37,12 @@ public class HumanPlayer extends Player {
 
 		view.showMessage(board.toString());
 		choice = view.getString(prompt);
-		while (! (choice.matches(PATTERN))) {
+		while (! (choice.matches(board.getMovePattern()))) {
 			view.showMessage("ERROR: field " + choice +
-					" is not a valid choice (must match pattern " + PATTERN + ").");
+					" is not a valid choice (must match pattern " + board.getMovePattern() + ").");
 			choice = view.getString(prompt);
 		}
-		Move move = parseChoice(board, choice);
+		Move move = board.parseMovePattern(getColor(), choice);
 
 		try {
 			move.isValidMove();
@@ -58,20 +54,5 @@ public class HumanPlayer extends Player {
 		return move;
 	}
 	
-	/**
-	 * 
-	 * @requires choice.matches(PATTERN);
-	 * @param board
-	 * @param choice
-	 * @return
-	 */
-	public Move parseChoice(Board board, String choice) {
-		return new Move(board, getColor(), board.getRowFromLetter(choice.charAt(0)),
-				board.getColFromLetter(choice.charAt(1)),
-				board.getRowFromLetter(choice.charAt(3)),
-				board.getColFromLetter(choice.charAt(4)),
-				board.getRowFromLetter(choice.charAt(6)),
-				board.getColFromLetter(choice.charAt(7)));
-	}
 
 }
