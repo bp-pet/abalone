@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Arrays;
 
 import abalone.Color;
 import abalone.exceptions.*;
@@ -184,8 +185,8 @@ public class AbaloneClient implements ClientProtocol {
 					sb.append(line + System.lineSeparator());
 				}
 				// TODO: remove debug line
-				view.showMessage("incoming messages: " + sb.toString());
-				return sb.toString().split("\n");
+				view.showMessage("incoming messages: " + sb.toString() + " end");
+				return sb.toString().split(System.lineSeparator());
 			} catch (IOException e) {
 				throw new ServerUnavailableException("Could not read " + "from server.");
 			}
@@ -230,8 +231,8 @@ public class AbaloneClient implements ClientProtocol {
 	 * @return
 	 */
 	public boolean isError(String error, String[] lineFromServer) {
-		String serverError = lineFromServer[0] + ProtocolMessages.DELIMITER + lineFromServer[1];
-		return (isCommand(ProtocolMessages.ERROR, lineFromServer) && serverError.equals(error));
+		return (isCommand(ProtocolMessages.ERROR, lineFromServer)
+				&& error.equals(lineFromServer[0] + ProtocolMessages.DELIMITER + lineFromServer[1]));
 	}
 
 	/**
@@ -305,12 +306,12 @@ public class AbaloneClient implements ClientProtocol {
 
 		String[] linesFromServer = readMultipleLinesFromServer();
 
-		view.showMessage("linefromserver");
+		view.showMessage("linefromserver[0]: " + Arrays.toString(linesFromServer[0].split(ProtocolMessages.DELIMITER)));
 		if (isCommand(ProtocolMessages.HELLO, linesFromServer[0].split(ProtocolMessages.DELIMITER))) {
 			view.showMessage("> Welcome to the Abalone Browser");
 		} else {
 			throw new ProtocolException(linesFromServer[0] + " does not satisfy Server returns one line"
-					+ " containing ProtocolMessages.HELLO + ProtocolMessages.DELIMITER + ProtocolMessages.VERSION");
+					+ " containing ProtocolMessages.HELLO");
 		}
 		for (String line : linesFromServer) {
 			// TODO: make lobbies in nice human readable form.
@@ -338,23 +339,40 @@ public class AbaloneClient implements ClientProtocol {
 			throws ServerUnavailableException, ProtocolException {
 		sendMessage(ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + lobbyName + ProtocolMessages.DELIMITER
 				+ playerName + ProtocolMessages.DELIMITER + teamName);
-		// TODO: process the readMultipleLinesFromServer();
-		view.showMessage("readMultipleLinesFromServer:");
-		String[] linesFromServer = readMultipleLinesFromServer();
-		for (String line : linesFromServer) {
-			// TODO: process lines
-			view.showMessage(line);
+		
+		String[] lineFromServer = readLineFromServer();
+		if (isError(ProtocolMessages.ERROR1, lineFromServer)) {
+			if (lineFromServer.length == 3) {
+				throw new ProtocolException(lineFromServer[2]);
+			} else {
+				throw new ProtocolException("Error of type 2 given by server no message given.");
+			}
 		}
+		if (! isCommand(ProtocolMessages.JOIN, lineFromServer)) {
+			throw new ProtocolException("Unexpected command from server expected j");
+		}
+		view.showMessage("succesfully joined lobby " + lobbyName);
 		this.ownName = playerName;
 		this.ownTeam = teamName;
 		resetReady();
+		lineFromServer = readLineFromServer();
+		//TODO: process this beautiful line
+		for (String arg : lineFromServer) {
+			view.showMessage("players in this lobby: " + arg);
+		}		
 	}
 
 	@Override
 	public void doReady() throws ServerUnavailableException, ProtocolException {
 		sendMessage(ProtocolMessages.READY);
+		setReady();
 	}
 
+	/**
+	 * After isReady the server recieves the following lines from the server until game is stared or ready is up.
+	 * @throws ServerUnavailableException
+	 * @throws ProtocolException
+	 */
 	public void getLobbyMessages() throws ServerUnavailableException, ProtocolException {
 		String[] lineFromServer = readLineFromServer();
 		switch (lineFromServer[0].charAt(0)) {
@@ -392,9 +410,6 @@ public class AbaloneClient implements ClientProtocol {
 		if (lineFromServer.length != 3) {
 			throw new ProtocolException("Unexpected arguments from server expected 2");
 		}
-		if (lineFromServer[2].equals(ownName) && lineFromServer[3].equals(ownName)) {
-			setReady();
-		}
 	}
 
 	@Override
@@ -402,6 +417,7 @@ public class AbaloneClient implements ClientProtocol {
 		if (!isCommand(ProtocolMessages.START, lineFromServer)) {
 			throw new ProtocolException("Unexpected command from server expected s");
 		}
+		resetReady();
 		makeGame(lineFromServer);
 	}
 
@@ -421,7 +437,9 @@ public class AbaloneClient implements ClientProtocol {
 	 * @param lineFromServer
 	 */
 	public void makeGame(String[] lineFromServer) {
+		view.showMessage("Creating a game... ");
 		game = new ClientGame(lineFromServer, this, view, ownName, ownTeam);
+		view.showMessage("Game starts now!");
 		game.start();
 	}
 

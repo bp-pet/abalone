@@ -70,7 +70,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		if (hasPlayerNameAndTeamName(playerName, teamName)) {
 			throw new LobbyException(ProtocolMessages.ERROR_MESSAGE_LOBBY_TEAMS);
 		}
-		ready.put(client, false);
+		resetReady();
 		this.playerNames.put(client, playerName);
 		this.teamNames.put(client, teamName);
 		client.setLobby(this);
@@ -103,6 +103,19 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	public Boolean getReady(AbaloneClientHandler client) {
 		return ready.get(client);
 	}
+	
+	/**
+	 * query that returns if all clients are ready.
+	 * @return
+	 */
+	private boolean everyoneReady() {
+		boolean everyoneReady = true;
+		for (AbaloneClientHandler client : ready.keySet()) {
+			everyoneReady = everyoneReady && ready.get(client);
+		}
+		return everyoneReady;
+	}
+
 
 	/**
 	 * Setter that set client to ready.
@@ -223,9 +236,6 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 			s += ProtocolMessages.DELIMITER + ProtocolMessages.PLAYER + ProtocolMessages.DELIMITER
 					+ playerNames.get(client) + ProtocolMessages.DELIMITER + teamNames.get(client);
 		}
-		System.out.println("lobby: lobbytostring: ");
-		System.out.println("s: " + s);
-		System.out.println("end to string");
 		return s;
 	}
 
@@ -288,10 +298,14 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	@Override
 	public void doReady(AbaloneClientHandler client) {
 		setReady(client);
-		sendMessageToLobby(ProtocolMessages.READY + ProtocolMessages.DELIMITER + getPlayerName(client)
-				+ ProtocolMessages.DELIMITER + getTeamName(client));
+		if (everyoneReady()) {
+			sendMessageToLobby(doStart());
+		} else {
+			sendMessageToLobby(ProtocolMessages.READY + ProtocolMessages.DELIMITER + getPlayerName(client)
+			+ ProtocolMessages.DELIMITER + getTeamName(client));
+		}
 	}
-
+	
 	@Override
 	public String doStart() {
 		setupGame();
@@ -308,6 +322,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	public void exitGame(AbaloneClientHandler client) {
 		sendMessageToLobby(ProtocolMessages.EXIT + ProtocolMessages.DELIMITER + getPlayerName(client)
 				+ ProtocolMessages.DELIMITER + getTeamName(client));
+		resetReady();
 	}
 
 	@Override
@@ -322,7 +337,6 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		try {
 			move.isValidMove();
 		} catch (InvalidMoveException e) {
-			// TODO: you may want to add e.getMessage()
 			return Character.toString(ProtocolMessages.UNEXPECTED_MOVE);
 		}
 		nextMove = move;

@@ -44,10 +44,12 @@ public class AbaloneClientTUI implements AbaloneClientView {
 		String msg = getString(INPUT);
 		while (! msg.equals(String.valueOf(ProtocolMessages.EXIT))) {
 			try {
-				while(c.getState() == State.BROWSER && c.isReady()) {
+				handleUserInput(msg);
+				//TODO: remove debug line
+				showMessage("debug, state: "+ (c.getState() == State.LOBBY) + " and is ready: " + (c.isReady()));
+				while(c.getState() == State.LOBBY && c.isReady()) {
 					c.getLobbyMessages();
 				}
-				handleUserInput(msg);
 				msg = getString(INPUT);
 			} catch (ExitProgram e) {
 				msg = String.valueOf(ProtocolMessages.EXIT);
