@@ -33,7 +33,7 @@ class MoveTest {
 	}
 	
 	@Test
-	void testSpecial2() {
+	void test1() {
 		try {
 			new Move(board, Color.BLACK, 4, 1, 4, 4, 4, 2).perform();
 		} catch (InvalidMoveException e) {
@@ -45,8 +45,7 @@ class MoveTest {
 	
 	@Test
 	//should not work
-	//used to be a bug
-	void testSpecial() {
+	void test2() {
 		try {
 			new Move(board, Color.BLACK, 6, 4, 8, 4, 5, 3).perform();
 		} catch (InvalidMoveException e) {

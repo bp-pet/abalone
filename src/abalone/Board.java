@@ -22,6 +22,10 @@ public class Board {
 	private Field[][] fields;
 	private Map<Color, ArrayList<Field>> mapOfColors;
 	private Color[][] teams;
+	
+	// -- Used for evaluating moves for strategies -------------------
+	
+	public boolean marbleKilled = false;
 
 	// -- Constructors -----------------------------------------------
 
@@ -55,6 +59,7 @@ public class Board {
 	 * Sets the teams for the board.
 	 * @param teams is an array containing teams, which are arrays of colors
 	 */
+	//TODO implement in Game
 	public void setTeams(Color[][] teams) {
 		this.teams = teams;
 	}
