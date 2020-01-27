@@ -2,10 +2,9 @@ package abalone.server;
 
 import abalone.Color;
 import abalone.Game;
+import abalone.Player;
 
 public class ServerGame extends Game {
-
-	private AbaloneClientPlayer[] players;
 	
 	/**
 	 * constructs a game with all ClientPlayers
@@ -37,17 +36,15 @@ public class ServerGame extends Game {
 			currentColor = Color.WHITE;
 			int i = 0;
 			for (AbaloneClientHandler client : lobby.getClients()) {
+				//TODO: remove debug lines
+				System.out.println(lobby.toString());
+				System.out.println(lobby.getPlayerName(client));
+				System.out.println(lobby.getTeamName(client));
+				System.out.println(currentColor);
 				players[i++] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
 				currentColor = getNextColor();
 			}
 		}
-	}
-
-	/**
-	 * Query that returns the players
-	 */
-	public AbaloneClientPlayer[] getPlayers() {
-		return players;
 	}
 
 	@Override
@@ -61,5 +58,10 @@ public class ServerGame extends Game {
 		while (true) {
 			play();
 		}
+	}
+
+	public Player[] getPlayers() {
+		// TODO Auto-generated method stub
+		return players;
 	}
 }

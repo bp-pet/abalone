@@ -9,6 +9,7 @@ import java.util.Set;
 import abalone.Color;
 import abalone.Game;
 import abalone.Move;
+import abalone.Player;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.LobbyException;
 import abalone.protocol.ProtocolMessages;
@@ -70,6 +71,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		if (hasPlayerNameAndTeamName(playerName, teamName)) {
 			throw new LobbyException(ProtocolMessages.ERROR_MESSAGE_LOBBY_TEAMS);
 		}
+		this.ready.put(client, false);
 		resetReady();
 		this.playerNames.put(client, playerName);
 		this.teamNames.put(client, teamName);
@@ -298,7 +300,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	@Override
 	public void doReady(AbaloneClientHandler client) {
 		setReady(client);
-		if (everyoneReady()) {
+		if (everyoneReady() && getNumberOfPlayers() >= 2) {
 			sendMessageToLobby(doStart());
 		} else {
 			sendMessageToLobby(ProtocolMessages.READY + ProtocolMessages.DELIMITER + getPlayerName(client)
@@ -310,9 +312,10 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	public String doStart() {
 		setupGame();
 		String s = Character.toString(ProtocolMessages.START);
-		for (AbaloneClientPlayer player : game.getPlayers()) {
+		//TODO: fix ask TA whatever
+		for (Player player : game.getPlayers()) {
 			s += ProtocolMessages.DELIMITER + ProtocolMessages.PLAYER + ProtocolMessages.DELIMITER
-					+ player.getPlayerName() + ProtocolMessages.DELIMITER + player.getTeamName()
+					+ ((AbaloneClientPlayer)player).getPlayerName() + ProtocolMessages.DELIMITER + ((AbaloneClientPlayer)player).getTeamName()
 					+ ProtocolMessages.DELIMITER + player.getColor();
 		}
 		return s;
