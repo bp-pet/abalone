@@ -17,7 +17,7 @@ import abalone.Move;
 public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	
 	/**
-	 * Metrics: 
+	 * Metrics:
 	 * - distance from center (weighed)
 	 * - enemy marble(s) killed
 	 * - closeness together / vulnerability (?)
@@ -48,7 +48,7 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	}
 	
 	/**
-	 * 
+	 * Determines the score of a board.
 	 */
 	private int evaluateBoard(Board board, Color color) {
 		ArrayList<Field> fields = board.getMapOfColors().get(color);
@@ -65,9 +65,6 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 
 	/**
 	 * Get a field's distance from the center of the board.
-	 * @param board
-	 * @param field
-	 * @return
 	 */
 	private int distanceFromCenter(Board board, Field field) {
 		int center = board.getDim() - 1;
