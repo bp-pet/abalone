@@ -84,14 +84,6 @@ public interface ClientProtocol {
 			throws ServerUnavailableException, ProtocolException;
 
 	/**
-	 * Receives a new player joining the lobby ready will be set to 0
-	 * 
-	 * @throws ServerUnavailableException
-	 * @throws ProtocolException
-	 */
-	public void getJoinGame() throws ServerUnavailableException, ProtocolException;
-
-	/**
 	 * Sends a game ready request to the server.
 	 * 
 	 * The doReady() method sends the following message to the server:
@@ -105,14 +97,22 @@ public interface ClientProtocol {
 	 * @throws ProtocolException 
 	 */
 	public void doReady() throws ServerUnavailableException, ProtocolException;
+	
+	/**
+	 * Receives a new player joining the lobby increase playernumber by 1 and reset ready.
+	 * @requires be in lobby status.
+	 * @throws ServerUnavailableException
+	 * @throws ProtocolException
+	 */
+	public void getJoinGame(String[] lineFromServer) throws ServerUnavailableException, ProtocolException;
 
 	/**
 	 * get <code>pm.READY;playerName</code>
-	 * 
+	 * @requires be in lobby status.
 	 * @throws ServerUnavailableException if IO errors occur.
 	 * @throws ProtocolException          if error is received.
 	 */
-	public void getReady() throws ServerUnavailableException, ProtocolException;
+	public void getReady(String[] lineFromServer) throws ServerUnavailableException, ProtocolException;
 
 	/**
 	 * If all players are now ready and the game can start
@@ -121,10 +121,16 @@ public interface ClientProtocol {
 	 * 
 	 * If all players are now ready and the game can not start
 	 * <code>pm.ERROR3 + pm.DELIMITER + String message</code>. Is received.
-	 * 
+	 * @requires be in lobby status.
 	 */
-	public void getStart() throws ServerUnavailableException, ProtocolException;
+	public void getStart(String[] lineFromServer) throws ServerUnavailableException, ProtocolException;
 
+	/**
+	 * checks if lineFromServer is an exit. Then lowers number of players by 1 and resets ready.
+	 * @requires be in lobby status.
+	 */
+	public void getExit(String[] lineFromServer) throws ServerUnavailableException, ProtocolException; 
+	
 	/**
 	 * Returns a string of the color as a response to a
 	 * <code>pm.TURN + pm.DELIMITER + String color</code> server message.
