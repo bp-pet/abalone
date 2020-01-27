@@ -218,11 +218,14 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	 * player1teamName + etc[;p;<player name>;<team name>]*</code>.
 	 */
 	public String toString() {
-		String s = Character.toString(ProtocolMessages.LOBBY);
+		String s = ProtocolMessages.LOBBY + ProtocolMessages.DELIMITER + name;
 		for (AbaloneClientHandler client : getClients()) {
 			s += ProtocolMessages.DELIMITER + ProtocolMessages.PLAYER + ProtocolMessages.DELIMITER
 					+ playerNames.get(client) + ProtocolMessages.DELIMITER + teamNames.get(client);
 		}
+		System.out.println("lobby: lobbytostring: ");
+		System.out.println("s: " + s);
+		System.out.println("end to string");
 		return s;
 	}
 

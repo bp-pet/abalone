@@ -104,7 +104,7 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 			// try to open a new ServerSocket
 			try {
 				view.showMessage("Attempting to open a socket at 127.0.0.1 " + "on port " + port + "...");
-				ssock = new ServerSocket(port, 0, InetAddress.getByName("127.0.0.1"));
+				ssock = new ServerSocket(port);
 				view.showMessage("Server started at port " + port);
 			} catch (IOException e) {
 				view.showMessage("ERROR: could not create a socket on " + "127.0.0.1" + " and port " + port + ".");

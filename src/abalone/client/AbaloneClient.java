@@ -9,7 +9,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 import abalone.Color;
-import abalone.Move;
 import abalone.exceptions.*;
 import abalone.protocol.ClientProtocol;
 import abalone.protocol.ProtocolMessages;
@@ -82,7 +81,8 @@ public class AbaloneClient implements ClientProtocol {
 
 			// try to open a Socket to the server
 			try {
-				InetAddress addr = InetAddress.getByName(host);
+				InetAddress addr = view.getIp();
+				port = view.getInt("What is the port you want to connect to (2727) ?");
 				view.showMessage("Attempting to connect to " + addr + ":" + port + "...");
 				serverSock = new Socket(addr, port);
 				in = new BufferedReader(new InputStreamReader(serverSock.getInputStream()));
@@ -90,10 +90,12 @@ public class AbaloneClient implements ClientProtocol {
 			} catch (IOException e) {
 				view.showMessage("ERROR: could not create a socket on " + host + " and port " + port + ".");
 
-				// Do you want to try again? (ask user) TODO: implement
-//				if (false) {
-//					throw new ExitProgram("User indicated to exit.");
-//				}
+				String again = view.getString("want to try again (Y/n) ? ");
+				if (! (again.equals("") || again.equals("y"))) {
+					throw new ExitProgram("User indicated to exit.");
+				} else {
+					createConnection();
+				}
 			}
 		}
 	}
@@ -156,6 +158,7 @@ public class AbaloneClient implements ClientProtocol {
 				if (answer == null) {
 					throw new ServerUnavailableException("Could not read " + "from server.");
 				}
+				view.showMessage("incoming message: " + answer);
 				return answer.split(ProtocolMessages.DELIMITER);
 			} catch (IOException e) {
 				throw new ServerUnavailableException("Could not read " + "from server.");
@@ -181,6 +184,7 @@ public class AbaloneClient implements ClientProtocol {
 						&& !line.equals(ProtocolMessages.EOT); line = in.readLine()) {
 					sb.append(line + System.lineSeparator());
 				}
+				view.showMessage("incoming messages: " + sb.toString());
 				return sb.toString();
 			} catch (IOException e) {
 				throw new ServerUnavailableException("Could not read " + "from server.");
@@ -209,7 +213,7 @@ public class AbaloneClient implements ClientProtocol {
 	// ---------------------------------------------------------
 
 	
-	//TODO: let isCommand throw an exception if not command.
+	//TODO: let isCommand throw an exception if not command. for nicer code.
 	/**
 	 * checks if the lineFromServer is the command given by the char command.
 	 * 
@@ -298,7 +302,8 @@ public class AbaloneClient implements ClientProtocol {
 
 		String[] lineFromServer = readLineFromServer();
 
-		if (lineFromServer[1].equals(ProtocolMessages.VERSION) && isCommand(ProtocolMessages.HELLO, lineFromServer)) {
+		view.showMessage("linefromserver");
+		if (isCommand(ProtocolMessages.HELLO, lineFromServer)) {
 			view.showMessage("> Welcome to the Abalone Browser");
 		} else {
 			throw new ProtocolException(lineFromServer + " does not satisfy Server returns one line"
@@ -316,7 +321,8 @@ public class AbaloneClient implements ClientProtocol {
 	@Override
 	public void getLobbies() throws ServerUnavailableException {
 		// TODO: make lobbies in nice human readable form.
-		view.showMessage(readMultipleLinesFromServer());
+		String lines = readMultipleLinesFromServer();
+		view.showMessage(lines);
 	}
 
 	@Override
@@ -325,6 +331,7 @@ public class AbaloneClient implements ClientProtocol {
 		sendMessage(ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + lobbyName + ProtocolMessages.DELIMITER
 				+ playerName + ProtocolMessages.DELIMITER + teamName);
 		//TODO: process the readMultipleLinesFromServer();
+		view.showMessage("readMultipleLinesFromServer:");
 		view.showMessage(readMultipleLinesFromServer());
 		this.ownName = playerName;
 		this.ownTeam = teamName;

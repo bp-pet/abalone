@@ -128,10 +128,12 @@ public class AbaloneClientHandler implements Runnable {
 					break;
 				default:
 					s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
-					if (s != null) {
-						sendMessage(s);
-					}
+					
 			}
+		}
+		
+		if (s != null) {
+			sendMessage(s);
 		}
 			
 	}
@@ -163,7 +165,7 @@ public class AbaloneClientHandler implements Runnable {
 			out.append(msg);
 
 			// TODO: comment following debug line
-			System.out.println("Message back to client who send the message:" + msg);
+			System.out.println("Message back to client [" + name + "]: " + msg);
 			out.flush();
 			out.newLine();
 			out.flush();
