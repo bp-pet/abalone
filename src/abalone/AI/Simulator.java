@@ -6,7 +6,6 @@ import java.util.Map;
 
 import abalone.Color;
 import abalone.ComputerPlayer;
-import abalone.Game;
 import abalone.LocalGame;
 import abalone.Player;
 
@@ -35,8 +34,8 @@ public class Simulator {
 		players = new ComputerPlayer[2];
 		players[0] = new ComputerPlayer(Color.WHITE, new ItsOverAnakinIHaveTheHighGroundStrategy(factors1));
 		players[1] = new ComputerPlayer(Color.WHITE, new ItsOverAnakinIHaveTheHighGroundStrategy(factors2));
-		Game game = new LocalGame(players);
-		result = game.start(roundsPerDuel);
+		LocalGame game = new LocalGame(players);
+		result = game.playNTimes(roundsPerDuel);
 		for (Player p : result.keySet()) {
 			result.get(p);
 		}
