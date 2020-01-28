@@ -12,6 +12,12 @@ public class AbaloneServerPlayer extends Player {
 
 	private AbaloneClient c;
 	
+	/**
+	 * constructs a serverplayer for client c
+	 * @param c
+	 * @param name
+	 * @param color
+	 */
 	public AbaloneServerPlayer(AbaloneClient c, String name, Color color) {
 		super(name, color);
 		this.c = c;
@@ -20,16 +26,19 @@ public class AbaloneServerPlayer extends Player {
 	
 	@Override
 	public Move determineMove(Board board, String stateOfGame) {
-		String[] lineFromServer = null;
+		String choice = null;
 		try {
-			lineFromServer = c.getMove(color);
-		} catch (ServerUnavailableException | ProtocolException e) {
-			// TODO Auto-generated catch block (now printStackTrace)
-			e.printStackTrace();
+			choice = c.getMove(color);
+		} catch (ServerUnavailableException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ProtocolException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		Move move = null;
 		try {
-			move = board.parseMovePattern(color, lineFromServer[1] + " " + lineFromServer[2] + " " + lineFromServer[3]);
+			move = board.parseMovePattern(color, choice);
 		} catch (InvalidMoveException e) {
 			// TODO Auto-generated catch block (now println)
 			System.out.println("Server not correctly inplemented protocol exception");
@@ -42,7 +51,6 @@ public class AbaloneServerPlayer extends Player {
 			System.out.println("Server not correctly inplemented move invalid");
 			e.printStackTrace();
 		}
-		
 		return move;
 	}
 }

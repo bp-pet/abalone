@@ -54,71 +54,57 @@ public class AbaloneClientTUI implements AbaloneClientView {
 			return;
 		}
 		switch (c.getState()) {
-		case BROWSER:
-			switch (cmd[0].charAt(0)) {
-			case ProtocolMessages.LOBBY:
-				c.doLobbies();
-				break;
-			case ProtocolMessages.JOIN:
-				if (cmd.length != 4) {
-					showMessage("Expected 3 arguments.");
-				} else {
-					try {
-						c.doJoinLobby(cmd[1], cmd[2], cmd[3]);
-					} catch (ProtocolException e1) {
-						showMessage(e1.getMessage());
-					}
+			case BROWSER:
+				switch (cmd[0].charAt(0)) {
+					case ProtocolMessages.LOBBY:
+						c.doLobbies();
+						break;
+					case ProtocolMessages.JOIN:
+						if (cmd.length != 4) {
+							showMessage("Expected 3 arguments.");
+						} else {
+							c.doJoinLobby(cmd[1], cmd[2], cmd[3]);
+						}
+						break;
+					case ProtocolMessages.EXIT:
+						c.sendExit();
+						break;
+					case ProtocolMessages.HELP:
+					default:
+						showMessage(HELPMENU_BROWSER);
 				}
 				break;
-			case ProtocolMessages.EXIT:
-				c.sendExit();
+			case LOBBY:
+				switch (cmd[0].charAt(0)) {
+					case ProtocolMessages.READY:
+						c.doReady();
+						break;
+					case ProtocolMessages.EXIT:
+						c.sendExit();
+						break;
+					case ProtocolMessages.HELP:
+					default:
+						showMessage(HELPMENU_LOBBY);
+				}
 				break;
-			case ProtocolMessages.HELP:
+			case GAME:
+				switch (cmd[0].charAt(0)) {
+					case ProtocolMessages.MOVE:
+						if (cmd.length != 4) {
+							showMessage("Expected 3 arguments.");
+						}
+						c.sendMove(cmd[1], cmd[2], cmd[3]);
+						break;
+					case ProtocolMessages.EXIT:
+						c.sendExit();
+						break;
+					case ProtocolMessages.HELP:
+					default:
+						showMessage(HELPMENU_GAME);
+				}
+				break;
 			default:
-				showMessage(HELPMENU_BROWSER);
-			}
-			break;
-		case LOBBY:
-			switch (cmd[0].charAt(0)) {
-			case ProtocolMessages.READY:
-				try {
-					c.doReady();
-				} catch (ProtocolException e1) {
-					showMessage(e1.getMessage());
-				}
-				break;
-			case ProtocolMessages.EXIT:
-				c.sendExit();
-				break;
-			case ProtocolMessages.HELP:
-			default:
-				showMessage(HELPMENU_LOBBY);
-			}
-			break;
-		case GAME:
-			switch (cmd[0].charAt(0)) {
-			case ProtocolMessages.MOVE:
-				if (cmd.length != 4) {
-					showMessage("Expected 3 arguments.");
-				}
-				try {
-					c.sendMove(cmd[1], cmd[2], cmd[3]);
-				} catch (InvalidMoveException e) {
-					showMessage("Invalid move please try again");
-				} catch (ProtocolException e) {
-					showMessage(e.getMessage());
-				}
-				break;
-			case ProtocolMessages.EXIT:
-				c.sendExit();
-				break;
-			case ProtocolMessages.HELP:
-			default:
-				showMessage(HELPMENU_GAME);
-			}
-			break;
-		default:
-			showMessage("something went wrong that shouldn't");
+				showMessage("something went wrong that shouldn't");
 		}
 	}
 

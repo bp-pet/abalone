@@ -133,14 +133,16 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 	@Override
 	public String doError(int errorType, String errorMessage) {
 		String errorTypeString;
-		switch(errorType) {
+		switch (errorType) {
 			case 3:
 				errorTypeString = ProtocolMessages.ERROR3;
+				break;
 			case 2:
 				errorTypeString = ProtocolMessages.ERROR2;
+				break;
 			default:
 				errorTypeString = ProtocolMessages.ERROR1;
-				
+				break;
 		} 
 		return errorTypeString + ProtocolMessages.DELIMITER + errorMessage;
 	}

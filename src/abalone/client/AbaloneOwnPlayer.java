@@ -1,10 +1,8 @@
 package abalone.client;
-
+	
 import abalone.Board;
 import abalone.Move;
 import abalone.Player;
-import abalone.exceptions.InvalidMoveException;
-import abalone.exceptions.ProtocolException;
 import abalone.exceptions.ServerUnavailableException;
 
 public class AbaloneOwnPlayer extends Player {
@@ -12,6 +10,11 @@ public class AbaloneOwnPlayer extends Player {
 	Player contolPlayer;
 	private AbaloneClient c;
 
+	/**
+	 * constructor sets client and controlplayer.
+	 * @param c the client connected
+	 * @param contolPlayer the player to control
+	 */
 	public AbaloneOwnPlayer(AbaloneClient c, Player contolPlayer) {
 		super(contolPlayer.getName(), contolPlayer.getColor());
 		this.c = c;
@@ -26,13 +29,7 @@ public class AbaloneOwnPlayer extends Player {
 					"" + board.getRowLetter(move.getRowHead()) + board.getColLetter(move.getColHead()),
 					"" + board.getRowLetter(move.getRowDest()) + board.getColLetter(move.getColDest()));
 		} catch (ServerUnavailableException e) {
-			// TODO Auto-generated catch block (now printStackTrace)
-			e.printStackTrace();
-		} catch (InvalidMoveException e) {
-			// TODO Auto-generated catch block (now printStackTrace)
-			e.printStackTrace();
-		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block (now printStackTrace)
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return move;

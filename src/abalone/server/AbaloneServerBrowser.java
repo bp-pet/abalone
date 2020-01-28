@@ -29,7 +29,7 @@ public class AbaloneServerBrowser extends AbaloneServer implements ServerBrowser
 	 */
 	public AbaloneServerLobby getLobby(AbaloneClientHandler client) {
 		for (AbaloneServerLobby lobby : lobbies) {
-			if (lobby.hasClient(client)) {
+			if (lobby.hasClient(client) && ! lobby.inGame()) {
 				return lobby;
 			}
 		}

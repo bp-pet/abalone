@@ -16,6 +16,7 @@ import abalone.exceptions.ServerUnavailableException;
 public class ClientGame extends Game {
 
 	AbaloneClient c;
+	private Color ownColor;
 
 	/**
 	 * Creates a clientGame with players given by the server of the form given as
@@ -36,6 +37,7 @@ public class ClientGame extends Game {
 			if (stringPlayers[1 + i].equals(ownName) && stringPlayers[2 + i].equals(ownTeam)) {
 				Player controlPlayer = LocalGame.createPlayer(view, stringPlayers[1 + i], currentColor);
 				players[i / 2] = new AbaloneOwnPlayer(c, controlPlayer);
+				this.ownColor = (players[i / 2].getColor());
 				//TODO: remove debug line
 				System.out.println("Created ownPlayer");
 			} else {
@@ -51,6 +53,14 @@ public class ClientGame extends Game {
 		}
 	}
 
+
+	/**
+	 * gets the color of the ownplayer.
+	 */
+	public Color getOwnColor() {
+		return ownColor;
+	}
+	
 	/**
 	 * gets the starting color from the server. Overrides the random player starts.
 	 */
