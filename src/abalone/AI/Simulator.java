@@ -19,7 +19,7 @@ import abalone.Player;
 public class Simulator {
 	
 	private static final int roundsPerDuel = 1;
-	private static final int generations = 10;
+	private static final int generations = 5;
 	private static final int mutationsPerGen = 5;
 	
 	private static ComputerPlayer[] players;

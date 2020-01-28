@@ -1,5 +1,5 @@
 package test;
-
+	
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,11 +32,11 @@ public class BoardTest {
 	/** test variable board. */
 	Board board;
 
-	/** test variable random marble */
+	/** Test variable random marble. */
 	Marble m;
 
 	/**
-	 * Create a test board with 2 player setup
+	 * Create a test board with 2 player setup.
 	 */
 	@BeforeEach
 	public void setUp() {
