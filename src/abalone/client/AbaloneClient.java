@@ -339,7 +339,7 @@ public class AbaloneClient implements ClientProtocol {
 			throws ServerUnavailableException, ProtocolException {
 		sendMessage(ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + lobbyName + ProtocolMessages.DELIMITER
 				+ playerName + ProtocolMessages.DELIMITER + teamName);
-		
+
 		String[] lineFromServer = readLineFromServer();
 		if (isError(ProtocolMessages.ERROR1, lineFromServer)) {
 			if (lineFromServer.length == 3) {
@@ -348,7 +348,7 @@ public class AbaloneClient implements ClientProtocol {
 				throw new ProtocolException("Error of type 2 given by server no message given.");
 			}
 		}
-		if (! isCommand(ProtocolMessages.JOIN, lineFromServer)) {
+		if (!isCommand(ProtocolMessages.JOIN, lineFromServer)) {
 			throw new ProtocolException("Unexpected command from server expected j");
 		}
 		view.showMessage("succesfully joined lobby " + lobbyName);
@@ -356,10 +356,12 @@ public class AbaloneClient implements ClientProtocol {
 		this.ownTeam = teamName;
 		resetReady();
 		lineFromServer = readLineFromServer();
-		//TODO: process this beautiful line
+		// TODO: process this beautiful line
 		for (String arg : lineFromServer) {
 			view.showMessage("players in this lobby: " + arg);
-		}		
+		}
+		// TODO: make new thread for reading messages until game starts.
+		new Thread(new AbaloneServerHandler(this, view)).start();
 	}
 
 	@Override
@@ -369,7 +371,9 @@ public class AbaloneClient implements ClientProtocol {
 	}
 
 	/**
-	 * After isReady the server recieves the following lines from the server until game is stared or ready is up.
+	 * After isReady the server recieves the following lines from the server until
+	 * game is stared or ready is up.
+	 * 
 	 * @throws ServerUnavailableException
 	 * @throws ProtocolException
 	 */
@@ -438,9 +442,11 @@ public class AbaloneClient implements ClientProtocol {
 	 */
 	public void makeGame(String[] lineFromServer) {
 		view.showMessage("Creating a game... ");
+		String s = view.getString("input a string and don't error");
+		System.out.println(s);
 		game = new ClientGame(lineFromServer, this, view, ownName, ownTeam);
 		view.showMessage("Game starts now!");
-		game.start(0);
+		game.start();
 	}
 
 	@Override
@@ -450,10 +456,9 @@ public class AbaloneClient implements ClientProtocol {
 			throw new ProtocolException("Unexpected command from server expected t");
 		}
 		if (lineFromServer.length != 2) {
-			return getColor(lineFromServer[1]);
-		} else {
 			throw new ProtocolException("Unexpected arguments from server expected 1");
 		}
+		return getColor(lineFromServer[1]);
 	}
 
 	@Override
@@ -466,7 +471,10 @@ public class AbaloneClient implements ClientProtocol {
 					+ ProtocolMessages.DELIMITER + arg3);
 			lineFromServer = readLineFromServer();
 			if (isCommand(ProtocolMessages.UNEXPECTED_MOVE, lineFromServer)) {
-				throw new InvalidMoveException("UNEXPECTED_MOVE");
+				view.showMessage("Sorry the server thinks your move is invalid!");
+				// Now the move is already done in the client game, need to rework a lot if you
+				// want to undo this. So currently it is not possible to ask a new move.
+				// TODO: implement the user can send a new move again.
 			} else {
 				if (!isCommand(ProtocolMessages.MOVE, lineFromServer)) {
 					throw new ProtocolException("Unexpected command from server expected m");

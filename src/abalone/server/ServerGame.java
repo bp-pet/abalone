@@ -50,12 +50,7 @@ public class ServerGame extends Game {
 	}
 
 	@Override
-	public Color getNextTurn() {
-		return getNextColor();
-	}
-
-	@Override
-	public Map<Player, Integer> start(int numberOfRounds) {
+	public void start() {
 		//TODO: stop when disconnection
 		while (true) {
 			play();

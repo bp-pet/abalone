@@ -80,55 +80,63 @@ public class AbaloneClientHandler implements Runnable {
 	 */
 	private void handleCommand(String msg) throws IOException {
 		String[] cmd = msg.split(ProtocolMessages.DELIMITER);
-		
-		//TODO: comment following debug line or to serverview
-		System.out.println("Message from client:" + msg);
 
 		String s = null;
-		if (lobby == null) {
-			switch (cmd[0].charAt(0)) {
-				case ProtocolMessages.HELLO:
-					s = browser.getHello();
-					break;
-				case ProtocolMessages.LOBBY:
-					s = browser.doLobbies();
-					break;
-				case ProtocolMessages.JOIN:
-					s = browser.doJoin(this, cmd[1], cmd[2], cmd[3]);
-					break;
-				case ProtocolMessages.EXIT:
-					srv.removeClient(this);
-				default:
-					s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
-			}
-		} else if (! lobby.inGame()) {
-			switch (cmd[0].charAt(0)) {
-				case ProtocolMessages.READY:
-					lobby.doReady(this);
-					break;
-				case ProtocolMessages.EXIT:
-					lobby.exitGame(this);
-					break;
-				default:
-					s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
-			}
+		if (cmd[0].equals("")) {
+			s = browser.doError(1, ProtocolMessages.INVALID_COMMAND + ", you send empty");
 		} else {
-			switch (cmd[0].charAt(0)) {
-				case ProtocolMessages.MOVE:
-					if (lobby.inGame()) {
-						s = srv.doError(3, "Not in a lobby!");
-					} else if (! lobby.isTurn(this)) {
-						s = srv.doError(3, "not your turn");
-					} else {
-						s = lobby.doMove(this, cmd[1], cmd[2], cmd[3]);
-					}
-					break;
-				case ProtocolMessages.EXIT:
-					lobby.exitGame(this);
-					break;
-				default:
-					s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
-					
+			if (lobby == null) {
+				switch (cmd[0].charAt(0)) {
+					case ProtocolMessages.HELLO:
+						s = browser.getHello();
+						break;
+					case ProtocolMessages.LOBBY:
+						s = browser.doLobbies();
+						break;
+					case ProtocolMessages.JOIN:
+						if (cmd.length != 4) {
+							s = browser.doError(2, "Unexpected argument expected 3");
+						} else {
+							s = browser.doJoin(this, cmd[1], cmd[2], cmd[3]);
+						}
+						break;
+					case ProtocolMessages.EXIT:
+						srv.removeClient(this);
+					default:
+						s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
+				}
+			} else if (! lobby.inGame()) {
+				switch (cmd[0].charAt(0)) {
+					case ProtocolMessages.READY:
+						lobby.doReady(this);
+						break;
+					case ProtocolMessages.EXIT:
+						lobby.exitGame(this);
+						break;
+					default:
+						s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
+				}
+			} else {
+				switch (cmd[0].charAt(0)) {
+					case ProtocolMessages.MOVE:
+						if (! lobby.inGame()) {
+							s = srv.doError(3, "Not in a game!");
+						} else if (! lobby.isTurn(this)) {
+							s = srv.doError(3, "not your turn");
+						} else {
+							if (cmd.length != 4) {
+								s = browser.doError(2, "Unexpected argument expected 3");
+							} else {
+								s = lobby.doMove(this, cmd[1], cmd[2], cmd[3]);
+							}
+						}
+						break;
+					case ProtocolMessages.EXIT:
+						lobby.exitGame(this);
+						break;
+					default:
+						s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
+				}
 			}
 		}
 		
