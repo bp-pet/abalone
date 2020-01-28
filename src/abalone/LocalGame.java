@@ -65,11 +65,6 @@ public class LocalGame extends Game {
 			return new HumanPlayer(view, name, color);
 		}
 	}
-
-	@Override
-	public Color getNextTurn() {
-		return getNextColor();
-	}
 	
 	@Override
 	public void start() {

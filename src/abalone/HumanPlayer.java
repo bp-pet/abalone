@@ -42,7 +42,6 @@ public class HumanPlayer extends Player {
 				")" + ", what is your choice? ";
 		String choice;
 		view.showMessage(stateOfGame);
-		view.showMessage(board.toString());
 		choice = view.getString(prompt);
 		
 		Move move;

@@ -27,6 +27,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	private Map<AbaloneClientHandler, Color> colors;
 	/**
 	 * the nextMove which is always null except when a next move is determined.
+	 * 
 	 * @invariance if nextMove != null then nextMove.isValidMove() == true
 	 */
 	private Move nextMove;
@@ -105,9 +106,10 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	public Boolean getReady(AbaloneClientHandler client) {
 		return ready.get(client);
 	}
-	
+
 	/**
 	 * query that returns if all clients are ready.
+	 * 
 	 * @return
 	 */
 	private boolean everyoneReady() {
@@ -117,7 +119,6 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		}
 		return everyoneReady;
 	}
-
 
 	/**
 	 * Setter that set client to ready.
@@ -266,11 +267,19 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	// --------------------------------------------------------
 
 	/**
-	 * Creates a new game instance
+	 * Creates a new game instance.
 	 */
 	public void setupGame() {
 		game = new ServerGame(this);
-		game.start(0);
+	}
+
+	/**
+	 * Starts the game.
+	 * 
+	 * @requires game != null
+	 */
+	public void startGame() {
+		game.start();
 	}
 
 	@Override
@@ -302,21 +311,20 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		setReady(client);
 		if (everyoneReady() && getNumberOfPlayers() >= 2) {
 			sendMessageToLobby(doStart());
+			startGame();
 		} else {
 			sendMessageToLobby(ProtocolMessages.READY + ProtocolMessages.DELIMITER + getPlayerName(client)
-			+ ProtocolMessages.DELIMITER + getTeamName(client));
+					+ ProtocolMessages.DELIMITER + getTeamName(client));
 		}
 	}
-	
+
 	@Override
 	public String doStart() {
 		setupGame();
 		String s = Character.toString(ProtocolMessages.START);
-		//TODO: fix ask TA whatever
 		for (Player player : game.getPlayers()) {
-			s += ProtocolMessages.DELIMITER + ProtocolMessages.PLAYER + ProtocolMessages.DELIMITER
-					+ ((AbaloneClientPlayer)player).getPlayerName() + ProtocolMessages.DELIMITER + ((AbaloneClientPlayer)player).getTeamName()
-					+ ProtocolMessages.DELIMITER + player.getColor();
+			s += ProtocolMessages.DELIMITER + ((AbaloneClientPlayer) player).getPlayerName()
+					+ ProtocolMessages.DELIMITER + ((AbaloneClientPlayer) player).getTeamName();
 		}
 		return s;
 	}
@@ -361,16 +369,16 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 
 	/**
 	 * returns the nextMove when nextMove is set to not null.
+	 * 
 	 * @return
 	 */
 	public Move getMove() {
-		//TODO: synchronise so that nextMove is actually the correct move. and it works nicely.
+		// TODO: signal the nextMove update.
 		while (nextMove == null) {
-			Move toReturnMove = nextMove;
-			nextMove = null;
-			return toReturnMove;
 		}
-		return null;
+		Move toReturnMove = nextMove;
+		nextMove = null;
+		return toReturnMove;
 	}
 
 }

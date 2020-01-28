@@ -174,14 +174,33 @@ public abstract class Game {
 	 * <p>
 	 */
 	public void reset() {
-		Random r = new Random();
 		numberOfTurns = 0;
-		currentColor = players[r.nextInt(players.length)].getColor();
+		currentColor = getStartingColor();
+		//TODO: remove debug:
+		System.out.println("starting color: " + currentColor);
 		board.reset(getNumberOfPlayers());
 		resetScores();
 		board.setTeams(makeTeams(getNumberOfPlayers()));
 	}
 	
+	/**
+	 * returns the color of a starting player which is random
+	 * @return
+	 */
+	public Color getStartingColor() {
+		Random r = new Random();
+		return players[r.nextInt(players.length)].getColor();
+	}
+	
+	
+	/**
+	 * Returns the color for the next turn.
+	 * @return
+	 */
+	public Color getNextTurn() {
+		return getNextColor();
+	}
+
 	private void resetScores() {
 		for (Player player : players) {
 			scores.put(player.getColor(), 0);
@@ -194,6 +213,8 @@ public abstract class Game {
 		Move nextMove;
 		while (!hasWinner() && numberOfTurns < MAX_TURNS) {
 			Player nextPlayer = players[getIntOfCurrentColor()];
+			//TODO: remove debug
+			System.out.println("player who is asked determinemove: " + nextPlayer.getName());
 			nextMove = nextPlayer.determineMove(board, toString());
 			try {
 				board.move(nextMove);
@@ -204,6 +225,7 @@ public abstract class Game {
 				increaseScore(currentColor);
 			}
 			currentColor = getNextTurn();
+			System.out.println("current color: " + currentColor);
 			numberOfTurns++;
 		}
 
@@ -345,12 +367,6 @@ public abstract class Game {
 	}
 	
 	// -- Abstract methods --------------------------------------
-	
-	/**
-	 * Returns the color for the next turn.
-	 * @return
-	 */
-	abstract public Color getNextTurn();
 	
 	/**
 	 * Method that calls play(). When play is done one player has won.

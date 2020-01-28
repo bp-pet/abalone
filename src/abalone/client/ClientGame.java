@@ -14,33 +14,55 @@ import abalone.exceptions.ProtocolException;
 import abalone.exceptions.ServerUnavailableException;
 
 /**
- * A local game run by the ClientGame that is synced with the server game. This method overwrites //TODO:"add overwrite" from Game.
+ * A local game run by the ClientGame that is synced with the server game. This
+ * method overwrites //TODO:"add overwrite" from Game.
  * 
  * @author Daan Pluiser
  */
 public class ClientGame extends Game {
 
 	AbaloneClient c;
-	
+
 	/**
-	 * Creates a clientGame with players given by the server of the form given as stringPlayers.
+	 * Creates a clientGame with players given by the server of the form given as
+	 * stringPlayers.
 	 * 
-	 * @param ownName the name of the player of your own.
-	 * @param ownTeam the name of the team of your own.
-	 * @param stringPlayers is of the form: "pm.START;whitePlayerName;whitePlayerTeam;blackPlayerName;blackPlayerTeam[;bluePlayerName;bluePlayerTeam;redPlayerName;redPlayerTeam]".split(";").
+	 * @param ownName       the name of the player of your own.
+	 * @param ownTeam       the name of the team of your own.
+	 * @param stringPlayers is of the form:
+	 *                      "pm.START;whitePlayerName;whitePlayerTeam;blackPlayerName;blackPlayerTeam[;bluePlayerName;bluePlayerTeam;redPlayerName;redPlayerTeam]".split(";").
 	 */
 	public ClientGame(String[] stringPlayers, AbaloneClient c, AbaloneClientView view, String ownName, String ownTeam) {
-		super((stringPlayers.length - 1 ) / 2);
+		super((stringPlayers.length - 1) / 2);
 		this.c = c;
-		Color current = Color.WHITE;
-		for (int i = 0; i < (stringPlayers.length - 1 ) / 2; i++){
+		currentColor = Color.WHITE;
+		for (int i = 0; i < (stringPlayers.length - 1); i = i + 2) {
+			//TODO:remove debug line
+			System.out.println("Client game from " + ownName + ", i: " + i + ", player Name: " + stringPlayers[1 + i] + ", team Name: " + stringPlayers[2 + i] + ", create ownplayer: " + (stringPlayers[1 + i].equals(ownName) && stringPlayers[2 + i].equals(ownTeam)));
 			if (stringPlayers[1 + i].equals(ownName) && stringPlayers[2 + i].equals(ownTeam)) {
-				Player controlPlayer = LocalGame.createPlayer(view, stringPlayers[1 + i], current);
-				players[i] = new AbaloneOwnPlayer(c, controlPlayer);
+				Player controlPlayer = LocalGame.createPlayer(view, stringPlayers[1 + i], currentColor);
+				players[i / 2] = new AbaloneOwnPlayer(c, controlPlayer);
+				//TODO: remove debug line
+				System.out.println("Created ownPlayer");
 			} else {
-				players[i] = new AbaloneServerPlayer(c, stringPlayers[1 + i], current);
+				players[i / 2] = new AbaloneServerPlayer(c, stringPlayers[1 + i], currentColor);
+				//TODO: remove debug line
+				System.out.println("Created serverPlayer");
 			}
+			currentColor = getNextColor();
 		}
+		//Print list of players to view
+		for (Player player : players) {
+			view.showMessage("Client " + ownName + " game: player: " + player.getName() + ", has color: " + player.getColor());
+		}
+	}
+
+	/**
+	 * gets the starting color from the server. Overrides the random player starts.
+	 */
+	@Override
+	public Color getStartingColor() {
+		return getNextTurn();
 	}
 
 	@Override
@@ -53,10 +75,10 @@ public class ClientGame extends Game {
 		}
 		return null;
 	}
-	
+
 	@Override
-	public Map<Player, Integer> start(int numberOfRounds) {
-		//TODO: stop when disconnection
+	public void start() {
+		// TODO: stop when disconnection
 		while (true) {
 			play();
 		}

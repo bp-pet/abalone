@@ -20,7 +20,6 @@ public class AbaloneClientPlayer extends Player {
 
 	@Override
 	public Move determineMove(Board board, String stateOfGame) {
-		
 		lobby.doTurn(color);
 		return lobby.getMove();
 	}
