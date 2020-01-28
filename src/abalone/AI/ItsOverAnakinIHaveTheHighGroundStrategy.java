@@ -6,6 +6,7 @@ import abalone.Color;
 import abalone.Field;
 import abalone.Move;
 import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 
 /**
  * A strategy that focuses on staying in the middle of the board, going
@@ -117,8 +118,10 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	 * Count how many lines of three marbles of a given color
 	 * there are on the board. This is an indicator of how defensive
 	 * the current position is.
+	 * Doubles also add to the score with a totally not arbitrarily
+	 * chosen factor of 0.3.
 	 */
-	private double countTriplets(Board board, Color color) {
+	public double countTriplets(Board board, Color color) {
 		ArrayList<Field> fields = board.getMapOfColors().get(color);
 		int l = fields.size();
 		double counter = 0;
@@ -133,6 +136,8 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 				}
 				if (move.getSelectionSize() == 3) {
 					counter++;
+				} else if (move.getSelectionSize() == 2) {
+					counter += 0.3;
 				}
 			}
 		}
@@ -143,7 +148,7 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	 * Find the average distance from the center of the board for all marbles
 	 * of a given color.
 	 */
-	private double colorDistanceFromCenter(Board board, Color color) {
+	public double colorDistanceFromCenter(Board board, Color color) {
 		double total = 0;
 		for (Field field : board.getMapOfColors().get(color)) {
 			total += fieldDistanceFromCenter(board, field);
@@ -179,13 +184,31 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	 * this project.
 	 * @requires 2 player game
 	 */
-	private Color getOpponentColor(Board board, Color color) {
+	public Color getOpponentColor(Board board, Color color) {
 		for (Color c : board.getMapOfColors().keySet()) {
 			if (c != color) {
 				return c;
 			}
 		}
 		return color;
+	}
+	
+	/**
+	 * Simulates the move.
+	 * Makes a copy of the board, performs the move, and returns it.
+	 * @return a new board with the move performed on it
+	 */
+	public Board simulateMove(Board board, Move move) {
+		Board copyBoard = board.deepCopy();
+		move = move.deepCopy(copyBoard);
+		try {
+			move.perform();
+		} catch (InvalidMoveException e) {
+			System.out.println("PROBLEM: Only valid moves should be simulated.");
+		} catch (MarbleKilledException e) {
+			copyBoard.marbleKilled = true;
+		}
+		return copyBoard;
 	}
 	
 	/**

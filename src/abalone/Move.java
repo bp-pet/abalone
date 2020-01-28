@@ -112,6 +112,22 @@ public class Move {
     	}
     }
     
+    /**
+     * Sees if a move is valid but does not check if selection is valid.
+     * @requires selection is valid
+     */
+    public void isValidMoveQuick() throws InvalidMoveException {
+    	isValidSelection();
+    	this.fields = getSelectedFields();
+    	areAllOccupied();
+    	destinationIsAdjacent();
+    	if (moveIsAlongAxis()) {
+    		canMoveField(findLocomotive(), fields.length - 1);
+    	} else {
+    		canMoveOneByOne();
+    	}
+    }
+    
     
     /**
      * Get the size of the selection
