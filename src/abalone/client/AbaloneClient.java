@@ -29,6 +29,7 @@ public class AbaloneClient implements ClientProtocol {
 	/** current move of the form that parsemove accepts */
 	private String currentMove;
 	private Color ownColor;
+	private boolean inlobby;
 
 	/**
 	 * Constructs a new AbaloneClient. Initializes the view in this case the
@@ -255,6 +256,8 @@ public class AbaloneClient implements ClientProtocol {
 		}
 	}
 
+	//TODO: add javadoc to these trival methods
+	
 	public void resetReady() {
 		this.isReady = false;
 	}
@@ -265,6 +268,18 @@ public class AbaloneClient implements ClientProtocol {
 
 	public void setReady() {
 		this.isReady = true;
+	}
+	
+	public void resetInLobby() {
+		this.inlobby = false;
+	}
+
+	public boolean inLobby() {
+		return inlobby;
+	}
+
+	public void setInLobby() {
+		this.inlobby = true;
 	}
 
 	/**
@@ -277,7 +292,7 @@ public class AbaloneClient implements ClientProtocol {
 	public State getState() {
 		if (!(game == null)) {
 			return State.GAME;
-		} else if (!(ownName == null)) {
+		} else if (inLobby()) {
 			return State.LOBBY;
 		} else {
 			return State.BROWSER;
@@ -316,6 +331,9 @@ public class AbaloneClient implements ClientProtocol {
 		this.lobbyName = lobbyName;
 		ownName = playerName;
 		ownTeam = teamName;
+		
+		//TODO: for now we just put the state true but it should get confirmation from server.
+		setInLobby();
 	}
 
 	@Override
@@ -348,6 +366,7 @@ public class AbaloneClient implements ClientProtocol {
 	@Override
 	public void sendExit() throws ServerUnavailableException {
 		sendMessage(ProtocolMessages.EXIT);
+		resetInLobby();
 		doLobbies();
 	}
 
@@ -399,6 +418,8 @@ public class AbaloneClient implements ClientProtocol {
 
 	}
 
+	//TODO: add javadoc to these trival getters.
+	
 	public Color getCurrentColor() {
 		return currentColor;
 	}
@@ -413,5 +434,19 @@ public class AbaloneClient implements ClientProtocol {
 
 	public void setCurrentMove(String currentMove) {
 		this.currentMove = currentMove;
+	}
+
+	/**
+	 * Always resets the ready status and puts player in state lobby if join is player.
+	 * @ensures if cmd.equals(j;ownName;ownTeam) then setInLobby()
+	 * @param cmd
+	 */
+	public void putInLobby(String cmd) {
+		String[] split = cmd.split(ProtocolMessages.DELIMITER);
+		//TODO: fix this implementation and remove setInLobby() in doJoin.
+		if (ownName.equals(split[1]) && ownName.equals(split[2])) {
+			setInLobby();
+		}
+		resetReady();
 	}
 }

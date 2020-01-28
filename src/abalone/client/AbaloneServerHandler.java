@@ -48,6 +48,9 @@ public class AbaloneServerHandler implements Runnable {
 					case ProtocolMessages.LOBBY:
 						view.showMessage(cmd);
 						break;
+					case ProtocolMessages.JOIN:
+						c.putInLobby(cmd);
+						break;
 					default:
 						view.showMessage("expected l but got:");
 						view.showMessage(cmd);
@@ -57,7 +60,7 @@ public class AbaloneServerHandler implements Runnable {
 			case LOBBY:
 				switch (cmd.charAt(0)) {
 					case ProtocolMessages.JOIN:
-						c.resetReady();
+						c.putInLobby(cmd);
 						break;
 					case ProtocolMessages.READY:
 						break;

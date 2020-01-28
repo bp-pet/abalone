@@ -21,11 +21,14 @@ public class ServerGame extends Game {
 				if (i == 0) {
 					teamPlayer1 = lobby.getTeamName(client);
 					players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
+					lobby.setColor(client, currentColor);
 				} else {
 					if (teamPlayer1.equals(lobby.getTeamName(client))) {
 						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
+						lobby.setColor(client, currentColor);
 					} else {
 						players[i] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
+						lobby.setColor(client, currentColor);
 						currentColor = getNextColor();
 					}
 				}
@@ -42,6 +45,7 @@ public class ServerGame extends Game {
 				System.out.println(lobby.getTeamName(client));
 				System.out.println(currentColor);
 				players[i++] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
+				lobby.setColor(client, currentColor);
 				currentColor = getNextColor();
 			}
 		}
