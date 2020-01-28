@@ -21,14 +21,14 @@ public class ComputerPlayer extends Player {
 	}
 	
 	/**
-	 * getter for strategy.
+	 * Getter for strategy.
 	 */
 	public Strategy getStrategy() {
 		return this.strategy;
 	}
 	
 	/**
-	 * setter for strategy.
+	 * Setter for strategy.
 	 */
 	public void setStrategy(Strategy strategy) {
 		this.strategy = strategy;

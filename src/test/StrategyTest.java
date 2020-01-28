@@ -12,7 +12,6 @@ import abalone.Color;
 import abalone.Move;
 import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
 import abalone.AI.RandomStrategy;
-import abalone.AI.Strategy;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.MarbleKilledException;
 
@@ -24,7 +23,8 @@ import abalone.exceptions.MarbleKilledException;
 public class StrategyTest {
 	
 	private Board board;
-	private Strategy strategy;
+	private RandomStrategy randomStrategy;
+	private ItsOverAnakinIHaveTheHighGroundStrategy advancedStrategy;
 	ArrayList<Move> movesList;
 	
 	/**
@@ -33,7 +33,8 @@ public class StrategyTest {
 	@BeforeEach
 	public void setUp() {
 		board = new Board(2);
-		strategy = new RandomStrategy();
+		randomStrategy = new RandomStrategy();
+		advancedStrategy = new ItsOverAnakinIHaveTheHighGroundStrategy();
 	}
 
 	/**
@@ -48,7 +49,7 @@ public class StrategyTest {
 	 */
 	@Test
 	public void testMakeMovesList() {
-		movesList = strategy.makeMovesList(board, Color.WHITE);
+		movesList = randomStrategy.makeMovesList(board, Color.WHITE);
 		for (Move m : movesList) {
 			try {
 				m.isValidMove();
@@ -57,7 +58,7 @@ public class StrategyTest {
 			}
 		}
 		assertEquals(movesList.size(), 72);
-		ArrayList<Move> movesList2 = strategy.makeMovesList(board, Color.BLACK);
+		ArrayList<Move> movesList2 = randomStrategy.makeMovesList(board, Color.BLACK);
 		Move mirroredMove = new Move(board, Color.WHITE, 0, 0, 0, 0, 0, 0);
 		for (Move m : movesList2) {
 			try {
@@ -97,9 +98,9 @@ public class StrategyTest {
 			new Move(board, Color.BLACK, 6, 6, 6, 5, 5, 6).perform();
 			new Move(board, Color.WHITE, 3, 3, 3, 4, 4, 3).perform();
 			new Move(board, Color.BLACK, 5, 5, 5, 6, 4, 5).perform();
-			movesList = strategy.makeMovesList(board, Color.WHITE);
-			assertEquals(strategy.makeMovesList(board, Color.WHITE).size(),
-					strategy.makeMovesList(board, Color.BLACK).size());
+			movesList = randomStrategy.makeMovesList(board, Color.WHITE);
+			assertEquals(randomStrategy.makeMovesList(board, Color.WHITE).size(),
+					randomStrategy.makeMovesList(board, Color.BLACK).size());
 			for (Move m : movesList) {
 				try {
 					m.isValidMove();
@@ -118,14 +119,29 @@ public class StrategyTest {
 	 */
 	@Test
 	public void testDistance() {
-		ItsOverAnakinIHaveTheHighGroundStrategy strategy2 = new ItsOverAnakinIHaveTheHighGroundStrategy("20");
-		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(0, 0)), 4);
-		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(1, 1)), 3);
-		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(2, 2)), 2);
-		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(3, 3)), 1);
-		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(4, 4)), 0);
-		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(8, 6)), 4);
-		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(5, 8)), 4);
-		assertEquals(strategy2.fieldDistanceFromCenter(board, board.getField(6, 2)), 4);
+		assertEquals(advancedStrategy.fieldDistanceFromCenter(board, board.getField(0, 0)), 16);
+		assertEquals(advancedStrategy.fieldDistanceFromCenter(board, board.getField(1, 1)), 9);
+		assertEquals(advancedStrategy.fieldDistanceFromCenter(board, board.getField(2, 2)), 4);
+		assertEquals(advancedStrategy.fieldDistanceFromCenter(board, board.getField(3, 3)), 1);
+		assertEquals(advancedStrategy.fieldDistanceFromCenter(board, board.getField(4, 4)), 0);
+		assertEquals(advancedStrategy.fieldDistanceFromCenter(board, board.getField(8, 6)), 16);
+		assertEquals(advancedStrategy.fieldDistanceFromCenter(board, board.getField(5, 8)), 16);
+		assertEquals(advancedStrategy.fieldDistanceFromCenter(board, board.getField(6, 2)), 16);
+	}
+	
+	/**
+	 * Tests whether the distance of black and white to the center is the same.
+	 */
+	@Test
+	public void testDistanceSymmetry() {
+		assertEquals(advancedStrategy.colorDistanceFromCenter(board, advancedStrategy.getOpponentColor(board, Color.WHITE)), advancedStrategy.colorDistanceFromCenter(board, Color.WHITE));
+	}
+	
+	/**
+	 * Test whether triplets are counted correctly.
+	 */
+	@Test
+	public void testCountTriplets() {
+		assertEquals(advancedStrategy.countTriplets(board, Color.WHITE), 22.1, 0.01);
 	}
 }

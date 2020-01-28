@@ -29,24 +29,6 @@ public interface Strategy {
 	public Move determineMove(Board board, Color color);
 	
 	/**
-	 * Simulates the move.
-	 * Makes a copy of the board, performs the move, and returns it.
-	 * @return a new board with the move performed on it
-	 */
-	default public Board simulateMove(Board board, Move move) {
-		Board copyBoard = board.deepCopy();
-		move = move.deepCopy(copyBoard);
-		try {
-			move.perform();
-		} catch (InvalidMoveException e) {
-			System.out.println("PROBLEM: Only valid moves should be simulated.");
-		} catch (MarbleKilledException e) {
-			copyBoard.marbleKilled = true;
-		}
-		return copyBoard;
-	}
-	
-	/**
 	 * Makes a list of all possible moves for a given color on a given board.
 	 * @returns list of valid moves
 	 * @requires board contains marbles of given color
@@ -80,7 +62,7 @@ public interface Strategy {
 						fieldList.get(j), -1, -1));
 				for (Move m : tempMoveList) {
 					try {
-						m.isValidMove();
+						m.isValidMoveQuick();
 					} catch (InvalidMoveException e) {
 						continue;
 					}
