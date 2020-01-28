@@ -87,10 +87,9 @@ public class AbaloneServerHandler implements Runnable {
 						break;
 					case ProtocolMessages.MOVE:
 						try {
-							c.setCurrentMove(getMove(cmd.split(ProtocolMessages.DELIMITER)[1]));
+							c.setCurrentMove(getMove(cmd));
 						} catch (ProtocolException e) {
-							// invalid color should not happen
-							e.printStackTrace();
+							view.showMessage("ProcolException client received: " + e.getMessage());
 						}
 						break;
 					case ProtocolMessages.GAME_END:
@@ -151,6 +150,9 @@ public class AbaloneServerHandler implements Runnable {
 	 */
 	public String getMove(String move) throws ProtocolException {
 		String[] movesplit = move.split(ProtocolMessages.DELIMITER);
+		if (movesplit.length != 4) {
+			throw new ProtocolException("invalid number of arguments");
+		}
 		return movesplit[1] + " " + movesplit[2] + " " + movesplit[3];
 	}
 	

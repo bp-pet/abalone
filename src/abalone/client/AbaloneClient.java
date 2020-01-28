@@ -353,8 +353,6 @@ public class AbaloneClient implements ClientProtocol {
 		resetReady();
 		view.showMessage("Creating a game... ");
 		game = new ClientGame(lineFromServer.split(ProtocolMessages.DELIMITER), this, view, ownName, ownTeam);
-		view.showMessage("Game starts now!");
-		game.start();
 	}
 
 	@Override
@@ -448,5 +446,11 @@ public class AbaloneClient implements ClientProtocol {
 			setInLobby();
 		}
 		resetReady();
+	}
+
+	public void startGame() {
+		view.showMessage("Game starts now!");
+		game.start();
+		
 	}
 }

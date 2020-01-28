@@ -116,7 +116,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	private boolean everyoneReady() {
 		boolean everyoneReady = true;
 		for (AbaloneClientHandler client : ready.keySet()) {
-			everyoneReady = everyoneReady && ready.get(client);
+			everyoneReady = everyoneReady && getReady(client);
 		}
 		return everyoneReady;
 	}

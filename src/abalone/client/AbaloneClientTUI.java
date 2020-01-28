@@ -36,6 +36,9 @@ public class AbaloneClientTUI implements AbaloneClientView {
 	public void start() throws ServerUnavailableException {
 		String msg = getString(INPUT);
 		while (!msg.equals(String.valueOf(ProtocolMessages.EXIT))) {
+			while (c.getState() == State.GAME) {
+				c.startGame();
+			}
 			try {
 				handleUserInput(msg);
 				// TODO: remove debug line
