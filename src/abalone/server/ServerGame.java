@@ -1,7 +1,5 @@
 package abalone.server;
 
-import java.util.Map;
-
 import abalone.Color;
 import abalone.Game;
 import abalone.Player;

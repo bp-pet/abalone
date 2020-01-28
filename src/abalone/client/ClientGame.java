@@ -1,15 +1,9 @@
 package abalone.client;
 
-import java.util.Map;
-
 import abalone.Color;
 import abalone.Game;
-import abalone.HumanPlayer;
 import abalone.LocalGame;
-import abalone.Move;
 import abalone.Player;
-import abalone.exceptions.InvalidMoveException;
-import abalone.exceptions.MarbleKilledException;
 import abalone.exceptions.ProtocolException;
 import abalone.exceptions.ServerUnavailableException;
 

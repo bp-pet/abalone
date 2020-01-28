@@ -3,19 +3,18 @@ package test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import abalone.Board;
 import abalone.Color;
 import abalone.Move;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.MarbleKilledException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 /**
- * A test for the move class. Checks for all kinds of specific
- * moves whether they are valid or invalid, depending on the move.
+ * A test for the move class. Checks for all kinds of specific moves whether
+ * they are valid or invalid, depending on the move.
  * 
  * @author Bozhidar Petrov, Daan Pluister
  */
@@ -25,7 +24,7 @@ class MoveTest {
 	private Board board;
 	/** used to make sure exception messages are correct */
 	private String msg;
-	
+
 	/**
 	 * The way this class works is that it tries different moves. Some of them are
 	 * expected to be valid so if an exception is caught, the test fails. Others
@@ -37,9 +36,9 @@ class MoveTest {
 		board = new Board(2);
 		msg = "";
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void test1() {
 		try {
 			new Move(board, Color.BLACK, 4, 1, 4, 4, 4, 2).perform();
@@ -50,9 +49,9 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("too long"));
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void test2() {
 		try {
 			new Move(board, Color.BLACK, 6, 4, 8, 4, 5, 3).perform();
@@ -63,7 +62,7 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("lateral"));
 	}
-	
+
 	@Test
 	void testPushOff4v3() {
 		try {
@@ -81,7 +80,7 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("push"));
 	}
-	
+
 	@Test
 	void testSelection() {
 		try {
@@ -112,9 +111,9 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("Selection"));
 	}
-	
+
 	@Test
-	//should work
+	// should work
 	void testMove1() {
 		try {
 			new Move(board, Color.WHITE, 2, 2, 2, 2, 3, 3).perform();
@@ -124,9 +123,9 @@ class MoveTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	//should work
+	// should work
 	void testMove2() {
 		try {
 			new Move(board, Color.WHITE, 1, 1, 2, 2, 2, 2).perform();
@@ -138,7 +137,7 @@ class MoveTest {
 	}
 
 	@Test
-	//should work
+	// should work
 	void testMove3() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -148,9 +147,9 @@ class MoveTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	//should work
+	// should work
 	void testMoveLateral() {
 		try {
 			new Move(board, Color.WHITE, 2, 2, 2, 4, 3, 3).perform();
@@ -160,9 +159,9 @@ class MoveTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void testPushAgainstOwn() {
 		try {
 			new Move(board, Color.WHITE, 1, 0, 1, 0, 2, 1).perform();
@@ -174,9 +173,9 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("push"));
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void testSuicide() {
 		try {
 			new Move(board, Color.WHITE, 2, 2, 0, 0, 1, 1).perform();
@@ -187,9 +186,9 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("suicide"));
 	}
-	
+
 	@Test
-	//should work
+	// should work
 	void testPushOff() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -205,9 +204,9 @@ class MoveTest {
 		}
 		assertTrue(!msg.equals(""));
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void testPushLateral() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -222,9 +221,9 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("push"));
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void testPush3v3() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -238,9 +237,9 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("push"));
 	}
-	
+
 	@Test
-	//should work
+	// should work
 	void testPush3v2() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -253,9 +252,9 @@ class MoveTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	//should work
+	// should work
 	void testPush3v1() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -268,9 +267,9 @@ class MoveTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void testPush2v2() {
 		try {
 			new Move(board, Color.WHITE, 1, 1, 2, 2, 2, 2).perform();
@@ -284,10 +283,10 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("push"));
 	}
-	
+
 	@Test
-	//should work
-	void testPush2v1(){
+	// should work
+	void testPush2v1() {
 		try {
 			new Move(board, Color.WHITE, 1, 1, 2, 2, 2, 2).perform();
 			new Move(board, Color.WHITE, 2, 2, 3, 3, 3, 3).perform();
@@ -299,9 +298,9 @@ class MoveTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	//should work
+	// should work
 	void testPushOwn2v1() {
 		try {
 			new Move(board, Color.WHITE, 1, 4, 0, 4, 2, 4).perform();
@@ -311,9 +310,9 @@ class MoveTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	//should work
+	// should work
 	void testPushOw1v2() {
 		try {
 			new Move(board, Color.WHITE, 0, 4, 0, 4, 1, 4).perform();
@@ -323,9 +322,9 @@ class MoveTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	//should work
+	// should work
 	void testPushOwn1v2() {
 		try {
 			new Move(board, Color.WHITE, 0, 4, 0, 4, 1, 4).perform();
@@ -335,9 +334,9 @@ class MoveTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	//should work
+	// should work
 	void testPushOwn1v1() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 0, 0, 1, 0).perform();
@@ -347,9 +346,9 @@ class MoveTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void testPushOwn1v3() {
 		try {
 			new Move(board, Color.WHITE, 1, 1, 1, 1, 2, 1).perform();
@@ -361,9 +360,9 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("push"));
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void testPushOwn3v1() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -376,9 +375,9 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("push"));
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void testPush1v1() {
 		try {
 			new Move(board, Color.WHITE, 2, 2, 2, 2, 3, 3).perform();
@@ -389,12 +388,12 @@ class MoveTest {
 			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
 			fail();
-		};
+		}
 		assertTrue(msg.contains("push"));
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void testMove4() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -407,9 +406,9 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("too long"));
 	}
-	
+
 	@Test
-	//should not work
+	// should not work
 	void testMoveWrongColor() {
 		try {
 			new Move(board, Color.BLACK, 2, 2, 2, 2, 3, 3).perform();
@@ -420,7 +419,7 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("contain"));
 	}
-	
+
 	@Test
 	void testMirroredMove() {
 		int[] coords = new int[6];

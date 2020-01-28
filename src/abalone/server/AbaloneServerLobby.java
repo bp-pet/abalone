@@ -198,10 +198,10 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	}
 
 	/**
-	 * getter for the playerName of the client in the lobby. <code>null</code> if
+	 * Getter for the playerName of the client in the lobby. <code>null</code> if
 	 * player not in lobby.
 	 * 
-	 * @param client
+	 * @param client the client whose player we want the name of
 	 * @return
 	 */
 	public String getPlayerName(AbaloneClientHandler client) {
@@ -213,10 +213,10 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	}
 
 	/**
-	 * getter for the playerName of the client in the lobby. <code>null</code> if
+	 * Getter for the playerName of the client in the lobby. <code>null</code> if
 	 * player not in lobby.
 	 * 
-	 * @param client
+	 * @param client the client whose team we want the anem of
 	 * @return
 	 */
 	public String getTeamName(AbaloneClientHandler client) {
@@ -231,7 +231,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	 * toString of lobby, prints the format:
 	 * <code>pm.LOBBY + pm.DELIMITER + lobbyName +
 	 * pm.DELIMITER + pm.PLAYER + pm.DELIMITER + player1Name + pm.DELIMITER +
-	 * player1teamName + etc[;p;<player name>;<team name>]*</code>.
+	 * player1teamName + etc</code>.
 	 */
 	public String toString() {
 		String s = ProtocolMessages.LOBBY + ProtocolMessages.DELIMITER + name;

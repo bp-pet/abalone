@@ -5,7 +5,6 @@ import java.util.Map;
 
 import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
 import abalone.AI.RandomStrategy;
-import abalone.AI.ReverseAnakinStrategy;
 import abalone.client.AbaloneClientView;
 import ss.utils.TextIO;
 
@@ -59,8 +58,6 @@ public class LocalGame extends Game {
 		} else if (name.contains("ItsOverAnakinIHaveTheHighGroundStrategy")) {
 			return new ComputerPlayer(color,
 					new ItsOverAnakinIHaveTheHighGroundStrategy());
-		} else if (name.contains("ReverseAnakinStrategy")) {
-			return new ComputerPlayer(color, new ReverseAnakinStrategy());
 		} else {
 			return new HumanPlayer(view, name, color);
 		}

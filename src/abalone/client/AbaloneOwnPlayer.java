@@ -1,8 +1,6 @@
 package abalone.client;
 
 import abalone.Board;
-import abalone.Color;
-import abalone.HumanPlayer;
 import abalone.Move;
 import abalone.Player;
 import abalone.exceptions.InvalidMoveException;

@@ -89,13 +89,13 @@ public class BoardTest {
 	@Test
 	public void testReset() {
 		board = new Board();
-//		System.out.println(board.toString());
-//		board.reset(2);
-//		System.out.println(board.toString());
-//		board.reset(3);
-//		System.out.println(board.toString());
-//		board.reset(4);
-//		System.out.println(board.toString());
+		//System.out.println(board.toString());
+		board.reset(2);
+		//System.out.println(board.toString());
+		board.reset(3);
+		//System.out.println(board.toString());
+		board.reset(4);
+		//System.out.println(board.toString());
 	}
 
 	/**
@@ -141,6 +141,7 @@ public class BoardTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		} catch (MarbleKilledException e) {
+			fail();
 		}
 		testMapOfColors();
 	}

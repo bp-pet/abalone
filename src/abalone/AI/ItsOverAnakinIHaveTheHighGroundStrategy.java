@@ -211,10 +211,10 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 		return copyBoard;
 	}
 	
-	/**
-	 * Looks at the opponent's next move. Assumes opponent uses same strategy.
-	 */
-	private Move simulateOpponentMove(Board board, Color color) {
-		return determineMove(board, getOpponentColor(board, color));
-	}
+//	/**
+//	 * Looks at the opponent's next move. Assumes opponent uses same strategy.
+//	 */
+//	private Move simulateOpponentMove(Board board, Color color) {
+//		return determineMove(board, getOpponentColor(board, color));
+//	}
 }

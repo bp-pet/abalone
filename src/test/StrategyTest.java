@@ -3,17 +3,17 @@ package test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
+import abalone.AI.RandomStrategy;
+import abalone.Board;
+import abalone.Color;
+import abalone.Move;
+import abalone.exceptions.InvalidMoveException;
+import abalone.exceptions.MarbleKilledException;
 import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import abalone.Board;
-import abalone.Color;
-import abalone.Move;
-import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
-import abalone.AI.RandomStrategy;
-import abalone.exceptions.InvalidMoveException;
-import abalone.exceptions.MarbleKilledException;
 
 /**
  * Test program for the Strategy interface.
@@ -28,7 +28,7 @@ public class StrategyTest {
 	ArrayList<Move> movesList;
 	
 	/**
-	 * create a test board with 2 player setup
+	 * Create a test board with 2 player setup.
 	 */
 	@BeforeEach
 	public void setUp() {
@@ -110,7 +110,8 @@ public class StrategyTest {
 			}
 		} catch (InvalidMoveException e) {
 			fail();
-		} catch (MarbleKilledException e1) {
+		} catch (MarbleKilledException e) {
+			fail();
 		}
 	}
 	
@@ -134,7 +135,9 @@ public class StrategyTest {
 	 */
 	@Test
 	public void testDistanceSymmetry() {
-		assertEquals(advancedStrategy.colorDistanceFromCenter(board, advancedStrategy.getOpponentColor(board, Color.WHITE)), advancedStrategy.colorDistanceFromCenter(board, Color.WHITE));
+		assertEquals(advancedStrategy.colorDistanceFromCenter(board, advancedStrategy
+				.getOpponentColor(board, Color.WHITE)), advancedStrategy
+				.colorDistanceFromCenter(board, Color.WHITE));
 	}
 	
 	/**
