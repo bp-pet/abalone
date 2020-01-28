@@ -103,41 +103,41 @@ public abstract class Game {
 	 */
 	public Color getNextColor() {
 		switch (getNumberOfPlayers()) {
-		case 2:
-			switch (currentColor) {
-				case WHITE:
-					return Color.BLACK;
-				case BLACK:
-					return Color.WHITE;
-				default:
-					return null;	
-			}
-		case 3:
-			switch (currentColor) {
-				case BLUE:
-					return Color.BLACK;
-				case BLACK:
-					return Color.WHITE;
-				case WHITE: 
-					return Color.BLUE;
-				default:
-					return null;
-			}
-		case 4:
-			switch(currentColor) {
-				case BLACK:
-					return Color.RED;
-				case RED:
-					return Color.WHITE;
-				case WHITE:
-					return Color.BLUE;
-				case BLUE:
-					return Color.BLACK;
-				default:
-					return null;
-			}
-		default:
-			return null;
+			case 2:
+				switch (currentColor) {
+					case WHITE:
+						return Color.BLACK;
+					case BLACK:
+						return Color.WHITE;
+					default:
+						return null;	
+				}
+			case 3:
+				switch (currentColor) {
+					case BLUE:
+						return Color.BLACK;
+					case BLACK:
+						return Color.WHITE;
+					case WHITE: 
+						return Color.BLUE;
+					default:
+						return null;
+				}
+			case 4:
+				switch(currentColor) {
+					case BLACK:
+						return Color.RED;
+					case RED:
+						return Color.WHITE;
+					case WHITE:
+						return Color.BLUE;
+					case BLUE:
+						return Color.BLACK;
+					default:
+						return null;
+				}
+			default:
+				return null;
 		}
 	}
 	
@@ -147,16 +147,16 @@ public abstract class Game {
 	 */
 	protected int getIntOfCurrentColor() {
 		switch (currentColor) {
-		case WHITE:
-			return 0;
-		case BLACK:
-			return 1;
-		case BLUE:
-			return 2;
-		case RED:
-			return 3;
-		default:
-			return 0;
+			case WHITE:
+				return 0;
+			case BLACK:
+				return 1;
+			case BLUE:
+				return 2;
+			case RED:
+				return 3;
+			default:
+				return 0;
 		}
 	}
 	

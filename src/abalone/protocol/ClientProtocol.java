@@ -43,14 +43,6 @@ public interface ClientProtocol {
 	public void doLobbies() throws ServerUnavailableException;
 
 	/**
-	 * the result (multiple lines in the form
-	 * <code>pm.LOBBY + pm.DELIMITER + String lobbyName + pm.DELIMITER + String player1 + pm.DELIMITER + String teamPlayer1 + optional players </code>,
-	 * and ending line with <code>ProtocolMessages.EOT</code>) is retrieved and
-	 * forwarded to the view.
-	 */
-	public void getLobbies() throws ServerUnavailableException;
-
-	/**
 	 * Sends a join game request to the server.
 	 * 
 	 * Given the name of an existing or non-existing lobby lobbyName, a player name
@@ -97,40 +89,7 @@ public interface ClientProtocol {
 	 * @throws ProtocolException 
 	 */
 	public void doReady() throws ServerUnavailableException, ProtocolException;
-	
-	/**
-	 * Receives a new player joining the lobby increase playernumber by 1 and reset ready.
-	 * @requires be in lobby status.
-	 * @throws ServerUnavailableException
-	 * @throws ProtocolException
-	 */
-	public void getJoinGame(String[] lineFromServer) throws ServerUnavailableException, ProtocolException;
 
-	/**
-	 * get <code>pm.READY;playerName</code>
-	 * @requires be in lobby status.
-	 * @throws ServerUnavailableException if IO errors occur.
-	 * @throws ProtocolException          if error is received.
-	 */
-	public void getReady(String[] lineFromServer) throws ServerUnavailableException, ProtocolException;
-
-	/**
-	 * If all players are now ready and the game can start
-	 * <code>pm.START;whitePlayerName;whitePlayerTeam;blackPlayerName;blackPlayerTeam[;bluePlayerName;bluePlayerTeam;redPlayerName;redPlayerTeam]</code>
-	 * is received.
-	 * 
-	 * If all players are now ready and the game can not start
-	 * <code>pm.ERROR3 + pm.DELIMITER + String message</code>. Is received.
-	 * @requires be in lobby status.
-	 */
-	public void getStart(String[] lineFromServer) throws ServerUnavailableException, ProtocolException;
-
-	/**
-	 * checks if lineFromServer is an exit. Then lowers number of players by 1 and resets ready.
-	 * @requires be in lobby status.
-	 */
-	public void getExit(String[] lineFromServer) throws ServerUnavailableException, ProtocolException; 
-	
 	/**
 	 * Returns a string of the color as a response to a
 	 * <code>pm.TURN + pm.DELIMITER + String color</code> server message.
@@ -163,18 +122,16 @@ public interface ClientProtocol {
 			throws ServerUnavailableException, InvalidMoveException, ProtocolException;
 
 	/**
-	 * Returns a String with a move that is received from the server.
 	 * 
-	 * the server sends a move in the form
+	 * translates
 	 * <code>pm.Move + pm.DELIMITER + arg1 + pm.DELIMITER + arg2 + pm.DELIMITER + arg3</code>.
-	 * And will be done in the ClientGame.
+	 * to the form parsemove accepts
 	 * 
-	 * @return String
-	 *         <code>pm.Move + pm.DELIMITER + arg1 + pm.DELIMITER + arg2 + pm.DELIMITER + arg3</code>.
+	 * @return String of the form parsemove accepts
 	 * @throws ServerUnavailableException if IO errors occur.
 	 * @throws ProtocolException          if no move command is send.
 	 */
-	public String[] getMove(Color color) throws ServerUnavailableException, ProtocolException;
+	public String getMove(Color color) throws ServerUnavailableException, ProtocolException;
 
 	/**
 	 * Receives a <code>pm.GAME_END + pm.DELIMITER + result</code> if there is a

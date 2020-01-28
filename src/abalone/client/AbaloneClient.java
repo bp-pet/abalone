@@ -23,7 +23,12 @@ public class AbaloneClient implements ClientProtocol {
 	private ClientGame game;
 	private String ownName;
 	private String ownTeam;
+	private String lobbyName;
 	private boolean isReady;
+	private Color currentColor;
+	/** current move of the form that parsemove accepts */
+	private String currentMove;
+	private Color ownColor;
 
 	/**
 	 * Constructs a new AbaloneClient. Initializes the view in this case the
@@ -51,6 +56,8 @@ public class AbaloneClient implements ClientProtocol {
 		}
 		try {
 			handleHello();
+			Thread serverInputHandler = new Thread(new AbaloneServerHandler(this, view));
+			serverInputHandler.start();
 			view.start();
 		} catch (ServerUnavailableException e) {
 			// TODO Auto-generated catch block
@@ -149,7 +156,7 @@ public class AbaloneClient implements ClientProtocol {
 	 * @return the line split on pm.DELITMITER sent by the server.
 	 * @throws ServerUnavailableException if IO errors occur.
 	 */
-	public String[] readLineFromServer() throws ServerUnavailableException {
+	public String readLineFromServer() throws ServerUnavailableException {
 		if (in != null) {
 			try {
 				// Read and return answer from Server
@@ -159,7 +166,7 @@ public class AbaloneClient implements ClientProtocol {
 				}
 				// TODO: remove debug line
 				view.showMessage("incoming message: " + answer);
-				return answer.split(ProtocolMessages.DELIMITER);
+				return answer;
 			} catch (IOException e) {
 				throw new ServerUnavailableException("Could not read " + "from server.");
 			}
@@ -279,34 +286,12 @@ public class AbaloneClient implements ClientProtocol {
 
 	// -- Methods for/from SuperClass/Interfaces ---------------------
 
-	/**
-	 * translates pm.COLOR_COLOR to enum Color.
-	 * 
-	 * @param color
-	 * @return
-	 */
-	public Color getColor(String color) throws ProtocolException {
-		switch (color) {
-		case ProtocolMessages.COLOR_BLACK:
-			return Color.BLACK;
-		case ProtocolMessages.COLOR_WHITE:
-			return Color.WHITE;
-		case ProtocolMessages.COLOR_BLUE:
-			return Color.BLUE;
-		case ProtocolMessages.COLOR_RED:
-			return Color.RED;
-		default:
-			throw new ProtocolException(color + " is not a valid color according to the protocol");
-		}
-	}
-
 	@Override
 	public void handleHello() throws ServerUnavailableException, ProtocolException {
 		sendMessage(ProtocolMessages.HELLO + ProtocolMessages.DELIMITER + ProtocolMessages.VERSION);
 
 		String[] linesFromServer = readMultipleLinesFromServer();
 
-		view.showMessage("linefromserver[0]: " + Arrays.toString(linesFromServer[0].split(ProtocolMessages.DELIMITER)));
 		if (isCommand(ProtocolMessages.HELLO, linesFromServer[0].split(ProtocolMessages.DELIMITER))) {
 			view.showMessage("> Welcome to the Abalone Browser");
 		} else {
@@ -322,115 +307,21 @@ public class AbaloneClient implements ClientProtocol {
 	@Override
 	public void doLobbies() throws ServerUnavailableException {
 		sendMessage(ProtocolMessages.LOBBY);
-		getLobbies();
 	}
 
 	@Override
-	public void getLobbies() throws ServerUnavailableException {
-		String[] linesFromServer = readMultipleLinesFromServer();
-		for (String line : linesFromServer) {
-			// TODO: make lobbies in nice human readable form.
-			view.showMessage(line);
-		}
-	}
-
-	@Override
-	public void doJoinLobby(String lobbyName, String playerName, String teamName)
-			throws ServerUnavailableException, ProtocolException {
+	public void doJoinLobby(String lobbyName, String playerName, String teamName) throws ServerUnavailableException {
 		sendMessage(ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + lobbyName + ProtocolMessages.DELIMITER
 				+ playerName + ProtocolMessages.DELIMITER + teamName);
-
-		String[] lineFromServer = readLineFromServer();
-		if (isError(ProtocolMessages.ERROR1, lineFromServer)) {
-			if (lineFromServer.length == 3) {
-				throw new ProtocolException(lineFromServer[2]);
-			} else {
-				throw new ProtocolException("Error of type 2 given by server no message given.");
-			}
-		}
-		if (!isCommand(ProtocolMessages.JOIN, lineFromServer)) {
-			throw new ProtocolException("Unexpected command from server expected j");
-		}
-		view.showMessage("succesfully joined lobby " + lobbyName);
-		this.ownName = playerName;
-		this.ownTeam = teamName;
-		resetReady();
-		lineFromServer = readLineFromServer();
-		// TODO: process this beautiful line
-		for (String arg : lineFromServer) {
-			view.showMessage("players in this lobby: " + arg);
-		}
-		// TODO: make new thread for reading messages until game starts.
-		new Thread(new AbaloneServerHandler(this, view)).start();
+		this.lobbyName = lobbyName;
+		ownName = playerName;
+		ownTeam = teamName;
 	}
 
 	@Override
-	public void doReady() throws ServerUnavailableException, ProtocolException {
+	public void doReady() throws ServerUnavailableException {
 		sendMessage(ProtocolMessages.READY);
 		setReady();
-	}
-
-	/**
-	 * After isReady the server receives the following lines from the server until
-	 * game is stared or ready is up.
-	 * 
-	 * @throws ServerUnavailableException
-	 * @throws ProtocolException
-	 */
-	public void getLobbyMessages() throws ServerUnavailableException, ProtocolException {
-		String[] lineFromServer = readLineFromServer();
-		switch (lineFromServer[0].charAt(0)) {
-		case ProtocolMessages.JOIN:
-			getJoinGame(lineFromServer);
-			break;
-		case ProtocolMessages.READY:
-			getReady(lineFromServer);
-			break;
-		case ProtocolMessages.START:
-			getStart(lineFromServer);
-			break;
-		case ProtocolMessages.EXIT:
-			getExit(lineFromServer);
-			break;
-		default:
-			throw new ProtocolException("Unexpected command from server expected j,r,s or x");
-		}
-
-	}
-
-	@Override
-	public void getJoinGame(String[] lineFromServer) throws ServerUnavailableException, ProtocolException {
-		if (!isCommand(ProtocolMessages.JOIN, lineFromServer)) {
-			throw new ProtocolException("Unexpected command from server expected j");
-		}
-		resetReady();
-	}
-
-	@Override
-	public void getReady(String[] lineFromServer) throws ServerUnavailableException, ProtocolException {
-		if (!isCommand(ProtocolMessages.READY, lineFromServer)) {
-			throw new ProtocolException("Unexpected command from server expected r");
-		}
-		if (lineFromServer.length != 3) {
-			throw new ProtocolException("Unexpected arguments from server expected 2");
-		}
-	}
-
-	@Override
-	public void getStart(String[] lineFromServer) throws ServerUnavailableException, ProtocolException {
-		if (!isCommand(ProtocolMessages.START, lineFromServer)) {
-			throw new ProtocolException("Unexpected command from server expected s");
-		}
-		resetReady();
-		makeGame(lineFromServer);
-	}
-
-	@Override
-	public void getExit(String[] lineFromServer) throws ServerUnavailableException, ProtocolException {
-		if (!isCommand(ProtocolMessages.EXIT, lineFromServer)) {
-			throw new ProtocolException("Unexpected command from server expected x");
-		}
-		resetReady();
 	}
 
 	/**
@@ -440,95 +331,30 @@ public class AbaloneClient implements ClientProtocol {
 	 * 
 	 * @param lineFromServer
 	 */
-	public void makeGame(String[] lineFromServer) {
+	public void makeGame(String lineFromServer) {
+		resetReady();
 		view.showMessage("Creating a game... ");
-		String s = view.getString("input a string and don't error");
-		System.out.println(s);
-		game = new ClientGame(lineFromServer, this, view, ownName, ownTeam);
+		game = new ClientGame(lineFromServer.split(ProtocolMessages.DELIMITER), this, view, ownName, ownTeam);
 		view.showMessage("Game starts now!");
 		game.start();
 	}
 
 	@Override
-	public Color getTurn() throws ServerUnavailableException, ProtocolException {
-		String[] lineFromServer = readLineFromServer();
-		if (!isCommand(ProtocolMessages.TURN, lineFromServer)) {
-			throw new ProtocolException("Unexpected command from server expected t");
-		}
-		if (lineFromServer.length != 2) {
-			throw new ProtocolException("Unexpected arguments from server expected 1");
-		}
-		return getColor(lineFromServer[1]);
-	}
-
-	@Override
-	public void sendMove(String arg1, String arg2, String arg3)
-			throws ServerUnavailableException, InvalidMoveException, ProtocolException {
-		boolean valid = false;
-		String[] lineFromServer = null;
-		while (!valid) {
-			sendMessage(ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + arg1 + ProtocolMessages.DELIMITER + arg2
-					+ ProtocolMessages.DELIMITER + arg3);
-			lineFromServer = readLineFromServer();
-			if (isCommand(ProtocolMessages.UNEXPECTED_MOVE, lineFromServer)) {
-				view.showMessage("Sorry the server thinks your move is invalid!");
-				// Now the move is already done in the client game, need to rework a lot if you
-				// want to undo this. So currently it is not possible to ask a new move.
-				// TODO: implement the user can send a new move again.
-			} else {
-				if (!isCommand(ProtocolMessages.MOVE, lineFromServer)) {
-					throw new ProtocolException("Unexpected command from server expected m");
-				}
-				valid = true;
-			}
-		}
-		if (lineFromServer.length != 4) {
-			throw new ProtocolException("Unexpected arguments from server expected 3");
-		}
-		// TODO: confirm correct move from server.
-	}
-
-	@Override
-	public String[] getMove(Color color) throws ServerUnavailableException, ProtocolException {
-		String[] lineFromServer = readLineFromServer();
-		if (!isCommand(ProtocolMessages.MOVE, lineFromServer)) {
-			throw new ProtocolException("Unexpected command from server expected m");
-		}
-		if (lineFromServer.length != 4) {
-			throw new ProtocolException("Unexpected arguments from server expected 3");
-		}
-
-		return lineFromServer;
-	}
-
-	@Override
-	public void getGameEnd() throws ServerUnavailableException, ProtocolException {
-		String[] lineFromServer = readLineFromServer();
-		if (!isCommand(ProtocolMessages.GAME_END, lineFromServer)) {
-			throw new ProtocolException("Unexpected command from server expected g");
-		}
-		if (!(lineFromServer.length >= 2 && lineFromServer.length <= 4)) {
-			throw new ProtocolException("Unexpected arguments from server expected 1 to 3");
-		}
-		switch (lineFromServer.length) {
-		case 2:
-			view.showMessage(lineFromServer[1]);
-			break;
-		case 3:
-			view.showMessage(lineFromServer[1] + " by " + lineFromServer[2]);
-			break;
-		case 4:
-			view.showMessage(lineFromServer[1] + " by " + lineFromServer[2] + " and " + lineFromServer[3]);
-			break;
-		default:
-			throw new ProtocolException("Unexpected arguments from server this should not happen");
-		}
+	public void sendMove(String arg1, String arg2, String arg3) throws ServerUnavailableException {
+		sendMessage(ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + arg1 + ProtocolMessages.DELIMITER + arg2
+				+ ProtocolMessages.DELIMITER + arg3);
 	}
 
 	@Override
 	public void sendExit() throws ServerUnavailableException {
 		sendMessage(ProtocolMessages.EXIT);
-		getLobbies();
+		doLobbies();
+	}
+
+	public void switchTeam(String newTeamName) throws ServerUnavailableException {
+		sendMessage(ProtocolMessages.EXIT);
+		ownTeam = newTeamName;
+		doJoinLobby(lobbyName, ownName, newTeamName);
 	}
 
 	// ------------------ Main --------------------------
@@ -540,5 +366,52 @@ public class AbaloneClient implements ClientProtocol {
 	 */
 	public static void main(String[] args) {
 		(new AbaloneClient()).start();
+	}
+
+	@Override
+	public Color getTurn() throws ServerUnavailableException, ProtocolException {
+		// TODO: proper signal
+		while (getCurrentColor() == null) {
+
+		}
+		Color toReturn = getCurrentColor();
+		return toReturn;
+	}
+
+	@Override
+	public String getMove(Color color) throws ServerUnavailableException, ProtocolException {
+		if (currentColor != color) {
+			throw new ProtocolException("not someones turn");
+		}
+		// TODO: proper signal
+		while (getCurrentMove() == null) {
+
+		}
+		String toReturn = getCurrentMove();
+		setCurrentMove(null);
+		currentColor = null;
+		return toReturn;
+	}
+
+	@Override
+	public void getGameEnd() throws ServerUnavailableException, ProtocolException {
+		// TODO Auto-generated method stub
+
+	}
+
+	public Color getCurrentColor() {
+		return currentColor;
+	}
+
+	public void setCurrentColor(Color currentColor) {
+		this.currentColor = currentColor;
+	}
+
+	public String getCurrentMove() {
+		return currentMove;
+	}
+
+	public void setCurrentMove(String currentMove) {
+		this.currentMove = currentMove;
 	}
 }
