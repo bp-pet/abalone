@@ -371,7 +371,7 @@ public class AbaloneClient implements ClientProtocol {
 	}
 
 	/**
-	 * After isReady the server recieves the following lines from the server until
+	 * After isReady the server receives the following lines from the server until
 	 * game is stared or ready is up.
 	 * 
 	 * @throws ServerUnavailableException
