@@ -72,34 +72,33 @@ public class LocalGame extends Game {
 	}
 	
 	@Override
-	public Map<Player, Integer> start(int numberOfRounds) {
-		if (numberOfRounds <= 0) {
-			boolean again = true;
-			while (again) {
-				play();
-				System.out.println("> Want to play again? (Y/n)");
-				String yn = TextIO.getlnString();
-				if (yn.equals("n")) {
-					again = false;
-				    break;
-				} else if (yn.equals("y") || yn.equals("")) {
-				} else {
-				     System.out.println("Sorry, I didn't catch that. Please answer y/n");
-				}
+	public void start() {
+		boolean again = true;
+		while (again) {
+			play();
+			System.out.println("> Want to play again? (Y/n)");
+			String yn = TextIO.getlnString();
+			if (yn.equals("n")) {
+				again = false;
+				break;
+			} else if (yn.equals("y") || yn.equals("")) {
+			} else {
+			     System.out.println("Sorry, I didn't catch that. Please answer y/n");
 			}
-			return null;
-		} else {
-			Map<Player, Integer> result = new HashMap<Player, Integer>();
-			for (Player p : players) {
-				result.put(p, 0);
-			}
-			for (int i = 0; i < numberOfRounds; i++) {
-				Player winner = play();
-				if (winner != null) {
-					result.put(winner, result.get(winner) + 1);
-				}
-			}
-			return result;
 		}
+	}
+	
+	public Map<Player, Integer> playNTimes(int n) {
+		Map<Player, Integer> result = new HashMap<Player, Integer>();
+		for (Player p : players) {
+			result.put(p, 0);
+		}
+		for (int i = 0; i < n; i++) {
+			Player winner = play();
+			if (winner != null) {
+				result.put(winner, result.get(winner) + 1);
+			}
+		}
+		return result;
 	}
 }

@@ -357,6 +357,6 @@ public abstract class Game {
 	 * @returns //TODO: what is the map? I think you should move this map to play()
 	 * @param //TODO: the numberOfrounds is not nice here
 	 */
-	abstract public Map<Player, Integer> start(int numberOfRounds);
+	abstract public void start();
 	
 }

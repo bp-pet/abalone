@@ -19,13 +19,14 @@ import abalone.Player;
 public class Simulator {
 	
 
-	private static int roundsPerDuel = 1;
+	private static int roundsPerDuel = 3;
 	
 	private static ComputerPlayer[] players;
 	private static Map<Player, Integer> result;
 	
 	public static void main(String[] args) {
 		double[] result = tournament();
+		System.out.println("Winner:");
 		System.out.println(factorsToString(result));
 	}
 	
@@ -51,7 +52,7 @@ public class Simulator {
 	}
 	
 	private static double[] tournament() {
-		ArrayList<double[]> factorsList= makeArrays();
+		ArrayList<double[]> factorsList = makeArrays();
 		int bestScore = 0;
 		double[] winner = null;
 		for (double[] factors1 : factorsList) {
@@ -60,11 +61,13 @@ public class Simulator {
 				if (play1v1(factors1, factors2)) {
 					score++;
 				}
-				System.out.println("game finished");
 			}
 			if (score > bestScore) {
 				winner = factors1;
 				bestScore = score;
+				System.out.println("New high score:");
+				System.out.println(score);
+				System.out.println(factorsToString(factors1));
 			}
 		}
 		return winner;
@@ -82,9 +85,9 @@ public class Simulator {
 		ArrayList<double[]> result = new ArrayList<double[]>();
 		int maxParameter = 2;
 		for (int i = 0; i <= maxParameter; i++) {
-			for (int j = 0; i <= maxParameter; i++) {
-				for (int k = 0; i <= maxParameter; i++) {
-					for (int l = 0; i <= maxParameter; i++) {
+			for (int j = 0; j <= maxParameter; j++) {
+				for (int k = 0; k <= maxParameter; k++) {
+					for (int l = 0; l <= maxParameter; l++) {
 						double[] factors = new double[4];
 						factors[0] = i;
 						factors[1] = j;
@@ -95,4 +98,10 @@ public class Simulator {
 				}
 			}
 		}
-		System.out.println(re
+		return result;
+	}
+}
+
+
+
+
