@@ -47,6 +47,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		ready = new HashMap<AbaloneClientHandler, Boolean>();
 		playerNames = new HashMap<AbaloneClientHandler, String>();
 		teamNames = new HashMap<AbaloneClientHandler, String>();
+		colors = new HashMap<AbaloneClientHandler, Color>();
 		try {
 			addClient(client, playerName, teamName);
 		} catch (LobbyException e) {
@@ -225,6 +226,14 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 
 	public void setTeamName(AbaloneClientHandler client, String teamName) {
 		this.teamNames.put(client, teamName);
+	}
+	
+	public Color getColor(AbaloneClientHandler client) {
+		return colors.get(client);
+	}
+
+	public void setColor(AbaloneClientHandler client, Color color) {
+		this.colors.put(client, color);
 	}
 
 	/**
