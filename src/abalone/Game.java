@@ -354,6 +354,8 @@ public abstract class Game {
 	
 	/**
 	 * Method that calls play(). When play is done one player has won.
+	 * @returns //TODO: what is the map? I think you should move this map to play()
+	 * @param //TODO: the numberOfrounds is not nice here
 	 */
 	abstract public Map<Player, Integer> start(int numberOfRounds);
 	

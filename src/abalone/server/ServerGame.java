@@ -1,5 +1,7 @@
 package abalone.server;
 
+import java.util.Map;
+
 import abalone.Color;
 import abalone.Game;
 import abalone.Player;
@@ -51,17 +53,18 @@ public class ServerGame extends Game {
 	public Color getNextTurn() {
 		return getNextColor();
 	}
-	
+
 	@Override
-	public void start() {
-		// TODO: implement stop game when disconnection and go back to lobby
+	public Map<Player, Integer> start(int numberOfRounds) {
+		//TODO: stop when disconnection
 		while (true) {
 			play();
 		}
 	}
-
+	
 	public Player[] getPlayers() {
 		// TODO Auto-generated method stub
 		return players;
 	}
+
 }

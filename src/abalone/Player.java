@@ -54,7 +54,8 @@ public abstract class Player {
      * @requires board is not null and not full
      * @ensures returned Move is valid;
      * @param board the current game board
+     * @parem string //TODO: @bozho what does string do?
      * @return the player's chosen Move
      */
-    public abstract Move determineMove(Board board, String string);
+    public abstract Move determineMove(Board board, String stateOfGame);
 }

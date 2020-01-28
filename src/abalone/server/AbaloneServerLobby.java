@@ -270,7 +270,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	 */
 	public void setupGame() {
 		game = new ServerGame(this);
-		game.start();
+		game.start(0);
 	}
 
 	@Override

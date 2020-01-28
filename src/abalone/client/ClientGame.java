@@ -1,5 +1,7 @@
 package abalone.client;
 
+import java.util.Map;
+
 import abalone.Color;
 import abalone.Game;
 import abalone.HumanPlayer;
@@ -53,8 +55,11 @@ public class ClientGame extends Game {
 	}
 	
 	@Override
-	public void start() {
-		
+	public Map<Player, Integer> start(int numberOfRounds) {
+		//TODO: stop when disconnection
+		while (true) {
+			play();
+		}
 	}
 
 }

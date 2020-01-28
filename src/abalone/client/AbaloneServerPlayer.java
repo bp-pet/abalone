@@ -19,7 +19,7 @@ public class AbaloneServerPlayer extends Player {
 	}
 	
 	@Override
-	public Move determineMove(Board board) {
+	public Move determineMove(Board board, String stateOfGame) {
 		String[] lineFromServer = null;
 		try {
 			lineFromServer = c.getMove(color);

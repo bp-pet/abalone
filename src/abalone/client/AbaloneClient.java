@@ -440,7 +440,7 @@ public class AbaloneClient implements ClientProtocol {
 		view.showMessage("Creating a game... ");
 		game = new ClientGame(lineFromServer, this, view, ownName, ownTeam);
 		view.showMessage("Game starts now!");
-		game.start();
+		game.start(0);
 	}
 
 	@Override

@@ -21,8 +21,8 @@ public class AbaloneOwnPlayer extends Player {
 	}
 
 	@Override
-	public Move determineMove(Board board) {
-		Move move = contolPlayer.determineMove(board);
+	public Move determineMove(Board board, String stateOfGame) {
+		Move move = contolPlayer.determineMove(board, stateOfGame);
 		try {
 			c.sendMove("" + board.getRowLetter(move.getRowTail()) + board.getColLetter(move.getColTail()),
 					"" + board.getRowLetter(move.getRowHead()) + board.getColLetter(move.getColHead()),
