@@ -68,7 +68,7 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	@Override
 	public Move determineMove(Board board, Color color) {
 		ArrayList<Move> moveList = makeMovesList(board, color);
-		double bestScore = Integer.MAX_VALUE;
+		double bestScore = Integer.MIN_VALUE;
 		double currentScore;
 		Move bestMove = moveList.get(0);
 		for (Move currentMove : moveList) {

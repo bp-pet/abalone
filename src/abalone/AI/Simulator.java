@@ -25,7 +25,7 @@ public class Simulator {
 	private static ComputerPlayer[] players;
 	private static Map<Player, Integer> result;
 	
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		System.out.println("Very inaccurate expected run time in minutes:");
 		System.out.println(calculateExpectedTime() / 60);
 		double[] current = new double[4];
@@ -33,7 +33,7 @@ public class Simulator {
 			current[i] = 1;
 		}
 		for (int j = 0; j < generations; j++) {
-			current = tournamentNSquared(current);
+			current = tournament(current);
 			System.out.println("winner of generation " + j);
 			System.out.println(factorsToString(current));
 		}
@@ -41,24 +41,36 @@ public class Simulator {
 		System.out.println(factorsToString(current));
 	}
 	
+	public static void main(String[] args) {
+		double[] current = new double[4];
+		current[0] = 1;
+		current[1] = 10;
+		current[2] = 1;
+		current[3] = 10;
+		Player[] players = new Player[2];
+		players[0] = new ComputerPlayer(Color.WHITE,
+				new ItsOverAnakinIHaveTheHighGroundStrategy(current));
+		players[1] = new ComputerPlayer(Color.WHITE,
+				new ItsOverAnakinIHaveTheHighGroundStrategy());
+		Map<Player, Integer> result = new LocalGame(players).playNTimes(10);
+		System.out.println(result.get(players[0]));
+	}
+	
 	private static double calculateExpectedTime() {
-		int duels = 0;
-		for (int i = 0; i < mutationsPerGen + 1; i++) {
-			duels += i;
-		}
-		return generations * duels * roundsPerDuel * 1.2;
+		return generations * mutationsPerGen * (mutationsPerGen + 1) *
+				roundsPerDuel * 2 / 2;
 	}
 	
 	private static int play1v1(double[] factors1, double[] factors2) {
+//		System.out.println("playing:");
+//		System.out.println(factorsToString(factors1));
+//		System.out.println(factorsToString(factors2));
 		result = new HashMap<Player, Integer>();
 		players = new ComputerPlayer[2];
 		players[0] = new ComputerPlayer(Color.WHITE, new ItsOverAnakinIHaveTheHighGroundStrategy(factors1));
 		players[1] = new ComputerPlayer(Color.WHITE, new ItsOverAnakinIHaveTheHighGroundStrategy(factors2));
 		LocalGame game = new LocalGame(players);
 		result = game.playNTimes(roundsPerDuel);
-		for (Player p : result.keySet()) {
-			result.get(p);
-		}
 		int highScore = 0;
 		Player winner = null;
 		for (Player p : result.keySet()) { 
@@ -70,6 +82,7 @@ public class Simulator {
 			}
 		}
 		if (winner == players[0]) {
+			System.out.println("win");
 			return 0;
 		} else if (winner == players[1]) {
 			return 1;
@@ -83,7 +96,7 @@ public class Simulator {
 	 * once. The complexity is then n^2 with the number of AI.
 	 * @return the factors of the winning AI
 	 */
-	private static double[] tournamentNSquared(double[] factors) {
+	private static double[] tournament(double[] factors) {
 		ArrayList<double[]> factorsList = makeMutatedArrays(factors);
 		int bestScore = 0;
 		double[] winner = factors;
@@ -153,7 +166,6 @@ public class Simulator {
 		for (int i = 0; i < mutationsPerGen; i++) {
 			double[] mutation = makeMutation(factors.length);
 			result.add(mutate(factors, mutation));
-			System.out.println(factorsToString(mutate(factors, mutation)));
 		}
 		return result;
 	}

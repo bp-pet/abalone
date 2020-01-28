@@ -176,8 +176,6 @@ public abstract class Game {
 	public void reset() {
 		numberOfTurns = 0;
 		currentColor = getStartingColor();
-		//TODO: remove debug:
-		System.out.println("starting color: " + currentColor);
 		board.reset(getNumberOfPlayers());
 		resetScores();
 		board.setTeams(makeTeams(getNumberOfPlayers()));
@@ -213,8 +211,6 @@ public abstract class Game {
 		Move nextMove;
 		while (!hasWinner() && numberOfTurns < MAX_TURNS) {
 			Player nextPlayer = players[getIntOfCurrentColor()];
-			//TODO: remove debug
-			System.out.println("player who is asked determinemove: " + nextPlayer.getName());
 			nextMove = nextPlayer.determineMove(board, toString());
 			try {
 				board.move(nextMove);
@@ -225,10 +221,9 @@ public abstract class Game {
 				increaseScore(currentColor);
 			}
 			currentColor = getNextTurn();
-			System.out.println("current color: " + currentColor);
 			numberOfTurns++;
 		}
-
+		System.out.println(toString());
 		Player winner = determineWinner();
 		// TODO: send to server or not
 		if (winner != null) {
