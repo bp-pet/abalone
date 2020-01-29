@@ -35,6 +35,10 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	/** The game object of the lobby */
 	private ServerGame game;
 
+	private Thread gameThread;
+	
+	private Object object;
+
 	/**
 	 * constructor for a new lobby that adds the first client.
 	 * 
@@ -48,6 +52,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		playerNames = new HashMap<AbaloneClientHandler, String>();
 		teamNames = new HashMap<AbaloneClientHandler, String>();
 		colors = new HashMap<AbaloneClientHandler, Color>();
+		object = new Object();
 		try {
 			addClient(client, playerName, teamName);
 		} catch (LobbyException e) {
@@ -227,7 +232,7 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	public void setTeamName(AbaloneClientHandler client, String teamName) {
 		this.teamNames.put(client, teamName);
 	}
-	
+
 	public Color getColor(AbaloneClientHandler client) {
 		return colors.get(client);
 	}
@@ -283,40 +288,49 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	}
 
 	/**
-	 * Starts the game.
-	 * 
-	 * @requires game != null
+	 * starts the game
 	 */
 	public void startGame() {
-		game.start();
+		gameThread = new Thread(game);
+		gameThread.start();
 	}
 
 	@Override
 	public void doTurn(Color color) {
-		String protocolColorMessage;
+		sendMessageToLobby(ProtocolMessages.TURN + ProtocolMessages.DELIMITER + getProtocolColor(color));
+	}
+
+	/**
+	 * translate Color to protocol Color string
+	 * 
+	 * @param color
+	 * @return
+	 */
+	public String getProtocolColor(Color color) {
 		switch (color) {
 			case WHITE:
-				protocolColorMessage = ProtocolMessages.COLOR_WHITE;
-				break;
+				return ProtocolMessages.COLOR_WHITE;
 			case BLACK:
-				protocolColorMessage = ProtocolMessages.COLOR_BLACK;
-				break;
+				return ProtocolMessages.COLOR_BLACK;
 			case BLUE:
-				protocolColorMessage = ProtocolMessages.COLOR_BLUE;
-				break;
+				return ProtocolMessages.COLOR_BLUE;
 			case RED:
-				protocolColorMessage = ProtocolMessages.COLOR_RED;
-				break;
+				return ProtocolMessages.COLOR_RED;
 			default:
-				protocolColorMessage = ProtocolMessages.COLOR_WHITE;
-				break;
+				return ProtocolMessages.COLOR_WHITE;
 		}
-		sendMessageToLobby(ProtocolMessages.TURN + ProtocolMessages.DELIMITER + protocolColorMessage);
 	}
 
 	@Override
-	public String doGameEnd() {
-		// TODO implement gameEnd
+	public String doGameEnd(String result, Color color) {
+		if (color != null) {
+			sendMessageToLobby(ProtocolMessages.GAME_END + ProtocolMessages.DELIMITER + result
+					+ ProtocolMessages.DELIMITER + getProtocolColor(color));
+		} else {
+			sendMessageToLobby(ProtocolMessages.GAME_END + ProtocolMessages.DELIMITER + result);
+		}
+		gameThread.interrupt();
+		game = null;
 		return null;
 	}
 
@@ -364,7 +378,10 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 		} catch (InvalidMoveException e) {
 			return Character.toString(ProtocolMessages.UNEXPECTED_MOVE);
 		}
-		nextMove = move;
+		synchronized (object) {
+			nextMove = move;
+			object.notifyAll();
+		}
 		sendMessageToLobby(ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + pos1 + ProtocolMessages.DELIMITER + pos2
 				+ ProtocolMessages.DELIMITER + des1);
 		return null;
@@ -387,10 +404,16 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	 * @return
 	 */
 	public Move getMove() {
-		// TODO: signal the nextMove update.
-		while (nextMove == null) {
+		Move toReturnMove;
+		synchronized (object) {
+			try {
+				object.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			toReturnMove = nextMove;
+			nextMove = null;
 		}
-		Move toReturnMove = nextMove;
 		nextMove = null;
 		return toReturnMove;
 	}

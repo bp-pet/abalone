@@ -10,7 +10,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import abalone.Board;
 import abalone.Color;
+import abalone.LocalGame;
+import abalone.Player;
 import abalone.exceptions.*;
 import abalone.protocol.ClientProtocol;
 import abalone.protocol.ProtocolMessages;
@@ -21,16 +24,17 @@ public class AbaloneClient implements ClientProtocol {
 	private BufferedReader in;
 	private BufferedWriter out;
 	private AbaloneClientView view;
-	private ClientGame game;
+	private Board board;
 	private String ownName;
 	private String ownTeam;
 	private String lobbyName;
 	private boolean isReady;
 	private Color currentColor;
-	/** current move of the form that parsemove accepts */
-	private String currentMove;
-	private Color ownColor;
+	private Player controlPlayer;
 	private boolean inlobby;
+	private Object objectColor;
+	private boolean everAsked;
+	private Object objectEverAsked;
 
 	/**
 	 * Constructs a new AbaloneClient. Initializes the view in this case the
@@ -38,6 +42,9 @@ public class AbaloneClient implements ClientProtocol {
 	 */
 	public AbaloneClient() {
 		view = new AbaloneClientTUI(this);
+		objectColor = new Object();
+		objectEverAsked = new Object();
+		everAsked = false;
 	}
 
 	/**
@@ -193,8 +200,6 @@ public class AbaloneClient implements ClientProtocol {
 						&& !line.equals(ProtocolMessages.EOT); line = in.readLine()) {
 					sb.append(line + System.lineSeparator());
 				}
-				// TODO: remove debug line
-				view.showMessage("incoming messages: " + sb.toString() + " end");
 				return sb.toString().split(System.lineSeparator());
 			} catch (IOException e) {
 				throw new ServerUnavailableException("Could not read " + "from server.");
@@ -257,8 +262,8 @@ public class AbaloneClient implements ClientProtocol {
 		}
 	}
 
-	//TODO: add javadoc to these trival methods
-	
+	// TODO: add javadoc to these trival methods
+
 	public void resetReady() {
 		this.isReady = false;
 	}
@@ -270,7 +275,7 @@ public class AbaloneClient implements ClientProtocol {
 	public void setReady() {
 		this.isReady = true;
 	}
-	
+
 	public void resetInLobby() {
 		this.inlobby = false;
 	}
@@ -291,7 +296,7 @@ public class AbaloneClient implements ClientProtocol {
 	 * @return
 	 */
 	public State getState() {
-		if (!(game == null)) {
+		if (!(board == null)) {
 			return State.GAME;
 		} else if (inLobby()) {
 			return State.LOBBY;
@@ -332,8 +337,9 @@ public class AbaloneClient implements ClientProtocol {
 		this.lobbyName = lobbyName;
 		ownName = playerName;
 		ownTeam = teamName;
-		
-		//TODO: for now we just put the state true but it should get confirmation from server.
+
+		// TODO: for now we just put the state true but it should get confirmation from
+		// server.
 		setInLobby();
 	}
 
@@ -350,19 +356,65 @@ public class AbaloneClient implements ClientProtocol {
 	 * 
 	 * @param lineFromServer
 	 */
-	public void makeGame(String lineFromServer) {
+	public void makeBoard(String lineFromServer) {
 		resetReady();
-		view.showMessage("Creating a game... ");
-		game = new ClientGame(lineFromServer.split(ProtocolMessages.DELIMITER), this, view, ownName, ownTeam);
+		view.showMessage("Creating a board... ");
+		String[] split = lineFromServer.split(ProtocolMessages.DELIMITER);
+
+		Color tempCurrentColor = Color.WHITE;
+		for (int i = 0; i < (split.length - 1); i = i + 2) {
+			if (split[1 + i].equals(ownName) && split[2 + i].equals(ownTeam)) {
+				controlPlayer = LocalGame.createPlayer(view, split[1 + i], tempCurrentColor);
+			}
+			tempCurrentColor = getNextColor((split.length - 1) / 2, tempCurrentColor);
+		}
+		board = new Board((split.length - 1) / 2);
+	}
+
+	public Color getNextColor(int numOfPlayers, Color currentColor) {
+		switch (numOfPlayers) {
+			case 2:
+				switch (currentColor) {
+					case WHITE:
+						return Color.BLACK;
+					case BLACK:
+						return Color.WHITE;
+					default:
+						return null;
+				}
+			case 3:
+				switch (currentColor) {
+					case BLUE:
+						return Color.BLACK;
+					case BLACK:
+						return Color.WHITE;
+					case WHITE:
+						return Color.BLUE;
+					default:
+						return null;
+				}
+			case 4:
+				switch (currentColor) {
+					case BLACK:
+						return Color.RED;
+					case RED:
+						return Color.WHITE;
+					case WHITE:
+						return Color.BLUE;
+					case BLUE:
+						return Color.BLACK;
+					default:
+						return null;
+				}
+			default:
+				return null;
+		}
 	}
 
 	@Override
 	public void sendMove(String arg1, String arg2, String arg3) throws ServerUnavailableException {
-		//TODO: remove debug
-		System.out.println("about to send move message to server:");
 		sendMessage(ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + arg1 + ProtocolMessages.DELIMITER + arg2
 				+ ProtocolMessages.DELIMITER + arg3);
-		System.out.println("message send");
 	}
 
 	@Override
@@ -390,27 +442,8 @@ public class AbaloneClient implements ClientProtocol {
 	}
 
 	@Override
-	public Color getTurn() throws ServerUnavailableException, ProtocolException {
-		// TODO: proper signal
-		while (getCurrentColor() == null) {
-
-		}
+	public Color getTurn() {
 		Color toReturn = getCurrentColor();
-		return toReturn;
-	}
-
-	@Override
-	public String getMove(Color color) throws ServerUnavailableException, ProtocolException {
-		if (currentColor != color) {
-			throw new ProtocolException("not someones turn");
-		}
-		// TODO: proper signal
-		while (getCurrentMove() == null) {
-
-		}
-		String toReturn = getCurrentMove();
-		setCurrentMove(null);
-		currentColor = null;
 		return toReturn;
 	}
 
@@ -420,49 +453,102 @@ public class AbaloneClient implements ClientProtocol {
 
 	}
 
-	//TODO: add javadoc to these trival getters.
-	
+	// TODO: add javadoc to these trival getters.
+
 	public Color getCurrentColor() {
+		synchronized(objectColor) {
+			try {
+				if (! everAsked) {
+					synchronized (objectEverAsked) {
+						everAsked = true;
+						objectEverAsked.notifyAll();
+					}
+				}
+				objectColor.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		return currentColor;
 	}
 
 	public void setCurrentColor(Color currentColor) {
-		//TODO:remove debug line
-		System.out.println("Going to wait setCurrentColor:");
-		while (! game.isStarted()) {} //wait till the game is started before you process this line
-		System.out.println("Done to waiting setCurrentColor:");
-		this.currentColor = currentColor;
-	}
-
-	public String getCurrentMove() {
-		return currentMove;
-	}
-
-	public void setCurrentMove(String currentMove) {
-		//TODO:remove debug line
-		System.out.println("Going to wait setCurrentMove:");
-		while (! game.isStarted()) {} //wait till the game is started before you process this line
-		System.out.println("Done to waiting setCurrentMove:");
-		this.currentMove = currentMove;
+		if (! everAsked) {
+			synchronized (objectEverAsked) {
+				try {
+					objectEverAsked.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		synchronized (objectColor) {
+			this.currentColor = currentColor;
+			objectColor.notifyAll();
+		}
 	}
 
 	/**
-	 * Always resets the ready status and puts player in state lobby if join is player.
+	 * 
+	 * @requires currentMove matches pattern used for board.parseMovePattern
+	 * @param currentMove
+	 */
+	public void setCurrentMove(String currentMove) {
+		try {
+			board.move(board.parseMovePattern(currentColor, currentMove));
+		} catch (InvalidMoveException | MarbleKilledException e) {
+			view.showMessage(e.getMessage());
+		}
+	}
+
+	/**
+	 * Always resets the ready status and puts player in state lobby if join is
+	 * player.
+	 * 
 	 * @ensures if cmd.equals(j;ownName;ownTeam) then setInLobby()
 	 * @param cmd
 	 */
 	public void putInLobby(String cmd) {
 		String[] split = cmd.split(ProtocolMessages.DELIMITER);
-		//TODO: fix this implementation and remove setInLobby() in doJoin.
+		// TODO: fix this implementation and remove setInLobby() in doJoin.
 		if (ownName.equals(split[1]) && ownName.equals(split[2])) {
 			setInLobby();
 		}
 		resetReady();
 	}
 
-	public void startGame() {
-		view.showMessage("Game starts now!");
-		game.start();
-		
+	public Player getControlPlayer() {
+		return controlPlayer;
+	}
+	
+	/**
+	 * TODO: remove this:
+	 */
+	@Override
+	public String getMove(Color color) throws ServerUnavailableException, ProtocolException {
+		return null;
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	/**
+	 * set the current color received from server
+	 * @param cmd
+	 */
+	public void doTurn(Color color) {
+		setCurrentColor(color);
+	}
+
+	public void resetBoard() {
+		board = null;
+		everAsked = false;
+		synchronized (objectColor) {
+			objectColor.notifyAll();
+		}
+		synchronized (objectEverAsked) {
+			objectEverAsked.notifyAll();
+		}
 	}
 }

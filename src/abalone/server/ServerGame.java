@@ -3,8 +3,11 @@ package abalone.server;
 import abalone.Color;
 import abalone.Game;
 import abalone.Player;
+import abalone.protocol.ProtocolMessages;
 
-public class ServerGame extends Game {
+public class ServerGame extends Game implements Runnable {
+	
+	AbaloneServerLobby lobby;
 	
 	/**
 	 * constructs a game with all ClientPlayers
@@ -13,6 +16,7 @@ public class ServerGame extends Game {
 	 */
 	public ServerGame(AbaloneServerLobby lobby) {
 		super(lobby.getNumberOfPlayers());
+		this.lobby = lobby;		
 		if (getNumberOfPlayers() == 4) {
 			int i = 0;
 			String teamPlayer1 = null;
@@ -39,11 +43,6 @@ public class ServerGame extends Game {
 			currentColor = Color.WHITE;
 			int i = 0;
 			for (AbaloneClientHandler client : lobby.getClients()) {
-				//TODO: remove debug lines
-				System.out.println(lobby.toString());
-				System.out.println(lobby.getPlayerName(client));
-				System.out.println(lobby.getTeamName(client));
-				System.out.println(currentColor);
 				players[i++] = new AbaloneClientPlayer(lobby, lobby.getPlayerName(client), lobby.getTeamName(client), currentColor);
 				lobby.setColor(client, currentColor);
 				currentColor = getNextColor();
@@ -54,14 +53,21 @@ public class ServerGame extends Game {
 	@Override
 	public void start() {
 		//TODO: stop when disconnection
-		while (true) {
-			play();
+		Player winner = play();
+		if (winner != null) {
+			lobby.doGameEnd(ProtocolMessages.GAME_END_MESSAGE_GAME_WON, winner.getColor());
+		} else {
+			lobby.doGameEnd(ProtocolMessages.GAME_END_MESSAGE_DRAW, null);	
 		}
 	}
 	
 	public Player[] getPlayers() {
-		// TODO Auto-generated method stub
 		return players;
+	}
+
+	@Override
+	public void run() {
+		start();
 	}
 
 }

@@ -206,6 +206,16 @@ public abstract class Game {
 		
 	}
 
+	/**
+	 * 
+	 * @returns if (winner != null) {
+//			System.out.println(winner.getName() + " has won!");
+			return winner;
+		} else {
+//			System.out.println("DRAW!");
+			return null;
+		}
+	 */
 	public Player play() {
 		reset();
 		Move nextMove;
