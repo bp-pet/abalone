@@ -137,6 +137,8 @@ public class AbaloneClient implements ClientProtocol {
 	public synchronized void sendMessage(String msg) throws ServerUnavailableException {
 		if (out != null) {
 			try {
+				//TODO: remove debug
+				view.showMessage("Going to send to server: " + msg);
 				out.write(msg);
 				out.newLine();
 				out.flush();
@@ -174,7 +176,7 @@ public class AbaloneClient implements ClientProtocol {
 					throw new ServerUnavailableException("Could not read " + "from server.");
 				}
 				// TODO: remove debug line
-				view.showMessage("incoming message: " + answer);
+				view.showMessage("Incoming message: " + answer);
 				return answer;
 			} catch (IOException e) {
 				throw new ServerUnavailableException("Could not read " + "from server.");
@@ -496,7 +498,8 @@ public class AbaloneClient implements ClientProtocol {
 	public void setCurrentMove(String currentMove) {
 		try {
 			board.move(board.parseMovePattern(currentColor, currentMove));
-			view.showMessage("Current board" + board.toString());
+			view.showMessage("Current board:\n" + board.toString());
+			view.showMessage("Number of marbles: " + board.getNumberOfMarbles());
 		} catch (InvalidMoveException | MarbleKilledException e) {
 			view.showMessage(e.getMessage());
 		}

@@ -195,7 +195,7 @@ public class Move {
     			&& !(Math.abs(rowTail - rowDest) == 1
     			&& Math.abs(colTail - colDest) == 1)){
     		throw new InvalidMoveException("Move destination not adjacent; "
-    				+ toString());
+    				+ toHumanString());
     	}
     }
         
@@ -322,13 +322,13 @@ public class Move {
 		if (nextField == null || !nextField.isValid()) {
 			if (board.areTeammates(currentColor, color)) {
 				throw new InvalidMoveException("You are not allowed to "
-						+ "commit suicide; " + toString());
+						+ "commit suicide; " + toHumanString());
 			}
 		} else {
 			if (force == -1) {
 				if (nextField.getMarble() != null) {
 	    			throw new InvalidMoveException("Cannot push laterally; "
-	    					+ toString());
+	    					+ toHumanString());
 				}
 			} else if (force == 0) {
 	    		if (nextField.getMarble() != null) {
@@ -362,7 +362,7 @@ public class Move {
 	    					canMoveField(nextField, force - 1);
 	    				} else {
 	    					throw new InvalidMoveException("Invalid push: " +
-	    								toString());
+	    								toHumanString());
 	    				}
 	    			}
 	    		}
@@ -410,7 +410,7 @@ public class Move {
      */
     public void isValidSelection() throws InvalidMoveException {
     	if (!board.isField(rowTail, colTail) || !board.isField(rowHead, colHead)) {
-    		throw new InvalidMoveException("Selection not valid; " + toString());
+    		throw new InvalidMoveException("Selection not valid; " + toHumanString());
     	}
     	areInSameLine();
     	distanceWithinBounds();
@@ -454,7 +454,7 @@ public class Move {
     private void distanceWithinBounds() throws InvalidMoveException {
     	if (!(Math.abs(rowTail - rowHead) < board.getMaxPush()
     			&& Math.abs(colTail - colHead) < board.getMaxPush())) {
-    		throw new InvalidMoveException("Selection too long; " + toString());
+    		throw new InvalidMoveException("Selection too long; " + toHumanString());
     	}
     }
     
@@ -467,7 +467,7 @@ public class Move {
     	for (Field f : fields) {
     		if (f.getMarble() == null || f.getMarble().getColor() != color) {
     			throw new InvalidMoveException("Field does not contain valid marble: "
-    					+ f.getFullString() + "; " + toString());
+    					+ f.getFullString() + "; " + toHumanString());
     		}
     	}
     }
@@ -480,7 +480,7 @@ public class Move {
     private void areInSameLine() throws InvalidMoveException {
     	if (!((rowTail == rowHead) || (colTail == colHead) || (rowTail - colTail
     			== rowHead - colHead))){
-    		throw new InvalidMoveException("Fields not in same line; " + toString());
+    		throw new InvalidMoveException("Fields not in same line; " + toHumanString());
     	}
     }
     

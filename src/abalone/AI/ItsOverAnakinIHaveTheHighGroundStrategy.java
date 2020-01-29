@@ -66,9 +66,9 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	 */
 	protected static double[] getDefensiveArray() {
 		double[] result = new double[numberOfParameters];
-		result[0] = 10;
+		result[0] = 300;
 		result[1] = 1;
-		result[2] = 10;
+		result[2] = 1;
 		result[3] = 1;
 		return result;
 	}
@@ -78,10 +78,10 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	 */
 	protected static double[] getOffensiveArray() {
 		double[] result = new double[numberOfParameters];
-		result[0] = 1;
+		result[0] = 100;
 		result[1] = 10;
-		result[2] = 1;
-		result[3] = 100;
+		result[2] = 0.3;
+		result[3] = 1000;
 		return result;
 	}
 
