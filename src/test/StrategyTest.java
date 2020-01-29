@@ -57,7 +57,9 @@ public class StrategyTest {
 				fail();
 			}
 		}
-		assertEquals(movesList.size(), 72);
+
+		assertEquals(movesList.size(), 54);
+		
 		ArrayList<Move> movesList2 = randomStrategy.makeMovesList(board, Color.BLACK);
 		Move mirroredMove = new Move(board, Color.WHITE, 0, 0, 0, 0, 0, 0);
 		for (Move m : movesList2) {
@@ -84,7 +86,7 @@ public class StrategyTest {
 				fail();
 			}
 		}
-		assertEquals(movesList2.size(), 72);
+		assertEquals(movesList2.size(), 54);
 	}
 	
 	

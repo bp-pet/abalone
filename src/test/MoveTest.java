@@ -531,4 +531,10 @@ class MoveTest {
 		assertTrue(msg.contains("not adjacent"));
 	}
 	
+	@Test
+	public void deepCopy() {
+		Move m1 = new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1);
+		Move copy = m1.deepCopy(board.deepCopy());
+		assertTrue(m1.equalsMove(copy));
+	}
 }
