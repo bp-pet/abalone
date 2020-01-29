@@ -1,5 +1,5 @@
 package test;
-	
+
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,8 +22,8 @@ import abalone.Field;
 
 /**
  * Test program for the board class. Tests the coordinate system (the
- * transformation between the user interface coordinates and the internal
- * ones, as well as other functions of the class.
+ * transformation between the user interface coordinates and the internal ones,
+ * as well as other functions of the class.
  * 
  * @authors Daan Pluister, Bozhidar Petrov
  */
@@ -63,7 +63,7 @@ public class BoardTest {
 		assertEquals(8, board.getRowFromLetter('I'));
 		assertEquals(8, board.getRowFromLetter('i'));
 	}
-	
+
 	/**
 	 * Tests inverse of getRowFromLetter.
 	 */
@@ -72,7 +72,7 @@ public class BoardTest {
 		assertEquals('A', board.getRowLetter(0));
 		assertEquals('I', board.getRowLetter(8));
 	}
-	
+
 	/**
 	 * Tests inverse of getColFromLetter.
 	 */
@@ -89,13 +89,13 @@ public class BoardTest {
 	@Test
 	public void testReset() {
 		board = new Board();
-		//System.out.println(board.toString());
+		// System.out.println(board.toString());
 		board.reset(2);
-		//System.out.println(board.toString());
+		// System.out.println(board.toString());
 		board.reset(3);
-		//System.out.println(board.toString());
+		// System.out.println(board.toString());
 		board.reset(4);
-		//System.out.println(board.toString());
+		// System.out.println(board.toString());
 	}
 
 	/**
@@ -110,11 +110,11 @@ public class BoardTest {
 		copy.getField(4, 4).setMarble(m);
 		assertNotEquals(copy.toString(), board.toString());
 	}
-	
+
 	/**
 	 * Tests the map of colors by checking whether there are 14 marbles of each
-	 * color in the beginning, and if every field in the map is indeed of the
-	 * color of the key.
+	 * color in the beginning, and if every field in the map is indeed of the color
+	 * of the key.
 	 */
 	@Test
 	public void testMapOfColors() {
@@ -127,10 +127,12 @@ public class BoardTest {
 		}
 		for (Field f : map.get(Color.WHITE)) {
 			assertTrue(f.getMarble() != null);
-			assertEquals(f.getMarble().getColor(),Color.WHITE);
+			assertEquals(f.getMarble().getColor(), Color.WHITE);
 		}
+		assertTrue(board.getStringMapOfColors().contains("W Coordinates (0, 0)"));
+		assertTrue(board.getStringMapOfColors().contains("B Coordinates (7, 5)"));
 	}
-	
+
 	/*
 	 * Test whether the map of colors also works after a marble has been moved.
 	 */
@@ -145,7 +147,7 @@ public class BoardTest {
 		}
 		testMapOfColors();
 	}
-	
+
 	/**
 	 * Test whether rotations work.
 	 */
@@ -154,7 +156,7 @@ public class BoardTest {
 		assertEquals(board.rotate180(0, 0)[0], board.getWidth() - 1);
 		assertEquals(board.rotate180(0, 0)[1], board.getWidth() - 1);
 	}
-	
+
 	/**
 	 * Test whether the team system works.
 	 */
@@ -186,5 +188,84 @@ public class BoardTest {
 		assertFalse(board.areTeammates(Color.RED, Color.BLACK));
 		assertFalse(board.areTeammates(Color.BLACK, Color.BLUE));
 		assertFalse(board.areTeammates(Color.BLUE, Color.BLACK));
+		assertTrue(board.getTeam(Color.WHITE).length == 2);
+		assertTrue(board.getTeam(Color.BLUE).length == 2);
 	}
+
+	/**
+	 * test for getFieldContent(int, int) and isEmptyField(int, int) in a two player board. Tested for the
+	 * following cases: field has white marble, field has black marble and field has
+	 * no content.
+	 */
+	@Test
+	public void testGetField() {
+		assertTrue(board.getFieldContent(0, 1).toString().contains("W"));
+		assertFalse(board.isEmptyField(0, 1));
+		assertTrue(board.getFieldContent(8, 8).toString().contains("B"));
+		assertFalse(board.isEmptyField(8, 8));
+		assertEquals(null, board.getFieldContent(4, 4));
+		assertTrue(board.isEmptyField(4, 4));
+	}
+	
+	/**
+	 * test for setField.
+	 */
+	@Test
+	public void testSetField() {
+		board.setField(4, 4, new Marble(Color.BLACK));
+		assertTrue(board.getFieldContent(4, 4) != null);
+		assertTrue(board.getFieldContent(4, 4).getColor().toString().contains("B"));
+	}
+	
+	/**
+	 * test for move in board.
+	 */
+	@Test
+	public void testMove() {
+
+		assertTrue(board.getFieldContent(3, 3) == null);
+		
+		try {
+			board.move(Color.WHITE, 0, 0, 2, 2, 1, 1);
+		} catch (InvalidMoveException | MarbleKilledException e) {
+			// should not happen
+			e.printStackTrace();
+		}
+		assertTrue(board.getFieldContent(3, 3).getColor().toString().contains("W"));
+	}
+	
+	/**
+	 * test parseMovePattern.
+	 */
+	@Test
+	public void testParseMovePattern() {
+		Move move = null;
+		try {
+			move = board.parseMovePattern(Color.WHITE, "A1 C3 B2");
+		} catch (InvalidMoveException e) {
+			fail();
+		}
+		
+		try {
+			move = board.parseMovePattern(Color.WHITE, "A1 CB2");
+		} catch (InvalidMoveException e) {
+			assertTrue(e.getMessage().contains("not a valid choice"));
+		}
+		
+		assertTrue(move.toString().contains("Color W moves"));
+		assertTrue(move.toString().contains("(0, 0)"));
+		assertTrue(move.toString().contains("(2, 2)"));
+		assertTrue(move.toString().contains("to (1, 1)"));
+	}
+
+	
+	/**
+	 * test getNumberOfMarbles.
+	 */
+	@Test
+	public void testGetNumberOfMarbles() {
+		assertTrue(board.getNumberOfMarbles().contains("W14"));
+		assertTrue(board.getNumberOfMarbles().contains("B14"));
+	}
+	
 }

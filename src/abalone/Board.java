@@ -143,7 +143,7 @@ public class Board {
     }
 
     /**
-     * Get Field with given row and col.
+     * Get Field with given row and col
      * 
      * @return will return null if field doesn't exist
      */
@@ -183,10 +183,12 @@ public class Board {
     }
 
     /**
-     * get row with given letter; translates [A-I] to [0-8] or [a-i] to [0-8].
+     * get row with given letter; translates [A-I] to [0-8] or [a-i] to [0-8]
      * 
      * @requires letter must match pattern [A-Ia-i]
      * @ensures 0 <= return value <= 8
+     * @param letter
+     * @return
      */
     public int getRowFromLetter(char letter) {
         if (letter >= 'a' && letter <= 'z') {
@@ -196,8 +198,9 @@ public class Board {
     }
 
     /**
-     * get row with given letter; translates [1-9] to [0-8].
+     * get row with given letter; translates [1-9] to [0-8]
      * 
+     * @param letter
      * @requires letter must match pattern [1-9]
      * @ensures 0 <= return value <= 8
      * @return letter - 1
@@ -209,6 +212,7 @@ public class Board {
     /**
      * inverse function of {@link #getRowFromLetter(int)}.
      * 
+     * @param row
      * @requires 0 <= row <= 8
      * @ensures return matches pattern [A-I]
      */
@@ -219,6 +223,7 @@ public class Board {
     /**
      * inverse function of {@link #getColFromLetter(int)}.
      * 
+     * @param col
      * @requires 0 <= col <= 8
      * @ensures return matches pattern [1-9]
      */
@@ -227,7 +232,9 @@ public class Board {
     }
 
     /**
-     * empties board and makes a new mapOfColors afterwards.
+     * empties board and makes a new mapOfColors afterwards
+     * 
+     * @param numberOfPlayers
      */
     public void reset() {
         boolean valid;
@@ -259,67 +266,66 @@ public class Board {
         int imirror180;
         int jmirror180;
         switch (numberOfPlayers) {
-            case 2:
-                for (int i = 0; i < WIDTH; i++) {
-                    for (int j = 0; j < WIDTH; j++) {
-                        i180 = -1 * (i - (DIM - 1)) + (DIM - 1);
-                        j180 = -1 * (j - (DIM - 1)) + (DIM - 1);
-                        if (fields[i][j].isValid()
-                                && (i <= DIM / 2 - 1 || (i == DIM / 2 + 1 - 1 && DIM / 2 - 1 < j
-                                && j <= DIM - 1))) {
-                            m = new Marble(Color.WHITE);
-                        } else if (fields[i][j].isValid() && (i180 <= DIM / 2 - 1
-                                || (i180 == DIM / 2 + 1 - 1 && DIM / 2 - 1 < j180 && j180 <= DIM - 1))) {
-                            m = new Marble(Color.BLACK);
-                        } else {
-                            m = null;
-                        }
-                        fields[i][j].setMarble(m);
+        case 2:
+            for (int i = 0; i < WIDTH; i++) {
+                for (int j = 0; j < WIDTH; j++) {
+                    i180 = -1 * (i - (DIM - 1)) + (DIM - 1);
+                    j180 = -1 * (j - (DIM - 1)) + (DIM - 1);
+                    if (fields[i][j].isValid()
+                            && (i <= DIM / 2 - 1 || (i == DIM / 2 + 1 - 1 && DIM / 2 - 1 < j && j <= DIM - 1))) {
+                        m = new Marble(Color.WHITE);
+                    } else if (fields[i][j].isValid() && (i180 <= DIM / 2 - 1
+                            || (i180 == DIM / 2 + 1 - 1 && DIM / 2 - 1 < j180 && j180 <= DIM - 1))) {
+                        m = new Marble(Color.BLACK);
+                    } else {
+                        m = null;
                     }
+                    fields[i][j].setMarble(m);
                 }
-                break;
-            case 3:
-                for (int i = 0; i < WIDTH; i++) {
-                    for (int j = 0; j < WIDTH; j++) {
-                        if (fields[i][j].isValid() && (i < DIM / 2)) {
-                            m = new Marble(Color.BLUE);
-                        } else if (fields[i][j].isValid() && (i > j + DIM / 2)) {
-                            m = new Marble(Color.WHITE);
-                        } else if (fields[i][j].isValid() && (j > WIDTH - 1 - DIM / 2)) {
-                            m = new Marble(Color.BLACK);
-                        } else {
-                            m = null;
-                        }
-                        fields[i][j].setMarble(m);
+            }
+            break;
+        case 3:
+            for (int i = 0; i < WIDTH; i++) {
+                for (int j = 0; j < WIDTH; j++) {
+                    if (fields[i][j].isValid() && (i < DIM / 2)) {
+                        m = new Marble(Color.BLUE);
+                    } else if (fields[i][j].isValid() && (i > j + DIM / 2)) {
+                        m = new Marble(Color.WHITE);
+                    } else if (fields[i][j].isValid() && (j > WIDTH - 1 - DIM / 2)) {
+                        m = new Marble(Color.BLACK);
+                    } else {
+                        m = null;
                     }
+                    fields[i][j].setMarble(m);
                 }
-                break;
-            case 4:
-                for (int i = 0; i < WIDTH; i++) {
-                    for (int j = 0; j < WIDTH; j++) {
-                        i180 = -1 * (i - (DIM - 1)) + (DIM - 1);
-                        j180 = -1 * (j - (DIM - 1)) + (DIM - 1);
-                        imirror = j;
-                        jmirror = i;
-                        imirror180 = j180;
-                        jmirror180 = i180;
-                        if (fields[i][j].isValid() && extracted(i, j)) {
-                            m = new Marble(Color.BLUE);
-                        } else if (fields[i][j].isValid() && extracted(i180, j180)) {
-                            m = new Marble(Color.RED);
-                        } else if (fields[i][j].isValid() && extracted(imirror, jmirror)) {
-                            m = new Marble(Color.WHITE);
-                        } else if (fields[i][j].isValid() && extracted(imirror180, jmirror180)) {
-                            m = new Marble(Color.BLACK);
-                        } else {
-                            m = null;
-                        }
-                        fields[i][j].setMarble(m);
+            }
+            break;
+        case 4:
+            for (int i = 0; i < WIDTH; i++) {
+                for (int j = 0; j < WIDTH; j++) {
+                    i180 = -1 * (i - (DIM - 1)) + (DIM - 1);
+                    j180 = -1 * (j - (DIM - 1)) + (DIM - 1);
+                    imirror = j;
+                    jmirror = i;
+                    imirror180 = j180;
+                    jmirror180 = i180;
+                    if (fields[i][j].isValid() && extracted(i, j)) {
+                        m = new Marble(Color.BLUE);
+                    } else if (fields[i][j].isValid() && extracted(i180, j180)) {
+                        m = new Marble(Color.RED);
+                    } else if (fields[i][j].isValid() && extracted(imirror, jmirror)) {
+                        m = new Marble(Color.WHITE);
+                    } else if (fields[i][j].isValid() && extracted(imirror180, jmirror180)) {
+                        m = new Marble(Color.BLACK);
+                    } else {
+                        m = null;
                     }
+                    fields[i][j].setMarble(m);
                 }
-                break;
-            default:
-                break;
+            }
+            break;
+        default:
+            break;
         }
         this.makeMapOfColors();
     }
@@ -353,6 +359,9 @@ public class Board {
     /**
      * Tries to move the move if move is invalid InvalidMoveException is thrown and
      * no marbles are moved.
+     * 
+     * @throws InvalidMoveException
+     * @throws MarbleKilledException
      */
     public void move(Color color, int rowTail, int colTail, int rowHead, int colHead, int rowDest, int colDest)
             throws InvalidMoveException, MarbleKilledException {
@@ -361,6 +370,9 @@ public class Board {
 
     /**
      * Performs a move.
+     * 
+     * @throws MarbleKilledException
+     * @throws InvalidMoveException
      */
     public void move(Move move) throws InvalidMoveException, MarbleKilledException {
         move.perform();
@@ -411,12 +423,15 @@ public class Board {
     /**
      * constructs a new move from the MOVE_PATTERN.
      * 
+     * @param choice of the form MOVE_PATTERN
+     * @return Move a move generated form MOVE_PATTERN
      * @throws InvalidMoveException if ! choice.matches(MOVE_PATTERN);
      */
     public Move parseMovePattern(Color color, String choice) throws InvalidMoveException {
         if (!(choice.matches(MOVE_PATTERN))) {
             throw new InvalidMoveException(
-                    "ERROR: field " + choice + " is not a valid choice (must match pattern " + MOVE_PATTERN + ").");
+                    "ERROR: field " + choice + " is not a valid choice (must match pattern " 
+            + MOVE_PATTERN + ").");
         }
         return new Move(this, color, getRowFromLetter(choice.charAt(0)), getColFromLetter(choice.charAt(1)),
                 getRowFromLetter(choice.charAt(3)), getColFromLetter(choice.charAt(4)),
@@ -509,5 +524,4 @@ public class Board {
         full += line + "\n";
         return full;
     }
-
 }

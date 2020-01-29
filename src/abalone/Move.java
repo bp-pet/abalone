@@ -614,9 +614,10 @@ public class Move {
      *     and destination (in the form of board.MOVE_PATTERN).
      */
     public String toHumanString() {
-        return "Color " + color + " moves " + board.getRowLetter(rowTail) + ""
-            + board.getColLetter(colTail) + " till " + board.getRowLetter(rowHead) + ""
-            + board.getColLetter(colHead) + " to " + board.getRowLetter(rowDest)
-            + "" + board.getColLetter(colDest) + ".";
+        String s = "";
+        for (String userCoordinate : getUserCoordinates()) {
+            s += " " + userCoordinate;
+        }
+        return "Color " + color + " moves" + s + ".";
     }
 }
