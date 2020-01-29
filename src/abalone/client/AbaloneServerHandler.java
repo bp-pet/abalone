@@ -32,10 +32,8 @@ public class AbaloneServerHandler implements Runnable {
 			try {
 				cmd = c.readLineFromServer();
 			} catch (ServerUnavailableException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			view.showMessage("Got from server: " + cmd);
 			handleServerInput(cmd);
 
 		}
@@ -92,6 +90,10 @@ public class AbaloneServerHandler implements Runnable {
 						} catch (ProtocolException e) {
 							view.showMessage("ProcolException client received: " + e.getMessage());
 						}
+						break;
+					case ProtocolMessages.UNEXPECTED_MOVE:
+						//TODO: implement ask a new move
+						view.showMessage("Wrong move");
 						break;
 					case ProtocolMessages.GAME_END:
 						String[] lineFromServer = cmd.split(ProtocolMessages.DELIMITER);
