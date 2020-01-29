@@ -75,7 +75,7 @@ public class LocalGame extends Game {
 				break;
 			} else if (yn.equals("y") || yn.equals("")) {
 			} else {
-			     System.out.println("Sorry, I didn't catch that. Please answer y/n");
+			    System.out.println("Sorry, I didn't catch that. Please answer y/n");
 			}
 		}
 	}

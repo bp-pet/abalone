@@ -19,21 +19,25 @@ import abalone.Player;
 public class Simulator {
 	
 	private static final int roundsPerDuel = 1;
-	private static final int generations = 5;
-	private static final int mutationsPerGen = 5;
+	private static final int generations = 20;
+	private static final int mutationsPerGen = 50;
 	
 	private static ComputerPlayer[] players;
 	private static Map<Player, Integer> result;
 	
-	public static void main2(String[] args) {
-		System.out.println("Very inaccurate expected run time in minutes:");
-		System.out.println(calculateExpectedTime() / 60);
+	/**
+	 * Runs the program.
+	 */
+	public static void main(String[] args) {
+//		System.out.println("Very inaccurate expected run time in minutes:");
+//		System.out.println(calculateExpectedTime() / 60);
 		double[] current = new double[4];
-		for (int i = 0; i < 4; i++) {
-			current[i] = 1;
-		}
+		current[0] = 1;
+		current[1] = 10;
+		current[2] = 1;
+		current[3] = 100;
 		for (int j = 0; j < generations; j++) {
-			current = tournament(current);
+			current = tournamentRandomElimination(current);
 			System.out.println("winner of generation " + j);
 			System.out.println(factorsToString(current));
 		}
@@ -41,21 +45,40 @@ public class Simulator {
 		System.out.println(factorsToString(current));
 	}
 	
-	public static void main(String[] args) {
-		double[] current = new double[4];
-		current[0] = 1;
-		current[1] = 10;
-		current[2] = 1;
-		current[3] = 10;
-		Player[] players = new Player[2];
-		players[0] = new ComputerPlayer(Color.WHITE,
-				new ItsOverAnakinIHaveTheHighGroundStrategy(current));
-		players[1] = new ComputerPlayer(Color.WHITE,
-				new ItsOverAnakinIHaveTheHighGroundStrategy());
-		Map<Player, Integer> result = new LocalGame(players).playNTimes(10);
-		System.out.println(result.get(players[0]));
-	}
+//	public static void main(String[] args) {
+//		double[] current1 = new double[4];
+//		current1[0] = 1;
+//		current1[1] = 0;
+//		current1[2] = 0;
+//		current1[3] = 0;
+//		double[] current2 = new double[4];
+//		current2[0] = 2;
+//		current2[1] = 20;
+//		current2[2] = 2;
+//		current2[3] = 200;
+//		if (play1v1(current1, current2) == 1) {
+//			System.out.println("victory");
+//		}
+//	}
 	
+//	public static void main(String[] args) {
+//		double[] current = new double[4];
+//		current[0] = 1;
+//		current[1] = 10;
+//		current[2] = 1;
+//		current[3] = 10;
+//		Player[] players = new Player[2];
+//		players[0] = new ComputerPlayer(Color.WHITE,
+//				new ItsOverAnakinIHaveTheHighGroundStrategy(current));
+//		players[1] = new ComputerPlayer(Color.WHITE,
+//				new ItsOverAnakinIHaveTheHighGroundStrategy());
+//		Map<Player, Integer> result = new LocalGame(players).playNTimes(10);
+//		System.out.println(result.get(players[0]));
+//	}
+	
+	/**
+	 * .
+	 */
 	private static double calculateExpectedTime() {
 		return generations * mutationsPerGen * (mutationsPerGen + 1) *
 				roundsPerDuel * 2 / 2;
@@ -82,7 +105,7 @@ public class Simulator {
 			}
 		}
 		if (winner == players[0]) {
-			System.out.println("win");
+//			System.out.println("win");
 			return 0;
 		} else if (winner == players[1]) {
 			return 1;
@@ -118,19 +141,30 @@ public class Simulator {
 		return winner;
 	}
 	
-//	/**
-//	 * Tournament where two random players play against each other
-//	 * and the loser is thrown out. The last one left is the winner.
-//	 * Complexity n.
-//	 * @return the factors of the winning AI
-//	 */
-//	private static double[] tournamentRandomElimination() {
-//		ArrayList<double[]> factorsList = makeArraysInRange();
-//		while (factorsList.size() > 1) {
-//			
-//		}
-//		return factorsList.get(0);
-//	}
+	/**
+	 * Tournament where two random players play against each other
+	 * and the loser is thrown out. The last one left is the winner.
+	 * Complexity n.
+	 * @return the factors of the winning AI
+	 */
+	private static double[] tournamentRandomElimination(double[] current) {
+		ArrayList<double[]> factorsList = makeMutatedArrays(current);
+		while (factorsList.size() > 1) {
+			double[] p1 = factorsList.get(
+					new Random().nextInt(factorsList.size()));
+			factorsList.remove(p1);
+			double[] p2 = factorsList.get(
+					new Random().nextInt(factorsList.size()));
+			factorsList.remove(p2);
+			int outcome = play1v1(p1, p2);
+			if (outcome == 0) {
+				factorsList.add(p1);
+			} else {
+				factorsList.add(p2);
+			}
+		}
+		return factorsList.get(0);
+	}
 	
 	private static String factorsToString(double[] factors) {
 		String s = "Factors:";

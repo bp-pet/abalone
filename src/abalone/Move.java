@@ -593,6 +593,14 @@ public class Move {
     	return s;
     }
     
+    public String[] getUserCoordinates() {
+    	String[] result = new String[3];
+    	result[0] = "" + board.getRowLetter(rowTail) + board.getColLetter(colTail);
+    	result[1] = "" + board.getRowLetter(rowHead) + board.getColLetter(colHead);
+    	result[2] = "" + board.getRowLetter(rowDest) + board.getColLetter(colDest);
+    	return result;
+    }
+    
     /**
      * Method toString of Move.
      * @return string that contains the color and the head, tail and destination

@@ -223,7 +223,7 @@ public abstract class Game {
 			currentColor = getNextTurn();
 			numberOfTurns++;
 		}
-		System.out.println(toString());
+//		System.out.println(toString());
 		Player winner = determineWinner();
 		// TODO: send to server or not
 		if (winner != null) {

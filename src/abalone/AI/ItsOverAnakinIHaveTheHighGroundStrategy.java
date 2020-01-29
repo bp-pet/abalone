@@ -42,14 +42,34 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	}
 	
 	/**
+	 * Constructor from a string. Factors should be separated by a semi-colon.
+	 * @param string
+	 */
+	public ItsOverAnakinIHaveTheHighGroundStrategy(String string) {
+		this(makeFactorsFromString(string));
+	}
+	
+	/**
+	 * Make an array of factors from a string.
+	 */
+	public static double[] makeFactorsFromString(String string) {
+		String[] split = string.split(";");
+		double[] result = new double[numberOfParameters];
+		for (int i = 0; i < numberOfParameters; i++) {
+			result[i] = Double.parseDouble(split[i]);
+		}
+		return result;
+	}
+	
+	/**
 	 * Make an array with some default factors.
 	 */
 	private static double[] makeDefaultFactorArray() {
 		double[] result = new double[numberOfParameters];
 		result[0] = 1;
-		result[1] = 1;
+		result[1] = 10;
 		result[2] = 1;
-		result[3] = 1;
+		result[3] = 100;
 		return result;
 	}
 

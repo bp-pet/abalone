@@ -1,5 +1,5 @@
 package abalone.AI;
-
+	
 import java.util.ArrayList;
 
 import abalone.Board;

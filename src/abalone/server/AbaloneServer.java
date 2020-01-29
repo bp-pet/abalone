@@ -107,7 +107,6 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 				view.showMessage("Server started at port " + port);
 			} catch (IOException e) {
 				view.showMessage("ERROR: could not create a socket on " + "127.0.0.1" + " and port " + port + ".");
-
 				if (!view.getBoolean("Do you want to try again?")) {
 					throw new ExitProgram("User indicated to exit the " + "program.");
 				}
@@ -132,6 +131,7 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 	
 	@Override
 	public String doError(int errorType, String errorMessage) {
+		//TODO give names to errors?
 		String errorTypeString;
 		switch (errorType) {
 			case 3:
@@ -152,6 +152,7 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 	/** Start a new AbaloneServer */
 	public static void main(String[] args) {
 		AbaloneServer server = new AbaloneServer();
+		//TODO shouldnt this send to view?
 		System.out.println("Welcome to the Abalone Server! Starting...");
 		new Thread(server).start();
 	}
