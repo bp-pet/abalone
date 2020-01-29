@@ -35,7 +35,7 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	
 	/**
 	 * In case no argument is given to the constructor, make a
-	 * strategy with default factors.
+	 * strategy with default factors (offensive).
 	 */
 	public ItsOverAnakinIHaveTheHighGroundStrategy() {
 		factors = getOffensiveArray();
