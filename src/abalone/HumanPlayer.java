@@ -42,7 +42,17 @@ public class HumanPlayer extends Player {
 				")" + ", what is your choice? ";
 		String choice;
 		view.showMessage(stateOfGame);
-		choice = view.getString(prompt);
+		choice = view.getString(prompt + " (type 'h' for a hint)");
+		
+		if (choice.equals("h")) {
+			Player computerPlayer = LocalGame.createPlayer(null, "ItsOverAnakinIHaveTheHighGroundStrategy", getColor());
+			Move hintMove = computerPlayer.determineMove(board, stateOfGame);
+			view.showMessage("Suggested move: " + hintMove.toHumanString());
+			choice = view.getString(prompt + " (leave blank to send the hint move) ");
+			if (choice.equals("")) {
+				return hintMove;				
+			}
+		}
 		
 		Move move;
 		try {

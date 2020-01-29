@@ -19,11 +19,11 @@ public class LocalGame extends Game {
 	 * Creates a new LocalGame using {@Link Game#Game(int)} and initialize players
 	 * according to {@link #createPlayer(String, Color)}.
 	 */
-	public LocalGame(String[] stringPlayers) {
+	public LocalGame(String[] stringPlayers, AbaloneClientView view) {
 		super(stringPlayers.length);
 		currentColor = Color.WHITE;
 		for (int i = 0; i < stringPlayers.length; i++) {
-			players[i] = createPlayer(null, stringPlayers[i], currentColor);
+			players[i] = createPlayer(view, stringPlayers[i], currentColor);
 			currentColor = getNextColor();
 		}
 	}

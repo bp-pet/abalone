@@ -609,4 +609,12 @@ public class Move {
     public String toString() {
     	return "Color " + color + " moves (" + rowTail + ", " + colTail + "), (" + rowHead + ", " + colHead + ") to (" + rowDest + ", " + colDest + ")";
     }
+    
+    /**
+     * Method toString of Move.
+     * @return string that contains the color and the human readable head, tail and destination (in the form of board.MOVE_PATTERN).
+     */
+    public String toHumanString() {
+		return "Color " + color + " moves " + board.getRowLetter(rowTail) + "" + board.getColLetter(colTail) + " till " + board.getRowLetter(rowHead) + "" + board.getColLetter(colHead) + " to " + board.getRowLetter(rowDest) + "" + board.getColLetter(colDest) + ".";
+    }
 }
