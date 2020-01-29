@@ -23,7 +23,6 @@ public interface AbaloneClientView {
 	public void start() throws ServerUnavailableException;
 
 	/**
-	 * TODO: design handleUserInput
 	 * 
 	 * @param input The user input.
 	 * @throws ExitProgram               	When the user has indicated to exit the
