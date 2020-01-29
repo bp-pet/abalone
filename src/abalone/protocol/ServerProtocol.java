@@ -1,5 +1,6 @@
 package abalone.protocol;
 
+import abalone.Color;
 
 /**
  * Defines the methods that the Abalone Server should support while connected.
@@ -24,5 +25,6 @@ public interface ServerProtocol {
 	 * @return String to be returned to the client
 	 */
 	public String doError(int errorType, String errorMessage);
+
 
 }

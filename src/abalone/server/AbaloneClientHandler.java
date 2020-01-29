@@ -103,7 +103,7 @@ public class AbaloneClientHandler implements Runnable {
 					case ProtocolMessages.EXIT:
 						srv.removeClient(this);
 					default:
-						s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
+						s = srv.doError(1, ProtocolMessages.INVALID_COMMAND + ", expected l, j or x");
 				}
 			} else if (! lobby.inGame()) {
 				switch (cmd[0].charAt(0)) {
@@ -114,7 +114,7 @@ public class AbaloneClientHandler implements Runnable {
 						lobby.exitGame(this);
 						break;
 					default:
-						s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
+						s = srv.doError(1, ProtocolMessages.INVALID_COMMAND + ", expected r or x");
 				}
 			} else {
 				switch (cmd[0].charAt(0)) {
@@ -135,7 +135,7 @@ public class AbaloneClientHandler implements Runnable {
 						lobby.exitGame(this);
 						break;
 					default:
-						s = srv.doError(1, ProtocolMessages.INVALID_COMMAND);
+						s = srv.doError(1, ProtocolMessages.INVALID_COMMAND + ", expected m or x");
 				}
 			}
 		}
@@ -170,13 +170,15 @@ public class AbaloneClientHandler implements Runnable {
 	 */
 	public void sendMessage(String msg) {
 		try {
-			out.append(msg);
-
-			// TODO: comment following debug line
-			System.out.println("Message back to client [" + name + "]: " + msg);
-			out.flush();
-			out.newLine();
-			out.flush();
+			synchronized (this) { 
+				out.append(msg);
+	
+				// TODO: comment following debug line
+				System.out.println("Message back to client [" + name + "]: " + msg);
+				out.flush();
+				out.newLine();
+				out.flush();
+			}
 		} catch (IOException e) {
 			shutdown();
 		}

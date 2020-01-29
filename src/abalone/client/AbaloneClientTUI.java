@@ -4,6 +4,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+import abalone.Board;
+import abalone.Move;
 import abalone.exceptions.ExitProgram;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.ProtocolException;
@@ -36,10 +38,16 @@ public class AbaloneClientTUI implements AbaloneClientView {
 	public void start() throws ServerUnavailableException {
 		String msg = getString(INPUT);
 		while (!msg.equals(String.valueOf(ProtocolMessages.EXIT))) {
-			while (c.getState() == State.GAME) {
-				c.startGame();
-			}
 			try {
+				while (c.getState() == State.GAME) {
+					if (c.getTurn() == c.getControlPlayer().getColor() && c.getState() == State.GAME) {
+						Board board = c.getBoard();
+						Move move = c.getControlPlayer().determineMove(c.getBoard(), c.getBoard().toString());
+						c.sendMove("" + board.getRowLetter(move.getRowTail()) + board.getColLetter(move.getColTail()),
+								"" + board.getRowLetter(move.getRowHead()) + board.getColLetter(move.getColHead()),
+								"" + board.getRowLetter(move.getRowDest()) + board.getColLetter(move.getColDest()));
+					}
+				}
 				handleUserInput(msg);
 				// TODO: remove debug line
 				showMessage("debug, state: " + (c.getState() == State.LOBBY) + " and is ready: " + (c.isReady()));
@@ -57,57 +65,57 @@ public class AbaloneClientTUI implements AbaloneClientView {
 			return;
 		}
 		switch (c.getState()) {
-			case BROWSER:
-				switch (cmd[0].charAt(0)) {
-					case ProtocolMessages.LOBBY:
-						c.doLobbies();
-						break;
-					case ProtocolMessages.JOIN:
-						if (cmd.length != 4) {
-							showMessage("Expected 3 arguments.");
-						} else {
-							c.doJoinLobby(cmd[1], cmd[2], cmd[3]);
-						}
-						break;
-					case ProtocolMessages.EXIT:
-						c.sendExit();
-						break;
-					case ProtocolMessages.HELP:
-					default:
-						showMessage(HELPMENU_BROWSER);
+		case BROWSER:
+			switch (cmd[0].charAt(0)) {
+			case ProtocolMessages.LOBBY:
+				c.doLobbies();
+				break;
+			case ProtocolMessages.JOIN:
+				if (cmd.length != 4) {
+					showMessage("Expected 3 arguments.");
+				} else {
+					c.doJoinLobby(cmd[1], cmd[2], cmd[3]);
 				}
 				break;
-			case LOBBY:
-				switch (cmd[0].charAt(0)) {
-					case ProtocolMessages.READY:
-						c.doReady();
-						break;
-					case ProtocolMessages.EXIT:
-						c.sendExit();
-						break;
-					case ProtocolMessages.HELP:
-					default:
-						showMessage(HELPMENU_LOBBY);
-				}
+			case ProtocolMessages.EXIT:
+				c.sendExit();
 				break;
-			case GAME:
-				switch (cmd[0].charAt(0)) {
-					case ProtocolMessages.MOVE:
-						if (cmd.length != 4) {
-							showMessage("Expected 3 arguments.");
-						}
-						c.sendMove(cmd[1], cmd[2], cmd[3]);
-						break;
-					case ProtocolMessages.EXIT:
-						c.sendExit();
-						break;
-					case ProtocolMessages.HELP:
-					default:
-						showMessage(HELPMENU_GAME);
-				}
-				break;
+			case ProtocolMessages.HELP:
 			default:
-				showMessage("something went wrong that shouldn't");
+				showMessage(HELPMENU_BROWSER);
+			}
+			break;
+		case LOBBY:
+			switch (cmd[0].charAt(0)) {
+			case ProtocolMessages.READY:
+				c.doReady();
+				break;
+			case ProtocolMessages.EXIT:
+				c.sendExit();
+				break;
+			case ProtocolMessages.HELP:
+			default:
+				showMessage(HELPMENU_LOBBY);
+			}
+			break;
+		case GAME:
+			switch (cmd[0].charAt(0)) {
+			case ProtocolMessages.MOVE:
+				if (cmd.length != 4) {
+					showMessage("Expected 3 arguments.");
+				}
+				c.sendMove(cmd[1], cmd[2], cmd[3]);
+				break;
+			case ProtocolMessages.EXIT:
+				c.sendExit();
+				break;
+			case ProtocolMessages.HELP:
+			default:
+				showMessage(HELPMENU_GAME);
+			}
+			break;
+		default:
+			showMessage("something went wrong that shouldn't");
 		}
 	}
 

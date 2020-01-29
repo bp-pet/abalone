@@ -58,7 +58,7 @@ public interface ServerLobbyProtocol extends ServerProtocol {
 	 * 
 	 * @return protocol message to be send to the user
 	 */
-	public String doGameEnd();
+	public String doGameEnd(String result, Color color);
 
 	/**
 	 * After a move request the server checks the validity of the move and then
