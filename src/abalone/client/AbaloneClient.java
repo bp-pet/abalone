@@ -499,6 +499,7 @@ public class AbaloneClient implements ClientProtocol {
 		try {
 			board.move(board.parseMovePattern(currentColor, currentMove));
 			view.showMessage("Current board:\n" + board.toString());
+			view.showMessage("Number of marbles: " + board.getNumberOfMarbles());
 		} catch (InvalidMoveException | MarbleKilledException e) {
 			view.showMessage(e.getMessage());
 		}

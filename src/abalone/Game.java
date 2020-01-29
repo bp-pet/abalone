@@ -221,6 +221,8 @@ public abstract class Game {
 		Move nextMove;
 		while (!hasWinner() && numberOfTurns < MAX_TURNS) {
 			Player nextPlayer = players[getIntOfCurrentColor()];
+			//TODO: remove debug
+			System.out.println("current state + \n" + toString());
 			nextMove = nextPlayer.determineMove(board, toString());
 			try {
 				board.move(nextMove);
