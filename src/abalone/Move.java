@@ -342,12 +342,13 @@ public class Move {
 	    			Marble nextMarble = nextField.getMarble();
 	    			if (board.areTeammates(currentColor, color)) {
 	    				if (board.areTeammates(nextMarble.getColor(), color)) {
-	    					if (force == board.getMaxPush() - 1) {
-	    						throw new InvalidMoveException("Invalid push; "
-	    								+ toString());
-	    					} else {
-	    						canMoveField(nextField, force + 1);
-	    					}
+	    					throw new InvalidMoveException("This is all Daan's fault tbh");
+///	    					if (force == board.getMaxPush() - 1) {
+//	    						throw new InvalidMoveException("Invalid push; "
+//	    								+ toString());
+//	    					} else {
+//	    						canMoveField(nextField, force + 1);
+//	    					}
 	    				} else {
 	    					canMoveField(nextField, force - 1);
 	    				}
