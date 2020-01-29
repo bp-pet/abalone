@@ -144,9 +144,10 @@ public class Move {
      * If the move is along the axis, the tail is moved first, which recursively
      * moves all other marbles in front of it.
      * If the move is not along the axis, all marbles are moved separately.
+     * @throws InvalidMoveException 
      * @requires move is valid
      */
-    private void moveAllFields() {
+    private void moveAllFields() throws InvalidMoveException {
     	if (!moveIsAlongAxis()) {
     		for (Field f : fields) {
     			doMoveField(f);
@@ -226,8 +227,9 @@ public class Move {
      * Only relevant for moving along axis.
      * If move is not along axis, returns any field.
      * @return a field of the selection
+     * @throws InvalidMoveException 
      */
-    private Field findLastWagon() {
+    private Field findLastWagon() throws InvalidMoveException {
     	if (!moveIsAlongAxis()) {
     		return fields[0];
     	}
@@ -376,8 +378,9 @@ public class Move {
      * If selection is of size one, the selection counts as being along the axis
      * for pushing purposes.
      * @return true if along axis, false otherwise
+     * @throws InvalidMoveException 
      */
-    private boolean moveIsAlongAxis() {
+    private boolean moveIsAlongAxis() throws InvalidMoveException {
     	rowMove = rowDest - rowTail;
     	colMove = colDest - colTail;
     	if (fields.length == 1) {
@@ -387,11 +390,13 @@ public class Move {
     		if (f == board.getField(rowDest, colDest)) {
     			return true;
     		}
-//    		if (board.getField(rowTail + rowMove, colTail + colMove)
-//    				== f || board.getField(rowTail - rowMove, colTail
-//    				- colMove) == f) {
-//    			return true;
-//    		}
+    	}
+    	for (Field f : fields) {
+    		if (board.getField(rowTail + rowMove, colTail + colMove)
+    				== f || board.getField(rowTail - rowMove, colTail
+    				- colMove) == f) {
+    			throw new InvalidMoveException("Wikipedia does not allow this");
+    		}
     	}
     	return false;
     }
