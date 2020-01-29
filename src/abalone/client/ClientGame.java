@@ -17,6 +17,7 @@ public class ClientGame extends Game {
 
 	AbaloneClient c;
 	private Color ownColor;
+	private boolean isStarted;
 
 	/**
 	 * Creates a clientGame with players given by the server of the form given as
@@ -29,6 +30,7 @@ public class ClientGame extends Game {
 	 */
 	public ClientGame(String[] stringPlayers, AbaloneClient c, AbaloneClientView view, String ownName, String ownTeam) {
 		super((stringPlayers.length - 1) / 2);
+		isStarted = false;
 		this.c = c;
 		currentColor = Color.WHITE;
 		for (int i = 0; i < (stringPlayers.length - 1); i = i + 2) {
@@ -52,7 +54,6 @@ public class ClientGame extends Game {
 			view.showMessage("Client " + ownName + " game: player: " + player.getName() + ", has color: " + player.getColor());
 		}
 	}
-
 
 	/**
 	 * gets the color of the ownplayer.
@@ -82,10 +83,20 @@ public class ClientGame extends Game {
 
 	@Override
 	public void start() {
+		//TODO: remove debug lines
+		System.out.println("isStarted to true:");
+		isStarted = true;
 		// TODO: stop when disconnection
 		while (true) {
+			System.out.println("going to play:");
 			play();
 		}
+	}
+	
+	//TODO: fix that this is not needed anymore
+	public boolean isStarted() {
+		System.out.println(isStarted);
+		return isStarted;
 	}
 
 }

@@ -66,10 +66,11 @@ public class AbaloneServerHandler implements Runnable {
 						break;
 					case ProtocolMessages.START:
 						c.makeGame(cmd);
+						view.showMessage("> press enter to start the game: ");
 						break;
 					case ProtocolMessages.EXIT:
 						c.resetReady();
-						break;
+						break;					
 					default:
 						// TODO: add expected stuff
 						break;

@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import abalone.Color;
@@ -423,6 +424,10 @@ public class AbaloneClient implements ClientProtocol {
 	}
 
 	public void setCurrentColor(Color currentColor) {
+		//TODO:remove debug line
+		System.out.println("Going to wait setCurrentColor:");
+		while (! game.isStarted()) {} //wait till the game is started before you process this line
+		System.out.println("Done to waiting setCurrentColor:");
 		this.currentColor = currentColor;
 	}
 
@@ -431,6 +436,10 @@ public class AbaloneClient implements ClientProtocol {
 	}
 
 	public void setCurrentMove(String currentMove) {
+		//TODO:remove debug line
+		System.out.println("Going to wait setCurrentMove:");
+		while (! game.isStarted()) {} //wait till the game is started before you process this line
+		System.out.println("Done to waiting setCurrentMove:");
 		this.currentMove = currentMove;
 	}
 

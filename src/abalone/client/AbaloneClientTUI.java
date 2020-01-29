@@ -13,7 +13,7 @@ import abalone.protocol.ProtocolMessages;
 public class AbaloneClientTUI implements AbaloneClientView {
 
 	AbaloneClient c;
-	private static final String INPUT = "Command ? ";
+	private static final String INPUT = "> Command ? ";
 	private static final String GETIP = "Give a ip (default: 127.0.0.1) ? ";
 	private static final String IP_PATTERN = "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.)"
 			+ "{3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";

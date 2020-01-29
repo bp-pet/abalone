@@ -295,16 +295,21 @@ public class AbaloneServerLobby extends AbaloneServer implements ServerLobbyProt
 	public void doTurn(Color color) {
 		String protocolColorMessage;
 		switch (color) {
-		case WHITE:
-			protocolColorMessage = ProtocolMessages.COLOR_WHITE;
-		case BLACK:
-			protocolColorMessage = ProtocolMessages.COLOR_BLACK;
-		case BLUE:
-			protocolColorMessage = ProtocolMessages.COLOR_BLUE;
-		case RED:
-			protocolColorMessage = ProtocolMessages.COLOR_RED;
-		default:
-			protocolColorMessage = ProtocolMessages.COLOR_WHITE;
+			case WHITE:
+				protocolColorMessage = ProtocolMessages.COLOR_WHITE;
+				break;
+			case BLACK:
+				protocolColorMessage = ProtocolMessages.COLOR_BLACK;
+				break;
+			case BLUE:
+				protocolColorMessage = ProtocolMessages.COLOR_BLUE;
+				break;
+			case RED:
+				protocolColorMessage = ProtocolMessages.COLOR_RED;
+				break;
+			default:
+				protocolColorMessage = ProtocolMessages.COLOR_WHITE;
+				break;
 		}
 		sendMessageToLobby(ProtocolMessages.TURN + ProtocolMessages.DELIMITER + protocolColorMessage);
 	}
