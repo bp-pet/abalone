@@ -87,6 +87,10 @@ public class ProtocolMessages {
 	public static final String ERROR_MESSAGE_LOBBY_FULL = "lobby full";
 	public static final String ERROR_MESSAGE_START_TEAMS = "teams do not match";
 	public static final String ERROR_MESSAGE_START_NOT_ENOUGH = "not enough players";
+
+	public static final String GAME_END_MESSAGE_GAME_WON = "game won";
+	public static final String GAME_END_MESSAGE_DRAW = "draw";
+	public static final String GAME_END_MESSAGE_DISCONNECTION = "disconnection";
 	
 	/**
 	 * The following strings are possible error messages that can be combined with an error of type 1

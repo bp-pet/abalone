@@ -65,11 +65,12 @@ public class AbaloneServerHandler implements Runnable {
 					case ProtocolMessages.READY:
 						break;
 					case ProtocolMessages.START:
-						c.makeGame(cmd);
+						c.makeBoard(cmd);
+						view.showMessage("> press enter to start the game: ");
 						break;
 					case ProtocolMessages.EXIT:
 						c.resetReady();
-						break;
+						break;					
 					default:
 						// TODO: add expected stuff
 						break;
@@ -79,7 +80,7 @@ public class AbaloneServerHandler implements Runnable {
 				switch (cmd.charAt(0)) {
 					case ProtocolMessages.TURN:
 						try {
-							c.setCurrentColor(getColor(cmd.split(ProtocolMessages.DELIMITER)[1]));
+							c.doTurn(getColor(cmd.split(ProtocolMessages.DELIMITER)[1]));
 						} catch (ProtocolException e) {
 							// invalid color should not happen
 							e.printStackTrace();
@@ -87,27 +88,37 @@ public class AbaloneServerHandler implements Runnable {
 						break;
 					case ProtocolMessages.MOVE:
 						try {
-							c.setCurrentMove(getMove(cmd.split(ProtocolMessages.DELIMITER)[1]));
+							c.setCurrentMove(getMove(cmd));
 						} catch (ProtocolException e) {
-							// invalid color should not happen
-							e.printStackTrace();
+							view.showMessage("ProcolException client received: " + e.getMessage());
 						}
 						break;
 					case ProtocolMessages.GAME_END:
 						String[] lineFromServer = cmd.split(ProtocolMessages.DELIMITER);
 						switch (lineFromServer.length) {
 							case 2:
-								view.showMessage(lineFromServer[1]);
+								view.showMessage("> " + lineFromServer[1]);
 								break;
 							case 3:
-								view.showMessage(lineFromServer[1] + " by " + lineFromServer[2]);
+								try {
+									if (getColor(lineFromServer[2]) == (c.getControlPlayer().getColor())) {
+										view.showMessage("> YOU WON!");
+									} else {
+										view.showMessage("> YOU LOST!");
+									}
+								} catch (ProtocolException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+									view.showMessage("> " + lineFromServer[1] + " by " + lineFromServer[2]);
 								break;
 							case 4:
-								view.showMessage(lineFromServer[1] + " by " + lineFromServer[2] + " and " + lineFromServer[3]);
+								view.showMessage("> " + lineFromServer[1] + " by " + lineFromServer[2] + " and " + lineFromServer[3]);
 								break;
 							default:
 								view.showMessage("Unexpected number of arguments from server this should not happen");
 						}
+						c.resetBoard();
 						break;
 					default:
 						// TODO: add expected stuff
@@ -151,8 +162,9 @@ public class AbaloneServerHandler implements Runnable {
 	 */
 	public String getMove(String move) throws ProtocolException {
 		String[] movesplit = move.split(ProtocolMessages.DELIMITER);
+		if (movesplit.length != 4) {
+			throw new ProtocolException("invalid number of arguments");
+		}
 		return movesplit[1] + " " + movesplit[2] + " " + movesplit[3];
 	}
-	
-
 }

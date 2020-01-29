@@ -28,8 +28,8 @@ public class AbaloneOwnPlayer extends Player {
 			c.sendMove("" + board.getRowLetter(move.getRowTail()) + board.getColLetter(move.getColTail()),
 					"" + board.getRowLetter(move.getRowHead()) + board.getColLetter(move.getColHead()),
 					"" + board.getRowLetter(move.getRowDest()) + board.getColLetter(move.getColDest()));
+			//TODO: implement confirmation from server
 		} catch (ServerUnavailableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return move;

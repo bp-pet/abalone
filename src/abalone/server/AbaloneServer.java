@@ -69,7 +69,7 @@ public class AbaloneServer implements Runnable, ServerProtocol {
 				// stop the program.
 				openNewSocket = false;
 			} catch (IOException e) {
-				System.out.println("A server IO error occurred: " + e.getMessage());
+				view.showMessage("A server IO error occurred: " + e.getMessage());
 
 				if (!view.getBoolean("Do you want to open a new socket?")) {
 					openNewSocket = false;
