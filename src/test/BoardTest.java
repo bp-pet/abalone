@@ -268,10 +268,4 @@ public class BoardTest {
 		assertTrue(board.getNumberOfMarbles().contains("B14"));
 	}
 	
-	/**
-	 * test getDim
-	 */
-	@Test
-	publi
-	
 }
