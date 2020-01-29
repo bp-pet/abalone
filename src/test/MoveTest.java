@@ -1,5 +1,6 @@
 package test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -37,8 +38,10 @@ class MoveTest {
 		msg = "";
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void test1() {
 		try {
 			new Move(board, Color.BLACK, 4, 1, 4, 4, 4, 2).perform();
@@ -49,9 +52,11 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("too long"));
 	}
-
+	
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void test2() {
 		try {
 			new Move(board, Color.BLACK, 6, 4, 8, 4, 5, 3).perform();
@@ -90,6 +95,8 @@ class MoveTest {
 		} catch (InvalidMoveException e) {
 			fail();
 		}
+
+		assertEquals(3, new Move(board, Color.WHITE, 0, 0, 0, 2, 3, 3).getSelectionSize());
 		try {
 			new Move(board, Color.WHITE, 0, 0, 3, 3, 3, 3).isValidSelection();
 		} catch (InvalidMoveException e) {
@@ -112,8 +119,10 @@ class MoveTest {
 		assertTrue(msg.contains("Selection"));
 	}
 
+	/**
+	 * Test if a valid move does not throw exception.
+	 */
 	@Test
-	// should work
 	void testMove1() {
 		try {
 			new Move(board, Color.WHITE, 2, 2, 2, 2, 3, 3).perform();
@@ -124,8 +133,10 @@ class MoveTest {
 		}
 	}
 
+	/**
+	 * Test if a valid move does not throw exception.
+	 */
 	@Test
-	// should work
 	void testMove2() {
 		try {
 			new Move(board, Color.WHITE, 1, 1, 2, 2, 2, 2).perform();
@@ -136,8 +147,10 @@ class MoveTest {
 		}
 	}
 
+	/**
+	 * Test if a valid move does not throw exception.
+	 */
 	@Test
-	// should work
 	void testMove3() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -148,8 +161,10 @@ class MoveTest {
 		}
 	}
 
+	/**
+	 * Test if a valid move does not throw exception.
+	 */
 	@Test
-	// should work
 	void testMoveLateral() {
 		try {
 			new Move(board, Color.WHITE, 2, 2, 2, 4, 3, 3).perform();
@@ -160,8 +175,10 @@ class MoveTest {
 		}
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testPushAgainstOwn() {
 		try {
 			new Move(board, Color.WHITE, 1, 0, 1, 0, 2, 1).perform();
@@ -171,11 +188,13 @@ class MoveTest {
 		} catch (MarbleKilledException e) {
 			fail();
 		}
-		assertTrue(msg.contains("push"));
+		assertTrue(msg.contains("Wikipedia"));
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testSuicide() {
 		try {
 			new Move(board, Color.WHITE, 2, 2, 0, 0, 1, 1).perform();
@@ -187,8 +206,10 @@ class MoveTest {
 		assertTrue(msg.contains("suicide"));
 	}
 
+	/**
+	 * Test if a valid move does not throw exception.
+	 */
 	@Test
-	// should work
 	void testPushOff() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -205,8 +226,10 @@ class MoveTest {
 		assertTrue(!msg.equals(""));
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testPushLateral() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -222,8 +245,10 @@ class MoveTest {
 		assertTrue(msg.contains("push"));
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testPush3v3() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -238,8 +263,10 @@ class MoveTest {
 		assertTrue(msg.contains("push"));
 	}
 
+	/**
+	 * Test if a valid move does not throw exception.
+	 */
 	@Test
-	// should work
 	void testPush3v2() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -253,8 +280,10 @@ class MoveTest {
 		}
 	}
 
+	/**
+	 * Test if a valid move does not throw exception.
+	 */
 	@Test
-	// should work
 	void testPush3v1() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -268,8 +297,10 @@ class MoveTest {
 		}
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testPush2v2() {
 		try {
 			new Move(board, Color.WHITE, 1, 1, 2, 2, 2, 2).perform();
@@ -281,11 +312,13 @@ class MoveTest {
 		} catch (MarbleKilledException e) {
 			fail();
 		}
-		assertTrue(msg.contains("push"));
+		assertTrue(msg.contains("Wikipedia"));
 	}
 
+	/**
+	 * Test if a valid move does not throw exception.
+	 */
 	@Test
-	// should work
 	void testPush2v1() {
 		try {
 			new Move(board, Color.WHITE, 1, 1, 2, 2, 2, 2).perform();
@@ -299,8 +332,10 @@ class MoveTest {
 		}
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testPushOwn2v1() {
 		try {
 			new Move(board, Color.WHITE, 1, 4, 0, 4, 2, 4).perform();
@@ -309,11 +344,13 @@ class MoveTest {
 		} catch (MarbleKilledException e) {
 			fail();
 		}
-		assertTrue(msg.contains("push"));
+		assertTrue(msg.contains("Wikipedia"));
 	}
-
+	
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testPushOwn1v2() {
 		try {
 			new Move(board, Color.WHITE, 0, 4, 0, 4, 1, 4).perform();
@@ -325,8 +362,10 @@ class MoveTest {
 		assertTrue(msg.contains("push"));
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testPushOwn1v1() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 0, 0, 1, 0).perform();
@@ -338,8 +377,10 @@ class MoveTest {
 		assertTrue(msg.contains("push"));
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testPushOwn1v3() {
 		try {
 			new Move(board, Color.WHITE, 1, 1, 1, 1, 2, 1).perform();
@@ -352,8 +393,10 @@ class MoveTest {
 		assertTrue(msg.contains("push"));
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testPushOwn3v1() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -367,8 +410,10 @@ class MoveTest {
 		assertTrue(msg.contains("push"));
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testPush1v1() {
 		try {
 			new Move(board, Color.WHITE, 2, 2, 2, 2, 3, 3).perform();
@@ -383,8 +428,10 @@ class MoveTest {
 		assertTrue(msg.contains("push"));
 	}
 
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testMove4() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1).perform();
@@ -397,9 +444,11 @@ class MoveTest {
 		}
 		assertTrue(msg.contains("too long"));
 	}
-
+	
+	/**
+	 * Test if a invalid move throws exception.
+	 */
 	@Test
-	// should not work
 	void testMoveWrongColor() {
 		try {
 			new Move(board, Color.BLACK, 2, 2, 2, 2, 3, 3).perform();
@@ -428,4 +477,58 @@ class MoveTest {
 		Move m2 = new Move(board, Color.BLACK, invCoords);
 		assertTrue(m1.getMirroredMove(Color.BLACK).equalsMove(m2));
 	}
+	
+	@Test
+	public void testFlipedMove() {
+		Move m1 = new Move(board, Color.BLACK, 8, 8, 6, 6, 7, 7);
+		Move m2 = new Move(board, Color.BLACK, 6, 6, 8, 8, 5, 5);
+		assertTrue(m1.getFlipMove().equalsMove(m2));
+	}
+	
+	@Test
+	public void testToHumanString() {
+		Move m1 = new Move(board, Color.BLACK, 8, 8, 6, 6, 7, 7);
+		String s = m1.toHumanString();
+		assertTrue(s.contains("I9 G7 H8"));
+		assertTrue(s.contains("Color B moves"));
+	}
+	
+	@Test
+	public void testGetStringOfFields() {
+		Move m1 = new Move(board, Color.BLACK, 8, 8, 6, 6, 7, 7);
+		try {
+			m1.isValidMove();
+		} catch (InvalidMoveException e) {
+			fail();
+		}
+		assertTrue(m1.getStringOfFields().contains(m1.getFields()[0].getFullString()));
+	}
+	
+	@Test
+	public void testMoveWithVector() {
+		Move m1 = new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1);
+		Move m2 = new Move(board, Color.WHITE, board.getField(0, 0), board.getField(2, 2), 1, 1);
+		assertTrue(m1.equalsMove(m2));
+	}
+	
+	@Test
+	public void testValidMoveQuick() {
+		Move m1 = new Move(board, Color.WHITE, 0, 0, 2, 2, 1, 1);
+		Move m2 = new Move(board, Color.WHITE, 0, 0, 2, 2, 2, 2);
+		
+		try {
+			m1.isValidMoveQuick();
+		} catch (InvalidMoveException e) {
+			fail();
+		}
+		
+		try {
+			m2.isValidMoveQuick();
+		} catch (InvalidMoveException e) {
+			msg = e.getMessage();
+		}
+		System.out.println(msg);
+		assertTrue(msg.contains("not adjacent"));
+	}
+	
 }

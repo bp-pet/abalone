@@ -78,10 +78,10 @@ public class Move {
      * in the board class, however moves are not always performed through that
      * class, instead some methods call move.perform directly).
      * @throws InvalidMoveException with appropriate message if any of the
-     * conditions are violated
+     *     conditions are violated
      * @throws MarbleKilledException if a marble was killed (the boolean
-     * marbleKilled was set to true)
-     * Note: the two exceptions are mutually exclusive
+     *     marbleKilled was set to true)
+     *     Note: the two exceptions are mutually exclusive
      */
     public void perform() throws InvalidMoveException, MarbleKilledException {
     	isValidMove();
@@ -130,7 +130,7 @@ public class Move {
     
     
     /**
-     * Get the size of the selection
+     * Get the size of the selection.
      * @requires selection is valid
      * @return the length of the field array
      */
@@ -627,6 +627,10 @@ public class Move {
      * @return string that contains the color and the human readable head, tail and destination (in the form of board.MOVE_PATTERN).
      */
     public String toHumanString() {
-		return "Color " + color + " moves " + board.getRowLetter(rowTail) + "" + board.getColLetter(colTail) + " till " + board.getRowLetter(rowHead) + "" + board.getColLetter(colHead) + " to " + board.getRowLetter(rowDest) + "" + board.getColLetter(colDest) + ".";
+    	String s = "";
+    	for (String userCoordinate : getUserCoordinates()) {
+    		s += " " + userCoordinate;
+    	}
+		return "Color " + color + " moves" + s + ".";
     }
 }

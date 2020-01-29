@@ -423,15 +423,15 @@ public class Board {
 	/**
 	 * constructs a new move from the MOVE_PATTERN.
 	 * 
+	 * @param choice of the form MOVE_PATTERN
+	 * @return Move a move generated form MOVE_PATTERN
 	 * @throws InvalidMoveException if ! choice.matches(MOVE_PATTERN);
-	 * @param board
-	 * @param choice
-	 * @return Move
 	 */
 	public Move parseMovePattern(Color color, String choice) throws InvalidMoveException {
 		if (!(choice.matches(MOVE_PATTERN))) {
 			throw new InvalidMoveException(
-					"ERROR: field " + choice + " is not a valid choice (must match pattern " + MOVE_PATTERN + ").");
+					"ERROR: field " + choice + " is not a valid choice (must match pattern " 
+			+ MOVE_PATTERN + ").");
 		}
 		return new Move(this, color, getRowFromLetter(choice.charAt(0)), getColFromLetter(choice.charAt(1)),
 				getRowFromLetter(choice.charAt(3)), getColFromLetter(choice.charAt(4)),
