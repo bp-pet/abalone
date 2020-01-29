@@ -3,11 +3,11 @@ package test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import abalone.AI.ItsOverAnakinIHaveTheHighGroundStrategy;
-import abalone.AI.RandomStrategy;
 import abalone.Board;
 import abalone.Color;
 import abalone.Move;
+import abalone.ai.ItsOverAnakinIHaveTheHighGroundStrategy;
+import abalone.ai.RandomStrategy;
 import abalone.exceptions.InvalidMoveException;
 import abalone.exceptions.MarbleKilledException;
 import java.util.ArrayList;

@@ -7,9 +7,9 @@ package abalone;
  * @authors Daan Pluister, Bozhidar Petrov
  */
 public abstract class Player {
-	// -- Instance variables -----------------------------------------
+    // -- Instance variables -----------------------------------------
 
-	protected String name;
+    protected String name;
     protected Color color;
 
     // -- Constructors -----------------------------------------------
@@ -46,7 +46,7 @@ public abstract class Player {
      * Set the color of the player.
      */
     public void setColor(Color color) {
-    	this.color = color;
+        this.color = color;
     }
 
     /**
@@ -55,7 +55,7 @@ public abstract class Player {
      * @ensures returned Move is valid;
      * @param board the current game board
      * @param stateOfGame includes the toString of the board, how many
-     * moves have been performed/are left and what the current score is
+     *     moves have been performed/are left and what the current score is
      * @return the player's chosen Move
      */
     public abstract Move determineMove(Board board, String stateOfGame);
