@@ -43,7 +43,7 @@ public class AbaloneClient implements ClientProtocol {
      * standard AbaloneClientTUI.
      */
     public AbaloneClient() {
-        view = new AbaloneClientTUI(this);
+        view = new AbaloneClientTui(this);
         objectColor = new Object();
         objectEverAsked = new Object();
         everAsked = false;

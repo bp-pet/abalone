@@ -1,6 +1,6 @@
 package abalone;
 
-import abalone.client.AbaloneClientTUI;
+import abalone.client.AbaloneClientTui;
 import abalone.client.AbaloneClientView;
 import java.util.ArrayList;
 
@@ -58,7 +58,7 @@ public class Abalone {
             }
         }
         
-        AbaloneClientView view = new AbaloneClientTUI(null);
+        AbaloneClientView view = new AbaloneClientTui(null);
 
         Game game = new LocalGame(stringPlayers.toArray(new String[stringPlayers.size()]), view);
         game.start();
