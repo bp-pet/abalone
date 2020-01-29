@@ -328,14 +328,15 @@ public class Move {
 				}
 			} else if (force == 0) {
 	    		if (nextField.getMarble() != null) {
-	    			if (board.areTeammates(currentColor, color) &&
-	    					board.areTeammates(nextField.getMarble().
-	    					getColor(), color)) {
-	    				canMoveField(nextField, force + 1);
-	    			} else {
-		    			throw new InvalidMoveException("Invalid push; "
-		    					+ toString());
-	    			}
+	    			throw new InvalidMoveException("Still Daan's fault");
+//	    			if (board.areTeammates(currentColor, color) &&
+//	    					board.areTeammates(nextField.getMarble().
+//	    					getColor(), color)) {
+//	    				canMoveField(nextField, force + 1);
+//	    			} else {
+//		    			throw new InvalidMoveException("Invalid push; "
+//		    					+ toString());
+//	    			}
 	    		}
 			} else {
 	    		if (!(nextField.getMarble() == null)) {
