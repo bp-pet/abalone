@@ -15,7 +15,7 @@ import abalone.exceptions.MarbleKilledException;
  * 
  * Inspired by the movie Star Wars Episode III: Revenge of the Sith.
  * 
- * @authors Bozhidar Petrov, Daan Pluister
+ * @authors Budgetary Petrov, Damn Blister
  */
 public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	
@@ -38,7 +38,7 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	 * strategy with default factors.
 	 */
 	public ItsOverAnakinIHaveTheHighGroundStrategy() {
-		this(makeDefaultFactorArray());
+		factors = getOffensiveArray();
 	}
 	
 	/**
@@ -62,9 +62,21 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	}
 	
 	/**
-	 * Make an array with some default factors.
+	 * Make a defensive array.
 	 */
-	private static double[] makeDefaultFactorArray() {
+	private static double[] getDefensiveArray() {
+		double[] result = new double[numberOfParameters];
+		result[0] = 10;
+		result[1] = 1;
+		result[2] = 10;
+		result[3] = 1;
+		return result;
+	}
+	
+	/**
+	 * Make an offensive array.
+	 */
+	private static double[] getOffensiveArray() {
 		double[] result = new double[numberOfParameters];
 		result[0] = 1;
 		result[1] = 10;
@@ -73,6 +85,9 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 		return result;
 	}
 
+	/**
+	 * Gets the name of the strategy which includes the factors.
+	 */
 	public String getName() {
 		String s = "It's over, Anakin, I have the high ground! with factors ";
 		for (double factor : factors) {
@@ -81,12 +96,20 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 		return s;
 	}
 	
+	/**
+	 * Get an array of the factors.
+	 */
 	public double[] getFactors() {
 		return factors;
 	}
 
 	@Override
 	public Move determineMove(Board board, Color color) {
+		if (hasTheLead(board, color)) {
+			factors = getDefensiveArray();
+		} else {
+			factors = getOffensiveArray();
+		}
 		ArrayList<Move> moveList = makeMovesList(board, color);
 		double bestScore = Integer.MIN_VALUE;
 		double currentScore;
@@ -99,6 +122,11 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 			}
 		}
 		return bestMove;
+	}
+	
+	public boolean hasTheLead(Board board, Color color) {
+		return board.getMapOfColors().get(color).size() >
+				board.getMapOfColors().get(getOpponentColor(board, color)).size();
 	}
 	
 	/**
