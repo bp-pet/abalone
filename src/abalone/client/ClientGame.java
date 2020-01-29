@@ -83,19 +83,17 @@ public class ClientGame extends Game {
 
 	@Override
 	public void start() {
-		//TODO: remove debug lines
-		System.out.println("isStarted to true:");
 		isStarted = true;
 		// TODO: stop when disconnection
 		while (true) {
+			//TODO: remove debug line
 			System.out.println("going to play:");
 			play();
 		}
 	}
 	
-	//TODO: fix that this is not needed anymore
+	//TODO: fix this with signals
 	public boolean isStarted() {
-		System.out.println(isStarted);
 		return isStarted;
 	}
 

@@ -358,8 +358,11 @@ public class AbaloneClient implements ClientProtocol {
 
 	@Override
 	public void sendMove(String arg1, String arg2, String arg3) throws ServerUnavailableException {
+		//TODO: remove debug
+		System.out.println("about to send move message to server:");
 		sendMessage(ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + arg1 + ProtocolMessages.DELIMITER + arg2
 				+ ProtocolMessages.DELIMITER + arg3);
+		System.out.println("message send");
 	}
 
 	@Override
