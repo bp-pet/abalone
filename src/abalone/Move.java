@@ -308,6 +308,8 @@ public class Move {
      * This method works recursively: if a push is allowed for the current marble,
      * the method is called for the next marble using the appropriate force.
      * 
+     * UPDATE: this method was changed to comply with protocol.
+     * 
      * @param f current field that is pushed
      * @param force indicates how many enemy marbles can still be pushed
      * @throws InvalidMoveException if not valid for whatever reason
@@ -328,7 +330,7 @@ public class Move {
 				}
 			} else if (force == 0) {
 	    		if (nextField.getMarble() != null) {
-	    			throw new InvalidMoveException("Still Daan's fault");
+	    			throw new InvalidMoveException("Can't push without force;");
 //	    			if (board.areTeammates(currentColor, color) &&
 //	    					board.areTeammates(nextField.getMarble().
 //	    					getColor(), color)) {
@@ -343,8 +345,8 @@ public class Move {
 	    			Marble nextMarble = nextField.getMarble();
 	    			if (board.areTeammates(currentColor, color)) {
 	    				if (board.areTeammates(nextMarble.getColor(), color)) {
-	    					throw new InvalidMoveException("This is all Daan's fault tbh");
-///	    					if (force == board.getMaxPush() - 1) {
+	    					throw new InvalidMoveException("Can't push own;");
+//	    					if (force == board.getMaxPush() - 1) {
 //	    						throw new InvalidMoveException("Invalid push; "
 //	    								+ toString());
 //	    					} else {
@@ -382,11 +384,14 @@ public class Move {
     		return true;
     	}
     	for (Field f : fields) {
-    		if (board.getField(rowTail + rowMove, colTail + colMove)
-    				== f || board.getField(rowTail - rowMove, colTail
-    				- colMove) == f) {
+    		if (f == board.getField(rowDest, colDest)) {
     			return true;
     		}
+//    		if (board.getField(rowTail + rowMove, colTail + colMove)
+//    				== f || board.getField(rowTail - rowMove, colTail
+//    				- colMove) == f) {
+//    			return true;
+//    		}
     	}
     	return false;
     }

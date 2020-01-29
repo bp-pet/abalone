@@ -300,51 +300,42 @@ class MoveTest {
 	}
 
 	@Test
-	// should work
+	// should not work
 	void testPushOwn2v1() {
 		try {
 			new Move(board, Color.WHITE, 1, 4, 0, 4, 2, 4).perform();
 		} catch (InvalidMoveException e) {
-			fail();
+			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
 			fail();
 		}
+		assertTrue(msg.contains("push"));
 	}
 
 	@Test
-	// should work
-	void testPushOw1v2() {
-		try {
-			new Move(board, Color.WHITE, 0, 4, 0, 4, 1, 4).perform();
-		} catch (InvalidMoveException e) {
-			fail();
-		} catch (MarbleKilledException e) {
-			fail();
-		}
-	}
-
-	@Test
-	// should work
+	// should not work
 	void testPushOwn1v2() {
 		try {
 			new Move(board, Color.WHITE, 0, 4, 0, 4, 1, 4).perform();
 		} catch (InvalidMoveException e) {
-			fail();
+			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
 			fail();
 		}
+		assertTrue(msg.contains("push"));
 	}
 
 	@Test
-	// should work
+	// should not work
 	void testPushOwn1v1() {
 		try {
 			new Move(board, Color.WHITE, 0, 0, 0, 0, 1, 0).perform();
 		} catch (InvalidMoveException e) {
-			fail();
+			msg = e.getMessage();
 		} catch (MarbleKilledException e) {
 			fail();
 		}
+		assertTrue(msg.contains("push"));
 	}
 
 	@Test
