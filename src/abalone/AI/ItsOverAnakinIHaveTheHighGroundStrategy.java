@@ -64,7 +64,7 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	/**
 	 * Make a defensive array.
 	 */
-	private static double[] getDefensiveArray() {
+	protected static double[] getDefensiveArray() {
 		double[] result = new double[numberOfParameters];
 		result[0] = 300;
 		result[1] = 10;
@@ -76,7 +76,7 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	/**
 	 * Make an offensive array.
 	 */
-	private static double[] getOffensiveArray() {
+	protected static double[] getOffensiveArray() {
 		double[] result = new double[numberOfParameters];
 		result[0] = 300;
 		result[1] = 300;
@@ -140,7 +140,7 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	 * Determines the score of a board by using a linear combination of its
 	 * properties.
 	 */
-	private double evaluateBoard(Board board, Color color) {
+	protected double evaluateBoard(Board board, Color color) {
 		double ownDistance = colorDistanceFromCenter(board, color);
 		double opponentDistance = colorDistanceFromCenter(board, getOpponentColor(board, color));
 		double triplets = countTriplets(board, color);
@@ -154,7 +154,7 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 	/**
 	 * Turn a boolean into a 0 or 1.
 	 */
-	private int parseBoolean(boolean b) {
+	protected int parseBoolean(boolean b) {
 		if (b) {
 			return 1;
 		} else {
@@ -258,11 +258,4 @@ public class ItsOverAnakinIHaveTheHighGroundStrategy implements Strategy {
 		}
 		return copyBoard;
 	}
-	
-//	/**
-//	 * Looks at the opponent's next move. Assumes opponent uses same strategy.
-//	 */
-//	private Move simulateOpponentMove(Board board, Color color) {
-//		return determineMove(board, getOpponentColor(board, color));
-//	}
 }
