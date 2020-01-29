@@ -122,29 +122,6 @@ public interface ClientProtocol {
 			throws ServerUnavailableException, InvalidMoveException, ProtocolException;
 
 	/**
-	 * 
-	 * translates
-	 * <code>pm.Move + pm.DELIMITER + arg1 + pm.DELIMITER + arg2 + pm.DELIMITER + arg3</code>.
-	 * to the form parsemove accepts
-	 * 
-	 * @return String of the form parsemove accepts
-	 * @throws ServerUnavailableException if IO errors occur.
-	 * @throws ProtocolException          if no move command is send.
-	 */
-	public String getMove(Color color) throws ServerUnavailableException, ProtocolException;
-
-	/**
-	 * Receives a <code>pm.GAME_END + pm.DELIMITER + result</code> if there is a
-	 * winner or alternatively if a player disconnects:
-	 * <code>pm.GAME_END + pm.DELIMITER + result + pm.DELIMITER + disconnectedColor</code>.
-	 * these messages will be forwarded to the view.
-	 * 
-	 * @return
-	 * @throws ServerUnavailableException
-	 */
-	public void getGameEnd() throws ServerUnavailableException, ProtocolException;
-
-	/**
 	 * Sends a message to the server indicating that this client will exit:
 	 * <code>ProtocolMessages.EXIT</code>;
 	 * 
