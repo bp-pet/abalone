@@ -38,7 +38,6 @@ public class AbaloneServerBrowser extends AbaloneServer implements ServerBrowser
     
     @Override
     public String getHello() {
-        //TODO: throw exception or something
         String s = Character.toString(ProtocolMessages.HELLO);
         return s + "\n" + doLobbies();
     }
