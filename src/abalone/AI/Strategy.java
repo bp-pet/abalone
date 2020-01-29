@@ -38,7 +38,7 @@ public interface Strategy {
 		ArrayList<Field> fieldList = board.getMapOfColors().get(color);
 		int l = fieldList.size();
 		for (int i = 0; i < l; i++) {
-			for (int j = i; j < l; j++) {
+			for (int j = 0; j < l; j++) {
 				Move move = new Move(board, color, fieldList.get(i),
 						fieldList.get(j), 0 ,0);
 				try {
